@@ -9,3 +9,7 @@ test-paths: ["tests"]
 data-paths: ["data"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
+
+models:
+  google_ads:
+    materialized: table
