@@ -18,7 +18,7 @@ Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instruction
 
 ## Configuration
 
-The ad adapter model can be built based on either the Final URL Performance Report or the Criteria Performance Report. You can choose which by setting the `google_ads__ad_adater_source` variable to either `criteria` or `url`.
+We can build the ad adapter model based on either the Final URL Performance Report or the Criteria Performance Report. Choose which by setting the `google_ads__ad_adapter_source` variable to `url` or `criteria` respectively.
 
 By default, this package will look for your Google Ads data in the `google_ads` schema of your [target database](https://docs.getdbt.com/docs/running-a-dbt-project/using-the-command-line-interface/configure-your-profile). If this is not where your Google Ads data is, please add the following configuration to your `dbt_project.yml` file:
 
