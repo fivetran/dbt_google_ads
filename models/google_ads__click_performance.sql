@@ -1,7 +1,7 @@
 with base as (
 
     select *
-    from {{ ref('stg_google_ads__click_performance') }}
+    from {{ var('click_performance') }}
 
 ), fields as (
 
@@ -14,7 +14,7 @@ with base as (
         row_number() over (partition by gclid order by date_day) as rn
     from base
 
-), filtered as (
+), filtered as ( -- we've heard that sometimes duplicates gclids are an issue. This dedupe ensures no glcids are double counted.
 
     select *
     from fields

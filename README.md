@@ -8,19 +8,18 @@ The main focus of the package is to transform the core ad object tables into ana
 
 This package contains transformation models, designed to work simultaneously with our [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source). A dependency on the source package is declared in this package's `packages.yml` file, so it will automatically download when you run `dbt deps`. The primary outputs of this package are described below.
 
-| **model**                     | **description**                                                                                                                    |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| google_ads__ad_adapter        | Each record represents the daily ad performance of each URL in each ad group, including information about the used UTM parameters. |
-| google_ads__click_performance | Each record represents a click, with a corresponding Google click ID (gclid).                                                      |
+| **model**                       | **description**                                                                                                                    |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| google_ads__url_ad_adapter      | Each record represents the daily ad performance of each URL in each ad group, including information about the used UTM parameters. |
+| google_ads__criteria_ad_adapter | Each record represents the daily ad performance of each criteria in each ad group.                                                 |
+| google_ads__click_performance   | Each record represents a click, with a corresponding Google click ID (gclid).                                                      |
 
 ## Installation Instructions
 Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions, or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
 
 ## Configuration
 
-The ad adapter model can be built based on either the Final URL Performance Report or the Criteria Performance Report. You can choose which by setting the `google_ads__ad_adater_source` variable to either `criteria` or `url`.
-
-By default, this package will look for your Google Ads data in the `google_ads` schema of your [target database](https://docs.getdbt.com/docs/running-a-dbt-project/using-the-command-line-interface/configure-your-profile). If this is not where your Google Ads data is, please add the following configuration to your `dbt_project.yml` file:
+By default, this package will look for your Google Ads data in the `adwords` schema of your [target database](https://docs.getdbt.com/docs/running-a-dbt-project/using-the-command-line-interface/configure-your-profile). If this is not where your Google Ads data is, please add the following configuration to your `dbt_project.yml` file:
 
 ```yml
 # dbt_project.yml
@@ -29,8 +28,9 @@ By default, this package will look for your Google Ads data in the `google_ads` 
 config-version: 2
 
 vars:
-    google_ads_schema: your_schema_name
-    google_ads_database: your_database_name 
+    google_ads_source:
+        google_ads_schema: your_schema_name
+        google_ads_database: your_database_name 
 ```
 
 For additional configurations for the source models, visit the [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source).

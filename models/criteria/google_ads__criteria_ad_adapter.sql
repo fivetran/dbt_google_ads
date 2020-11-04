@@ -1,9 +1,7 @@
-{{ config(enabled=var('google_ads__ad_adater_source','')=='criteria') }}
-
 with base as (
 
     select *
-    from {{ ref('stg_google_ads__criteria_performance') }}
+    from {{ var('criteria_performance') }}
 
 ), fields as (
 

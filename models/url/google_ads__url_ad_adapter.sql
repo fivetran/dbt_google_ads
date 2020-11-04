@@ -1,9 +1,7 @@
-{{ config(enabled=var('google_ads__ad_adater_source','')=='url') }}
-
 with base as (
 
     select *
-    from {{ ref('stg_google_ads__final_url_performance') }}
+    from {{ var('final_url_performance') }}
 
 ), fields as (
 
