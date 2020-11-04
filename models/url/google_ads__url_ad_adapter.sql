@@ -1,9 +1,7 @@
-{{ config(enabled=var('google_ads__ad_adater_source','')=='criteria') }}
-
 with base as (
 
     select *
-    from {{ ref('stg_google_ads__criteria_performance') }}
+    from {{ ref('stg_google_ads__final_url_performance') }}
 
 ), fields as (
 
@@ -15,13 +13,19 @@ with base as (
         campaign_id,
         ad_group_name,
         ad_group_id,
-        criteria, 
-        criteria_type,
+        base_url,
+        url_host,
+        url_path,
+        utm_source,
+        utm_medium,
+        utm_campaign,
+        utm_content,
+        utm_term,
         sum(spend) as spend,
         sum(clicks) as clicks,
         sum(impressions) as impressions
     from base
-    {{ dbt_utils.group_by(9) }}
+    {{ dbt_utils.group_by(15) }}
 
 )
 
