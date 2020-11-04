@@ -1,7 +1,7 @@
 with base as (
 
     select *
-    from {{ ref('stg_google_ads__click_performance') }}
+    from {{ var('click_performance') }}
 
 ), fields as (
 
