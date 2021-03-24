@@ -1,13 +1,14 @@
 
 name: 'google_ads'
-version: '0.1.0'
+version: '0.2.0'
 config-version: 2
 
 require-dbt-version: [">=0.18.0", "<0.20.0"]
 
 models:
   google_ads:
-    materialized: table
+    +schema: google_ads
+    +materialized: table
 
 vars:
   google_ads:

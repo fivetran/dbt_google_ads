@@ -2,11 +2,11 @@
 
 This package models Google Ads data from [Fivetran's connector](https://fivetran.com/docs/applications/google-ads).
 
-The main focus of the package is to transform the core ad object tables into analytics-ready models, including an 'ad adapter' model that can be easily unioned in to other ad platform packages to get a single view. 
+The main focus of the package is to transform the core ad object tables into analytics-ready models, including an 'ad adapter' model that can be easily unioned in to other ad platform packages to get a single view.  This is especially easy using our [Ad Reporting package](https://github.com/fivetran/dbt_ad_reporting).
 
 ## Models
 
-This package contains transformation models, designed to work simultaneously with our [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source). A dependency on the source package is declared in this package's `packages.yml` file, so it will automatically download when you run `dbt deps`. The primary outputs of this package are described below.
+This package contains transformation models, designed to work simultaneously with our [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source) and our [multi-platform Ad Reporting package](https://github.com/fivetran/dbt_ad_reporting). A dependency on the source package is declared in this package's `packages.yml` file, so it will automatically download when you run `dbt deps`. The primary outputs of this package are described below.
 
 | **model**                       | **description**                                                                                                                    |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
@@ -34,6 +34,20 @@ vars:
 ```
 
 For additional configurations for the source models, visit the [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source).
+
+### Changing the Build Schema
+By default this package will build the Google Ads staging models within a schema titled (<target_schema> + `_stg_google_ads`) and the Google Ads final models with a schema titled (<target_schema> + `_google_ads`) in your target database. If this is not where you would like your modeled Google Ads data to be written to, add the following configuration to your `dbt_project.yml` file:
+
+```yml
+# dbt_project.yml
+
+...
+models:
+  google_ads:
+    +schema: my_new_schema_name # leave blank for just the target_schema
+  google_ads_source:
+    +schema: my_new_schema_name # leave blank for just the target_schema
+```
 
 ## Contributions
 
