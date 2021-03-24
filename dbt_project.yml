@@ -8,7 +8,7 @@ require-dbt-version: [">=0.18.0", "<0.20.0"]
 models:
   google_ads:
     +schema: google_ads
-    materialized: table
+    +materialized: table
 
 vars:
   google_ads:
