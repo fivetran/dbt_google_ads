@@ -27,7 +27,14 @@ with base as (
     from base
     {{ dbt_utils.group_by(15) }}
 
+), surrogate as (
+
+    select 
+        *,
+        {{ dbt_utils.surrogate_key(['date_day','external_customer_id','campaign_id','ad_group_id']) }} as daily_ad_group_id
+    from fields
+
 )
 
 select *
-from fields
+from surrogate
