@@ -1,3 +1,6 @@
 packages:
-  - package: fivetran/google_ads_source
-    version: [">=0.2.0","<0.3.0"] 
+  # - package: fivetran/google_ads_source
+  #   version: [">=0.2.0","<0.3.0"] 
+  - git: https://github.com/fivetran/dbt_google_ads_source.git
+    revision: feature/google-ads-api
+    warn-unpinned: false
