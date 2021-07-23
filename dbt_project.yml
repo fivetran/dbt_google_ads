@@ -1,15 +1,11 @@
-
 name: 'google_ads'
-version: '0.2.2'
+version: '0.3.0'
 config-version: 2
-
-require-dbt-version: [">=0.18.0", "<0.20.0"]
-
+require-dbt-version: [">=0.20.0"]
 models:
   google_ads:
     +schema: google_ads
     +materialized: table
-
 vars:
   google_ads:
     click_performance: "{{ ref('stg_google_ads__click_performance') }}"
