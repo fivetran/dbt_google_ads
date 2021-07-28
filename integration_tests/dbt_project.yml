@@ -1,5 +1,5 @@
 name: 'google_ads_integration_tests'
-version: '0.2.2'
+version: '0.3.0'
 profile: 'integration_tests'
 config-version: 2
 
@@ -27,3 +27,7 @@ seeds:
         ad_group_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
         campaign_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
         external_customer_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
+
+dispatch:
+  - macro_namespace: dbt_utils
+    search_order: ['spark_utils', 'dbt_utils']
