@@ -44,6 +44,76 @@ vars:
 
 For additional configurations for the source models, visit the [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source).
 
+### Required Google Ads Reports
+
+To use this package, you will need to pull the following custom reports through Fivetran:
+
+* Destination Table Name: `final_url_performance`
+* Report Type: `FINAL_URL_REPORT`
+* Fields:
+  * AccountDescriptiveName
+  * AdGroupId
+  * AdGroupName
+  * AdGroupStatus
+  * CampaignId
+  * CampaignName
+  * CampaignStatus
+  * Clicks
+  * Cost
+  * Date
+  * EffectiveFinalUrl
+  * ExternalCustomerId
+  * Impressions
+
+* Destination Table Name: `criteria_performance`
+* Report Type: `CRITERIA_PERFORMANCE_REPORT`
+* Fields:
+  * AccountDescriptiveName
+  * AdGroupId
+  * AdGroupName
+  * AdGroupStatus
+  * CampaignId
+  * CampaignName
+  * CampaignStatus
+  * Clicks
+  * Cost
+  * Criteria
+  * CriteriaDestinationUrl
+  * CriteriaType
+  * Date
+  * ExternalCustomerId
+  * Id
+  * Impressions
+
+* Destination Table Name: `click_performance`
+* Report Type: `CLICK_PERFORMANCE_REPORT`
+* Fields:
+  * AccountDescriptiveName
+  * AdGroupId
+  * AdGroupName
+  * AdGroupStatus
+  * CampaignId
+  * CampaignName
+  * CampaignStatus
+  * Clicks
+  * CriteriaId
+  * Date
+  * ExternalCustomerId
+  * GclId
+
+The package assumes that the corresponding destination tables are named `final_url_performance`, `criteria_performance`, and `click_performance` respectively. If these tables have different names in your destination, enter the correct table names in the `google_ads__final_url_performance`, `google_ads__click_performance`, and `google_ads__criteria_performance` variables so that the package can find them:
+
+```yml
+# dbt_project.yml
+
+...
+config-version: 2
+
+vars:
+    google_ads__final_url_performance: "{{ ref('a_model_you_wrote') }}"
+    google_ads__click_performance: adwords.click_performance_report
+```
+
 ### Changing the Build Schema
 By default this package will build the Google Ads staging models within a schema titled (<target_schema> + `_stg_google_ads`) and the Google Ads final models with a schema titled (<target_schema> + `_google_ads`) in your target database. If this is not where you would like your modeled Google Ads data to be written to, add the following configuration to your `dbt_project.yml` file:
 
