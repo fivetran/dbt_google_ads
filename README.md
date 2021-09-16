@@ -44,6 +44,18 @@ vars:
 
 For additional configurations for the source models, visit the [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source).
 
+### Passing Through Additional Metrics
+By default, this package will select `clicks`, `impressions`, and `cost` from the source reporting tables to store into the ad adapter models. If you would like to pass through additional metrics to the ad adapter models, add the following configuration to your `dbt_project.yml` file:
+
+```yml
+# dbt_project.yml
+
+...
+vars:
+    google_ads__url_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from adwords.final_url_performance
+    google_ads__criteria_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from adwords.criteria_performance
+```
+
 ### Required Google Ads Reports
 
 To use this package, you will need to pull the following custom reports through Fivetran:

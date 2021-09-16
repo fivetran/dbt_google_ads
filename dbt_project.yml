@@ -11,3 +11,5 @@ vars:
     click_performance: "{{ ref('stg_google_ads__click_performance') }}"
     final_url_performance: "{{ ref('stg_google_ads__final_url_performance') }}"
     criteria_performance: "{{ ref('stg_google_ads__criteria_performance') }}"
+  google_ads__url_passthrough_metrics: []
+  google_ads__criteria_passthrough_metrics: []
