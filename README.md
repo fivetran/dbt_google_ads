@@ -9,11 +9,13 @@ The main focus of the package is to transform the core ad object tables into ana
 
 This package contains transformation models, designed to work simultaneously with our [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source) and our [multi-platform Ad Reporting package](https://github.com/fivetran/dbt_ad_reporting). A dependency on the source package is declared in this package's `packages.yml` file, so it will automatically download when you run `dbt deps`. The primary outputs of this package are described below.
 
-| **model**                       | **description**                                                                                                                    |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| google_ads__url_ad_adapter      | Each record represents the daily ad performance of each URL in each ad group, including information about the used UTM parameters. |
-| google_ads__criteria_ad_adapter | Each record represents the daily ad performance of each criteria in each ad group.                                                 |
-| google_ads__click_performance   | Each record represents a click, with a corresponding Google click ID (gclid).                                                      |
+> Please note this package allows for either `Adwords API` or `Google Ads API` connector configuration. For specific API configuration instructions refer to the [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source). Additionally, not all final models will be generated based off the API being used. Refer to the table below for an understanding of which models will be created per API.
+
+| **model**                       | **description** |**compatible API**                                                                                                                   |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |------------------------------- | 
+| [google_ads__url_ad_adapter](models/url/google_ads__url_ad_adapter.sql)      | Each record represents the daily ad performance of each URL in each ad group, including information about the used UTM parameters. | Adwords API and Google Ads API |
+| [google_ads__criteria_ad_adapter](models/criteria/google_ads__criteria_ad_adapter.sql) | Each record represents the daily ad performance of each criteria in each ad group.                                                 | Adwords API Only|
+| [google_ads__click_performance](models/google_ads__click_performance.sql)   | Each record represents a click, with a corresponding Google click ID (gclid).                                                      | Adwords API Only |
 
 ## Installation Instructions
 Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions, or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
@@ -27,6 +29,18 @@ packages:
 ```
 
 ## Configuration
+
+As previously mentioned, package allows users to leverage either the Adwords API or the Google Ads API. You will be able to determine which API your connector is using by navigating within your Fivetran UI to the `setup` tab -> `edit connection details` link -> and reference the `API configuration` used. If your connector is setup using the Google Ads API then you will need to configure your `dbt_project.yml` with the below variable:
+
+```yml
+# dbt_project.yml
+
+...
+config-version: 2
+
+vars:
+    api_source: google_ads  ## adwords by default
+```
 
 By default, this package will look for your Google Ads data in the `adwords` schema of your [target database](https://docs.getdbt.com/docs/running-a-dbt-project/using-the-command-line-interface/configure-your-profile). If this is not where your Google Ads data is, please add the following configuration to your `dbt_project.yml` file:
 
