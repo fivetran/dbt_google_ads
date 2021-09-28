@@ -56,7 +56,7 @@ with stats as (
         sum(stats.clicks) as clicks,
         sum(stats.impressions) as impressions
 
-        {% for metric in var('google_ads__at_stats_passthrough_metrics') %}
+        {% for metric in var('google_ads__ad_stats_passthrough_metrics') %}
         , sum(stats.{{ metric }}) as {{ metric }}
         {% endfor %}
 
