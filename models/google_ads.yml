@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: google_ads__ad_adapter
+  - name: google_ads__url_ad_adapter
     description: Each record in this table represents the daily performance of URLs at the ad group level.
     columns:
       - name: date_day

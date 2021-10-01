@@ -17,6 +17,7 @@ vars:
     ad_group_history: "{{ ref('stg_google_ads__ad_group_history') }}"
     ad_history: "{{ ref('stg_google_ads__ad_history') }}"
     ad_final_url_history: "{{ ref('stg_google_ads__ad_final_url_history') }}"
+  api_source: adwords
   google_ads__url_passthrough_metrics: []
   google_ads__criteria_passthrough_metrics: []
   google_ads__ad_stats_passthrough_metrics: []
