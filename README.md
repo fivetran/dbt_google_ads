@@ -30,7 +30,10 @@ packages:
 
 ## Configuration
 
-As previously mentioned, package allows users to leverage either the Adwords API or the Google Ads API. You will be able to determine which API your connector is using by navigating within your Fivetran UI to the `setup` tab -> `edit connection details` link -> and reference the `API configuration` used. If your connector is setup using the Google Ads API then you will need to configure your `dbt_project.yml` with the below variable:
+As previously mentioned, package allows users to leverage either the Adwords API or the Google Ads API. You will be able to determine which API your connector is using by navigating within your Fivetran UI to the `setup` tab -> `edit connection details` link -> and reference the `API configuration` used. 
+
+### Google Ads API Configuration
+If your connector is setup using the Google Ads API then you will need to configure your `dbt_project.yml` with the below variable:
 
 ```yml
 # dbt_project.yml
@@ -42,40 +45,8 @@ vars:
     api_source: google_ads  ## adwords by default
 ```
 
-By default, this package will look for your Google Ads data in the `adwords` schema of your [target database](https://docs.getdbt.com/docs/running-a-dbt-project/using-the-command-line-interface/configure-your-profile). If this is not where your Google Ads data is, please add the following configuration to your `dbt_project.yml` file:
-
-```yml
-# dbt_project.yml
-
-...
-config-version: 2
-
-vars:
-    google_ads_source:
-        google_ads_schema: your_schema_name
-        google_ads_database: your_database_name 
-```
-
-For additional configurations for the source models, visit the [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source).
-
-### Passing Through Additional Metrics
-By default, this package will select `clicks`, `impressions`, and `cost` from the source reporting tables to store into the ad adapter models. If you would like to pass through additional metrics to the ad adapter models, add the following configuration to your `dbt_project.yml` file:
-
-```yml
-# dbt_project.yml
-
-...
-vars:    
-    # If you're using the Adwords API source
-    google_ads__url_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from adwords.final_url_performance
-    google_ads__criteria_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from adwords.criteria_performance
-    # If you're using the Google Ads API source
-    google_ads__ad_stats_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from google_ads.ad_stats
-```
-
-### Required Google Ads Reports
-
-To use this package, you will need to pull the following custom reports through Fivetran:
+### Adwords API Configuration
+If your connector is setup using the Adwords API then you will need to pull the following custom reports through Fivetran:
 
 * Destination Table Name: `final_url_performance`
 * Report Type: `FINAL_URL_REPORT`
@@ -141,6 +112,38 @@ config-version: 2
 vars:
     google_ads__final_url_performance: "{{ ref('a_model_you_wrote') }}"
     google_ads__click_performance: adwords.click_performance_report
+```
+### Source Schema is Named Differently
+By default, this package will look for your Google Ads data in the `adwords` schema of your [target database](https://docs.getdbt.com/docs/running-a-dbt-project/using-the-command-line-interface/configure-your-profile). If this is not where your Google Ads data is, please add the following configuration to your `dbt_project.yml` file:
+
+```yml
+# dbt_project.yml
+
+...
+config-version: 2
+
+vars:
+    google_ads_source:
+      google_ads_schema: your_schema_name
+      google_ads_database: your_database_name 
+```
+
+For additional configurations for the source models, visit the [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source).
+
+## Optional Configurations
+### Passing Through Additional Metrics
+By default, this package will select `clicks`, `impressions`, and `cost` from the source reporting tables to store into the ad adapter models. If you would like to pass through additional metrics to the ad adapter models, add the following configuration to your `dbt_project.yml` file:
+
+```yml
+# dbt_project.yml
+
+...
+vars:    
+    # If you're using the Adwords API source
+    google_ads__url_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from adwords.final_url_performance
+    google_ads__criteria_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from adwords.criteria_performance
+    # If you're using the Google Ads API source
+    google_ads__ad_stats_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from google_ads.ad_stats
 ```
 
 ### Changing the Build Schema
