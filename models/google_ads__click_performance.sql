@@ -16,17 +16,13 @@ with base as (
         row_number() over (partition by gclid order by date_day) as rn,
         source_relation
     from base
-
 ),
 
 filtered as ( -- we've heard that sometimes duplicates gclids are an issue. This dedupe ensures no glcids are double counted.
-
     select *
     from fields
     where gclid is not null 
     and rn = 1
-    {# this might be an issue #}
-
 )
 
 select * from filtered
