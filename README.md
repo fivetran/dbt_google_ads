@@ -1,4 +1,5 @@
 [![Apache License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![dbt logo and version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=0.20.x&color=orange)
+
 # Google Ads 
 
 This package models Google Ads data from [Fivetran's connector](https://fivetran.com/docs/applications/google-ads).
@@ -25,7 +26,7 @@ Include in your `packages.yml`
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: [">=0.4.0", "<0.5.0"]
+    version: [">=0.5.0", "<0.6.0"]
 ```
 
 ## Configuration
@@ -113,6 +114,7 @@ vars:
     google_ads__final_url_performance: "{{ ref('a_model_you_wrote') }}"
     google_ads__click_performance: adwords.click_performance_report
 ```
+
 ### Source Schema is Named Differently
 By default, this package will look for your Google Ads data in the `adwords` schema of your [target database](https://docs.getdbt.com/docs/running-a-dbt-project/using-the-command-line-interface/configure-your-profile). If this is not where your Google Ads data is, please add the following configuration to your `dbt_project.yml` file:
 
@@ -129,6 +131,19 @@ vars:
 ```
 
 For additional configurations for the source models, visit the [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source).
+
+### Unioning Multiple Google Ads Connectors
+If you have multiple Google Ads connectors in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from in the `source_relation` column of each model. To use this functionality, you will need to set either (**note that you cannot use both**) the `union_schemas` or `union_databases` variables:
+
+```yml
+# dbt_project.yml
+...
+config-version: 2
+vars:
+  google_ads_source:
+    union_schemas: ['google_ads_usa','google_ads_canada'] # use this if the data is in different schemas/datasets of the same database/project
+    union_databases: ['google_ads_usa','google_ads_canada'] # use this if the data is in different databases/projects but uses the same schema name
+```
 
 ## Optional Configurations
 ### Passing Through Additional Metrics
