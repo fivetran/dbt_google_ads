@@ -33,11 +33,6 @@ seeds:
         ad_group_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
         campaign_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
         external_customer_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
-    google_ads_final_url_performance_data:
-      +column_types:
-        ad_group_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
-        campaign_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
-        external_customer_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
     google_ads_ad_stats_data:
       +column_types:
         customer_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
