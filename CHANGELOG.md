@@ -1,4 +1,4 @@
-# dbt_google_ads_source v0.6.0
+# dbt_google_ads v0.6.0
 
 ## Features
 - Allow for multiple sources by unioning source tables across multiple Google Ads connectors.
@@ -12,5 +12,5 @@
 ## Contributors
 - [@pawelngei](https://github.com/pawelngei)
 
-# dbt_google_ads_source v0.1.0 -> v0.5.0
+# dbt_google_ads v0.1.0 -> v0.5.0
 Refer to the relevant release notes on the Github repository for specific details for the previous releases. Thank you!
