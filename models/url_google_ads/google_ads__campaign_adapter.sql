@@ -1,3 +1,5 @@
+{{ config(enabled=var('api_source') == 'google_ads') }}
+
 -- union our dsa's back into the google_ads_url_ad_adapter
 with unioned as (
     {{ dbt_utils.union_relations(

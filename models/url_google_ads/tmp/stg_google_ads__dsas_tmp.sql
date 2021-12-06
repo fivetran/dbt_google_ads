@@ -1,3 +1,5 @@
+{{ config(enabled=var('api_source') == 'google_ads') }}
+
 with staged as (
     -- this contains ALL campaigns
     select * from {{ ref('stg_google_ads__campaign_spend_tmp') }}
