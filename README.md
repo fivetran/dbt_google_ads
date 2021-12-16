@@ -1,4 +1,4 @@
-[![Apache License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![dbt logo and version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=0.20.x&color=orange)
+[![Apache License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![dbt logo and version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=>=1.0.0,<2.0.0&color=orange)
 # Google Ads 
 
 This package models Google Ads data from [Fivetran's connector](https://fivetran.com/docs/applications/google-ads).
@@ -25,7 +25,7 @@ Include in your `packages.yml`
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: [">=0.4.0", "<0.5.0"]
+    version: [">=0.5.0", "<0.6.0"]
 ```
 
 ## Configuration
