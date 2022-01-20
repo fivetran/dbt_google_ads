@@ -23,6 +23,7 @@ with base as (
         utm_campaign,
         utm_content,
         utm_term,
+        source_relation,
         sum(spend) as spend,
         sum(clicks) as clicks,
         sum(impressions) as impressions
@@ -31,7 +32,7 @@ with base as (
         , sum({{ metric }}) as {{ metric }}
         {% endfor %}
     from base
-    {{ dbt_utils.group_by(15) }}
+    {{ dbt_utils.group_by(16) }}
 
 )
 

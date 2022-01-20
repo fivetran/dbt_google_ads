@@ -1,5 +1,6 @@
 name: 'google_ads_integration_tests'
 version: '0.6.0'
+
 profile: 'integration_tests'
 config-version: 2
 
@@ -28,11 +29,6 @@ seeds:
         campaign_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
         external_customer_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
         id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
-    google_ads_final_url_performance_data:
-      +column_types:
-        ad_group_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
-        campaign_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
-        external_customer_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
     google_ads_final_url_performance_data:
       +column_types:
         ad_group_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"

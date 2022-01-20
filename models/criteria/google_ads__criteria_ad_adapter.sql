@@ -5,8 +5,9 @@ with base as (
     select *
     from {{ var('criteria_performance') }}
 
-), fields as (
+),
 
+fields as (
     select
         date_day,
         account_name,
@@ -17,6 +18,7 @@ with base as (
         ad_group_id,
         criteria, 
         criteria_type,
+        source_relation,
         sum(spend) as spend,
         sum(clicks) as clicks,
         sum(impressions) as impressions
@@ -25,7 +27,7 @@ with base as (
         , sum({{ metric }}) as {{ metric }}
         {% endfor %}
     from base
-    {{ dbt_utils.group_by(9) }}
+    {{ dbt_utils.group_by(10) }}
 
 )
 
