@@ -2,4 +2,6 @@ packages:
   # TODO: Swap for the real package when published to DBT Hub
   # - package: fivetran/google_ads_source
   #   version: [">=0.5.0", "<0.6.0"]
-  - local: ../dbt_google_ads_source
+  - git: https://github.com/fivetran/dbt_googl_ads_soure.git
+    revision: feature/union-abilitiy
+    warn-unpinned: false
