@@ -8,7 +8,8 @@ with stats as (
 ), accounts as (
 
     select *
-    from {{ var('account') }}
+    from {{ var('account_history') }}
+    where is_most_recent_record = True
     
 ), campaigns as (
 
@@ -28,12 +29,6 @@ with stats as (
     from {{ var('ad_history') }}
     where is_most_recent_record = True
     
-), final_url as (
-
-    select *
-    from {{ var('ad_final_url_history') }}
-    where is_most_recent_record = True
-    
 ), fields as (
 
     select
@@ -44,14 +39,14 @@ with stats as (
         campaigns.campaign_id,
         ad_groups.ad_group_name,
         ad_groups.ad_group_id,
-        final_url.base_url,
-        final_url.url_host,
-        final_url.url_path,
-        final_url.utm_source,
-        final_url.utm_medium,
-        final_url.utm_campaign,
-        final_url.utm_content,
-        final_url.utm_term,
+        ads.base_url,
+        ads.url_host,
+        ads.url_path,
+        ads.utm_source,
+        ads.utm_medium,
+        ads.utm_campaign,
+        ads.utm_content,
+        ads.utm_term,
         sum(stats.spend) as spend,
         sum(stats.clicks) as clicks,
         sum(stats.impressions) as impressions
@@ -63,8 +58,6 @@ with stats as (
     from stats
     left join ads
         on stats.ad_id = ads.ad_id
-    left join final_url
-        on ads.ad_id = final_url.ad_id
     left join ad_groups
         on ads.ad_group_id = ad_groups.ad_group_id
     left join campaigns
