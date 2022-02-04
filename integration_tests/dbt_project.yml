@@ -15,7 +15,7 @@ vars:
   google_ads__account: "{{ ref('google_ads_account_data') }}"
 
 seeds:
-  google_ads_source_integration_tests:
+  google_ads_integration_tests:
     google_ads_click_performance_data:
       +column_types:
         ad_group_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
