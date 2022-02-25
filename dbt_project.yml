@@ -1,5 +1,5 @@
 name: 'google_ads'
-version: '0.5.0'
+version: '0.6.0'
 config-version: 2
 require-dbt-version: [">=1.0.0", "<2.0.0"]
 models:
@@ -12,7 +12,7 @@ vars:
     final_url_performance: "{{ ref('stg_google_ads__final_url_performance') }}"
     criteria_performance: "{{ ref('stg_google_ads__criteria_performance') }}"
     ad_stats: "{{ ref('stg_google_ads__ad_stats') }}"
-    account: "{{ ref('stg_google_ads__account') }}"
+    account_history: "{{ ref('stg_google_ads__account_history') }}"
     campaign_history: "{{ ref('stg_google_ads__campaign_history') }}"
     ad_group_history: "{{ ref('stg_google_ads__ad_group_history') }}"
     ad_history: "{{ ref('stg_google_ads__ad_history') }}"
