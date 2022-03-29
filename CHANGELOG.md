@@ -1,3 +1,5 @@
+# dbt_google_ads v0.6.1
+- Updated google_ads__url_ad_adapter link in README 
 # dbt_google_ads v0.6.0
 ## 🚨 Breaking Changes 🚨
 - The `account` source table has been renamed to be `account_history`. This has been reflected in the source model references within this release. ([#24](https://github.com/fivetran/dbt_google_ads_source/pull/24))
