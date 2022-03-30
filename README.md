@@ -13,7 +13,7 @@ This package contains transformation models, designed to work simultaneously wit
 
 | **model**                       | **description** |**compatible API**                                                                                                                   |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |------------------------------- | 
-| [google_ads__url_ad_adapter](models/url/google_ads__url_ad_adapter.sql)      | Each record represents the daily ad performance of each URL in each ad group, including information about the used UTM parameters. | Adwords API and Google Ads API |
+| [google_ads__url_ad_adapter](models/url_google_ads/google_ads__url_ad_adapter.sql)      | Each record represents the daily ad performance of each URL in each ad group, including information about the used UTM parameters. | Adwords API and Google Ads API |
 | [google_ads__criteria_ad_adapter](models/criteria/google_ads__criteria_ad_adapter.sql) | Each record represents the daily ad performance of each criteria in each ad group.                                                 | Adwords API Only|
 | [google_ads__click_performance](models/google_ads__click_performance.sql)   | Each record represents a click, with a corresponding Google click ID (gclid).                                                      | Adwords API Only |
 
