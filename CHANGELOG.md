@@ -1,6 +1,6 @@
 # dbt_google_ads v0.7.0
 ## 🚨 Breaking Changes 🚨
-- The `api_source` variable is now defaulted to `google_ads` as opposed to `adwords`. The Adwords API has since been depricated by Google and is now no longer the standard API for the Google Ads connector. Please ensure you are using a Google Ads API version of the Fivetran connector before upgrading this package. 
+- The `api_source` variable is now defaulted to `google_ads` as opposed to `adwords`. The Adwords API has since been depricated by Google and is now no longer the standard API for the Google Ads connector. Please ensure you are using a Google Ads API version of the Fivetran connector before upgrading this package. ([#32](https://github.com/fivetran/dbt_google_ads/pull/32))
   - Please note, the `adwords` version of this package will be fully removed from the package in August of 2022.
 # dbt_google_ads v0.6.1
 - Updated google_ads__url_ad_adapter link in README (Thank you to @bkimjin! ([#26](https://github.com/fivetran/dbt_google_ads/issues/26)))
