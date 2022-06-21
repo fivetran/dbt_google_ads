@@ -1,5 +1,3 @@
-{{ config(enabled=var('api_source') == 'google_ads') }}
-
 with stats as (
 
     select *
@@ -39,19 +37,16 @@ with stats as (
         campaigns.campaign_id,
         ad_groups.ad_group_name,
         ad_groups.ad_group_id,
-        ads.base_url,
-        ads.url_host,
-        ads.url_path,
-        ads.utm_source,
-        ads.utm_medium,
-        ads.utm_campaign,
-        ads.utm_content,
-        ads.utm_term,
+        ads.ad_id,
+        ads.ad_status,
+        ads.ad_type,
+        ads.display_url,
+        ads.source_final_urls,
         sum(stats.spend) as spend,
         sum(stats.clicks) as clicks,
         sum(stats.impressions) as impressions
 
-        {% for metric in var('google_ads__ad_stats_passthrough_metrics') %}
+        {% for metric in var('google_ads__ad_stats_passthrough_metrics', []) %}
         , sum(stats.{{ metric }}) as {{ metric }}
         {% endfor %}
 
@@ -64,7 +59,7 @@ with stats as (
         on ad_groups.campaign_id = campaigns.campaign_id
     left join accounts
         on campaigns.account_id = accounts.account_id
-    {{ dbt_utils.group_by(15) }}
+    {{ dbt_utils.group_by(12) }}
 
 )
 

@@ -1,8 +1,10 @@
 packages:
 # - package: fivetran/google_ads_source
-#   version: [">=0.7.0", "<0.8.0"]
+#   version: [">=0.8.0", "<0.9.0"]
 
   ## TO SWITCH BEFORE MERGE
-  - git: https://github.com/fivetran/dbt_google_ads_source.git
-    revision: feature/google-ads-api-default
-    warn-unpinned: false
+  # - git: https://github.com/fivetran/dbt_google_ads_source.git
+  #   revision: feature/v2_updates
+  #   warn-unpinned: false
+
+  - local: ../dbt_google_ads_source

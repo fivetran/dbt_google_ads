@@ -1,8 +1,8 @@
 version: 2
 
 models:
-  - name: google_ads__url_ad_adapter
-    description: Each record in this table represents the daily performance of URLs at the ad group level.
+  - name: google_ads__utm_report
+    description: Each record in this table represents the daily performance of URLs at the ad level.
     columns:
       - name: date_day
         description: "{{ doc('date') }}"
@@ -44,18 +44,3 @@ models:
         description: "{{ doc('criteria') }}"
       - name: criteria_type
         description: "{{ doc('criteria_type') }}"
-  - name: google_ads__click_performance
-    description: Each record represents a click, with a unique Google Click ID (gclid).
-    columns:
-      - name: date_day
-        description: "{{ doc('date') }}"
-      - name: campaign_id
-        description: "{{ doc('campaign_id') }}"
-      - name: ad_group_id
-        description: "{{ doc('ad_group_id') }}"
-      - name: criteria_id
-        description: "{{ doc('criteria_id') }}"
-      - name: gclid
-        description: "{{ doc('gcl_id') }}"
-      - name: rn
-        description: Row number partitioned by gclid and ordered by date_day which is used to dedupe possible double gclids.
