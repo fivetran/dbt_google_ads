@@ -3,12 +3,17 @@ version: 2
 models:
   - name: google_ads__utm_report
     description: Each record in this table represents the daily performance of URLs at the ad level.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ad_id
+            - date_day
     columns:
       - name: date_day
         description: "{{ doc('date') }}"
       - name: account_name
         description: "{{ doc('account_descriptive_name') }}"
-      - name: external_customer_id
+      - name: account_id
         description: "{{ doc('external_customer_id') }}"
       - name: campaign_name
         description: "{{ doc('campaign_name') }}"
@@ -18,6 +23,8 @@ models:
         description: "{{ doc('ad_group_name') }}"
       - name: ad_group_id
         description: "{{ doc('ad_group_id') }}"
+      - name: ad_id
+        description: The unique identifier of the ad.
       - name: base_url
         description: "{{ doc('base_url') }}"
       - name: url_host
@@ -40,7 +47,175 @@ models:
         description: "{{ doc('clicks') }}"
       - name: impressions
         description: "{{ doc('impressions') }}"
-      - name: criteria
-        description: "{{ doc('criteria') }}"
-      - name: criteria_type
-        description: "{{ doc('criteria_type') }}"
+
+  - name: google_ads__account_report
+    description: Each record in this table represents the daily performance at the account level.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - account_id
+            - date_day
+    columns:
+      - name: date_day
+        description: "{{ doc('date') }}"
+      - name: account_name
+        description: "{{ doc('account_descriptive_name') }}"
+      - name: account_id
+        description: "{{ doc('external_customer_id') }}"
+      - name: time_zone
+        description: The time zone which the account is located.
+      - name: currency_code
+        description: The currency which the account uses.
+      - name: auto_tagging_enabled
+        description: Boolean indicating if the account uses auto tagging within ad urls.
+      - name: spend
+        description: "{{ doc('cost') }}"
+      - name: clicks
+        description: "{{ doc('clicks') }}"
+      - name: impressions
+        description: "{{ doc('impressions') }}"
+
+  - name: google_ads__ad_group_report
+    description: Each record in this table represents the daily performance at the ad group level.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ad_group_id
+            - date_day
+    columns:
+      - name: date_day
+        description: "{{ doc('date') }}"
+      - name: account_name
+        description: "{{ doc('account_descriptive_name') }}"
+      - name: account_id
+        description: "{{ doc('external_customer_id') }}"
+      - name: campaign_name
+        description: "{{ doc('campaign_name') }}"
+      - name: campaign_id
+        description: "{{ doc('campaign_id') }}"
+      - name: ad_group_name
+        description: "{{ doc('ad_group_name') }}"
+      - name: ad_group_id
+        description: "{{ doc('ad_group_id') }}"
+      - name: ad_group_status
+        description: The status of the ad group.
+      - name: ad_group_type
+        description: The type of ad group which is serving ads.
+      - name: spend
+        description: "{{ doc('cost') }}"
+      - name: clicks
+        description: "{{ doc('clicks') }}"
+      - name: impressions
+        description: "{{ doc('impressions') }}"
+
+  - name: google_ads__ad_report
+    description: Each record in this table represents the daily performance at the ad level.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ad_id
+            - date_day
+    columns:
+      - name: date_day
+        description: "{{ doc('date') }}"
+      - name: account_name
+        description: "{{ doc('account_descriptive_name') }}"
+      - name: account_id
+        description: "{{ doc('external_customer_id') }}"
+      - name: campaign_name
+        description: "{{ doc('campaign_name') }}"
+      - name: campaign_id
+        description: "{{ doc('campaign_id') }}"
+      - name: ad_group_name
+        description: "{{ doc('ad_group_name') }}"
+      - name: ad_group_id
+        description: "{{ doc('ad_group_id') }}"
+      - name: ad_id
+        description: The unique identifier of the ad.
+      - name: display_url
+        description: The url which is displayed with the ad.
+      - name: source_final_urls
+        description: The final urls that are used within the ad.
+      - name: ad_status
+        description: The status of the ad.
+      - name: ad_type
+        description: The type of the ad that is being served.
+      - name: spend
+        description: "{{ doc('cost') }}"
+      - name: clicks
+        description: "{{ doc('clicks') }}"
+      - name: impressions
+        description: "{{ doc('impressions') }}"
+
+  - name: google_ads__campaign_report
+    description: Each record in this table represents the daily performance of a campaign at the campaign/advertising_channel/advertising_channel_subtype level.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - campaign_id
+            - advertising_channel_type
+            - advertising_channel_subtype
+            - date_day
+    columns:
+      - name: date_day
+        description: "{{ doc('date') }}"
+      - name: account_name
+        description: "{{ doc('account_descriptive_name') }}"
+      - name: account_id
+        description: "{{ doc('external_customer_id') }}"
+      - name: campaign_name
+        description: "{{ doc('campaign_name') }}"
+      - name: campaign_id
+        description: "{{ doc('campaign_id') }}"
+      - name: advertising_channel_type
+        description: The channel type of the ads being served within the campaign.
+      - name: advertising_channel_subtype
+        description: The channel subtype of the ads being served within the campaign.
+      - name: status
+        description: The status of the campaign.
+      - name: spend
+        description: "{{ doc('cost') }}"
+      - name: clicks
+        description: "{{ doc('clicks') }}"
+      - name: impressions
+        description: "{{ doc('impressions') }}"
+
+  - name: google_ads__keyword_report
+    description: Each record in this table represents the daily performance at the ad group level for keywords.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ad_group_id
+            - criterion_id
+            - date_day
+    columns:
+      - name: date_day
+        description: "{{ doc('date') }}"
+      - name: account_name
+        description: "{{ doc('account_descriptive_name') }}"
+      - name: account_id
+        description: "{{ doc('external_customer_id') }}"
+      - name: campaign_name
+        description: "{{ doc('campaign_name') }}"
+      - name: campaign_id
+        description: "{{ doc('campaign_id') }}"
+      - name: ad_group_name
+        description: "{{ doc('ad_group_name') }}"
+      - name: ad_group_id
+        description: "{{ doc('ad_group_id') }}"
+      - name: criterion_id
+        description: The unique identifier of the criterion being served.
+      - name: type
+        description: The type of keyword ad being served.
+      - name: status
+        description: The status of the keyword ads.
+      - name: keyword_match_type
+        description: The match type criteria used for the keyword ads.
+      - name: keyword_text
+        description: The specific keyword text that is used.
+      - name: spend
+        description: "{{ doc('cost') }}"
+      - name: clicks
+        description: "{{ doc('clicks') }}"
+      - name: impressions
+        description: "{{ doc('impressions') }}"

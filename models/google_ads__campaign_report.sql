@@ -25,11 +25,7 @@ with stats as (
         campaigns.campaign_id,
         campaigns.advertising_channel_type,
         campaigns.advertising_channel_subtype,
-        campaigns.start_date,
-        campaigns.end_date,
-        campaigns.serving_status,
         campaigns.status,
-        campaigns.tracking_url_template,
         sum(stats.spend) as spend,
         sum(stats.clicks) as clicks,
         sum(stats.impressions) as impressions
@@ -43,7 +39,7 @@ with stats as (
         on stats.campaign_id = campaigns.campaign_id
     left join accounts
         on campaigns.account_id = accounts.account_id
-    {{ dbt_utils.group_by(12) }}
+    {{ dbt_utils.group_by(8) }}
 
 )
 

@@ -1,3 +1,34 @@
+# dbt_google_ads v0.8.0
+## 🚨 Breaking Changes 🚨
+- The `adwords` api version of the package has been fully removed. As the Fivetran Google Ads connector now requires the Google Ads API, this functionality is no longer used. ([#34](https://github.com/fivetran/dbt_google_ads/pull/34))
+- Removal of the `google_ads__ad_adapter` model. ([#34](https://github.com/fivetran/dbt_google_ads/pull/34))
+- Major updates have also been applied to the [dbt_google_ads_source](https://github.com/fivetran/dbt_google_ads_source) package which is a dependency of this package. Please refer to the [v0.8.0](https://github.com/fivetran/dbt_google_ads_source/releases/tag/v0.8.0) release notes for more details before upgrading your package.
+
+## 🎉 Feature Enhancements 🎉
+- Addition of the following new end models. These models were added to provide further flexibility and ensure greater accuracy of your Google Ads reporting. Additionally, these new end models will be leveraged in the respective downstream [dbt_ad_reporting](https://github.com/fivetran/dbt_ad_reporting) models.
+  - `google_ads__account_report`
+    - Each record in this table represents the daily performance at the account level.
+  - `google_ads__campaign_report`
+    - Each record in this table represents the daily performance of a campaign at the campaign/advertising_channel/advertising_channel_subtype level.
+  - `google_ads__ad_group_report`
+    - Each record in this table represents the daily performance at the ad group level.
+  - `google_ads__keyword_report`
+    - Each record in this table represents the daily performance at the ad group level for keywords.
+  - `google_ads__ad_report`
+    - Each record in this table represents the daily performance at the ad level.
+  - `google_ads__utm_report`
+    - Each record in this table represents the daily performance of URLs at the ad level.
+
+- Added testing for each end model to ensure granularity and accuracy of the modeled data. ([#34](https://github.com/fivetran/dbt_google_ads/pull/34))
+- README updates for easier navigation and use of the package. ([#34](https://github.com/fivetran/dbt_google_ads/pull/34))
+- Inclusion of additional passthrough metrics within the respective end state models detailed above: ([#34](https://github.com/fivetran/dbt_google_ads/pull/34))
+  - `google_ads__ad_group_stats_passthrough_metrics`
+  - `google_ads__campaign_stats_passthrough_metrics`
+  - `google_ads__keyword_stats_passthrough_metrics`
+  - `google_ads__account_stats_passthrough_metrics`
+
+## Contributors
+- [@bnealdefero](https://github.com/bnealdefero) ([#20](https://github.com/fivetran/dbt_google_ads/pull/20))
 # dbt_google_ads v0.7.0
 ## 🚨 Breaking Changes 🚨
 - The `api_source` variable is now defaulted to `google_ads` as opposed to `adwords`. The Adwords API has since been depricated by Google and is now no longer the standard API for the Google Ads connector. Please ensure you are using a Google Ads API version of the Fivetran connector before upgrading this package. ([#32](https://github.com/fivetran/dbt_google_ads/pull/32))

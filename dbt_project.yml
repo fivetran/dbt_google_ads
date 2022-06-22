@@ -21,6 +21,7 @@ vars:
 
 
   google_ads__ad_group_stats_passthrough_metrics: []
+  google_ads__ad_stats_passthrough_metrics: []
   google_ads__campaign_stats_passthrough_metrics: []
   google_ads__keyword_stats_passthrough_metrics: []
   google_ads__account_stats_passthrough_metrics: []
