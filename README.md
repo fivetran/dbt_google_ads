@@ -47,7 +47,7 @@ dispatch:
 ```
 
 ## Step 2: Install the package
-Include the following google_ads_source package version in your `packages.yml` file:
+Include the following google_ads package version in your `packages.yml` file:
 > TIP: Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
 ```yaml
 packages:
@@ -64,7 +64,7 @@ vars:
     google_ads_schema: your_schema_name 
 ```
 
-## (Optional) Step 6: Additional configurations
+## (Optional) Step 4: Additional configurations
 
 ### Adding passthrough metrics
 By default, this package will select `clicks`, `impressions`, and `cost` from the source reporting tables to store into the staging models. If you would like to pass through additional metrics to the staging models, add the following configuration to your `dbt_project.yml` file:
@@ -79,6 +79,13 @@ vars:
     google_ads__campaign_stats_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from google_ads.campaign_stats
     google_ads__keyword_stats_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from google_ads.keyword_stats
     google_ads__account_stats_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from google_ads.account_stats
+```
+
+### Enable UTM Auto Tagging
+This package assumes you are manually adding UTM tags to your ads. If you are leveraging the auto-tag feature within Google Ads then you will want to enable the `google_auto_tagging_enabled` variable to correctly populate the UTM fields within the `google_ads__utm_report` model.
+```yml
+vars:
+    google_auto_tagging_enabled: true # False by default
 ```
 
 ### Change the build schema
@@ -102,7 +109,7 @@ vars:
     google_ads_<default_source_table_name>_identifier: your_table_name 
 ```
 
-## (Optional) Step 7: Orchestrate your models with Fivetran Transformations for dbt Core™    
+## (Optional) Step 5: Orchestrate your models with Fivetran Transformations for dbt Core™    
 Fivetran offers the ability for you to orchestrate your dbt project through [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt). Learn how to set up your project for orchestration through Fivetran in our [Transformations for dbt Core setup guides](https://fivetran.com/docs/transformations/dbt#setupguide).
 
 
