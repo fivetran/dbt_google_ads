@@ -70,6 +70,7 @@ with stats as (
     from stats
     left join ads
         on stats.ad_id = ads.ad_id
+        and stats.ad_group_id = ads.ad_group_id
     left join ad_groups
         on ads.ad_group_id = ad_groups.ad_group_id
     left join campaigns
