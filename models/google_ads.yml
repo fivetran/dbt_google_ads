@@ -7,6 +7,7 @@ models:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - ad_id
+            - ad_group_id
             - date_day
     columns:
       - name: date_day
@@ -114,6 +115,7 @@ models:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - ad_id
+            - ad_group_id
             - date_day
     columns:
       - name: date_day

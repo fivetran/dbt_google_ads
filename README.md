@@ -132,6 +132,9 @@ packages:
 ## Package Maintenance
 The Fivetran team maintaining this package _only_ maintains the latest version of the package. We highly recommend you stay consistent with the [latest version](https://hub.getdbt.com/fivetran/google_ads/latest/) of the package and refer to the [CHANGELOG](https://github.com/fivetran/dbt_google_ads/blob/main/CHANGELOG.md) and release notes for more information on changes across versions.
 
+## Opinionated Decisions
+In creating this package, which is meant for a wide range of use cases, we had to take opinionated stances on a few different questions we came across during development. We've consolidated significant choices we made in the [DECISIONLOG.md](https://github.com/fivetran/dbt_google_ads/blob/main/DECISIONLOG.md), and will continue to update as the package evolves. We are always open to and encourage feedback on these choices, and the package in general.
+
 ## Contributions
 A small team of analytics engineers at Fivetran develops these dbt packages. However, the packages are made better by community contributions! 
 
