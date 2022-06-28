@@ -2,26 +2,30 @@ with stats as (
 
     select *
     from {{ var('ad_group_stats') }}
+), 
 
-), accounts as (
+accounts as (
 
     select *
     from {{ var('account_history') }}
     where is_most_recent_record = True
-    
-), campaigns as (
+), 
+
+campaigns as (
 
     select *
     from {{ var('campaign_history') }}
     where is_most_recent_record = True
-    
-), ad_groups as (
+),
+
+ad_groups as (
 
     select *
     from {{ var('ad_group_history') }}
     where is_most_recent_record = True
-    
-), fields as (
+), 
+
+fields as (
 
     select
         stats.date_day,
@@ -49,7 +53,6 @@ with stats as (
     left join accounts
         on campaigns.account_id = accounts.account_id
     {{ dbt_utils.group_by(9) }}
-
 )
 
 select *

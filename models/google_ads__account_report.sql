@@ -2,14 +2,16 @@ with stats as (
 
     select *
     from {{ var('account_stats') }}
+), 
 
-), accounts as (
+accounts as (
 
     select *
     from {{ var('account_history') }}
     where is_most_recent_record = True
-    
-), fields as (
+), 
+
+fields as (
 
     select
         stats.date_day,
@@ -30,7 +32,6 @@ with stats as (
     left join accounts
         on stats.account_id = accounts.account_id
     {{ dbt_utils.group_by(6) }}
-
 )
 
 select *

@@ -2,32 +2,37 @@ with stats as (
 
     select *
     from {{ var('ad_stats') }}
+), 
 
-), accounts as (
+accounts as (
 
     select *
     from {{ var('account_history') }}
     where is_most_recent_record = True
-    
-), campaigns as (
+), 
+
+campaigns as (
 
     select *
     from {{ var('campaign_history') }}
     where is_most_recent_record = True
-    
-), ad_groups as (
+), 
+
+ad_groups as (
 
     select *
     from {{ var('ad_group_history') }}
     where is_most_recent_record = True
-    
-), ads as (
+),
+
+ads as (
 
     select *
     from {{ var('ad_history') }}
     where is_most_recent_record = True
-    
-), fields as (
+), 
+
+fields as (
 
     select
         stats.date_day,
@@ -77,12 +82,10 @@ with stats as (
         on ad_groups.campaign_id = campaigns.campaign_id
     left join accounts
         on campaigns.account_id = accounts.account_id
-    
-    -- I WANT OTHER EYES ON THIS TO VALIDATE!
+
     -- We only want utm ads to populate this report. Therefore, we filter where url ads are populated.
     where ads.source_final_urls is not null
     {{ dbt_utils.group_by(16) }}
-
 )
 
 select *
