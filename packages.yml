@@ -6,4 +6,3 @@ packages:
   - git: https://github.com/fivetran/dbt_google_ads_source.git
     revision: feature/v2_updates
     warn-unpinned: false
-  # - local: ../dbt_google_ads_source
