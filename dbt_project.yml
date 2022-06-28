@@ -1,5 +1,5 @@
 name: 'google_ads'
-version: '0.6.1'
+version: '0.7.0'
 config-version: 2
 require-dbt-version: [">=1.0.0", "<2.0.0"]
 models:
@@ -17,7 +17,7 @@ vars:
     ad_group_history: "{{ ref('stg_google_ads__ad_group_history') }}"
     ad_history: "{{ ref('stg_google_ads__ad_history') }}"
     ad_final_url_history: "{{ ref('stg_google_ads__ad_final_url_history') }}"
-  api_source: adwords
+  api_source: google_ads
   google_ads__url_passthrough_metrics: []
   google_ads__criteria_passthrough_metrics: []
   google_ads__ad_stats_passthrough_metrics: []

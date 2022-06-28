@@ -31,7 +31,7 @@ jobs:
             dbt deps
             dbt seed --target postgres --full-refresh
             dbt run --target postgres --full-refresh
-            dbt run --target postgres --full-refresh --vars '{api_source: google_ads}' 
+            dbt run --target postgres --full-refresh --vars '{api_source: adwords}' 
             dbt test --target postgres
       - run:
           name: "Run Tests - Spark"
@@ -42,7 +42,7 @@ jobs:
             dbt deps
             dbt seed --target spark --full-refresh
             dbt run --target spark --full-refresh
-            dbt run --target spark --full-refresh --vars '{api_source: google_ads}' 
+            dbt run --target spark --full-refresh --vars '{api_source: adwords}' 
             dbt test --target spark
       - run:
           name: "Run Tests - Redshift"
@@ -53,7 +53,7 @@ jobs:
             dbt deps
             dbt seed --target redshift --full-refresh
             dbt run --target redshift --full-refresh
-            dbt run --target redshift --full-refresh --vars '{api_source: google_ads}' 
+            dbt run --target redshift --full-refresh --vars '{api_source: adwords}' 
             dbt test --target redshift
       - run:
           name: "Run Tests - Snowflake"
@@ -64,7 +64,7 @@ jobs:
             dbt deps
             dbt seed --target snowflake --full-refresh
             dbt run --target snowflake --full-refresh
-            dbt run --target snowflake --full-refresh --vars '{api_source: google_ads}' 
+            dbt run --target snowflake --full-refresh --vars '{api_source: adwords}' 
             dbt test --target snowflake
       - run:
           name: "Run Tests - BigQuery"
@@ -78,5 +78,5 @@ jobs:
             dbt deps
             dbt seed --target bigquery --full-refresh
             dbt run --target bigquery --full-refresh
-            dbt run --target bigquery --full-refresh --vars '{api_source: google_ads}' 
+            dbt run --target bigquery --full-refresh --vars '{api_source: adwords}' 
             dbt test --target bigquery
