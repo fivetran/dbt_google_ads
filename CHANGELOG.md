@@ -16,7 +16,7 @@
     - Each record in this table represents the daily performance at the ad group level for keywords.
   - `google_ads__ad_report`
     - Each record in this table represents the daily performance at the ad level.
-  - `google_ads__utm_report`
+  - `google_ads__url_report`
     - Each record in this table represents the daily performance of URLs at the ad level.
 
 - Added testing for each end model to ensure granularity and accuracy of the modeled data. ([#34](https://github.com/fivetran/dbt_google_ads/pull/34))
