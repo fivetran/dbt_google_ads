@@ -66,21 +66,26 @@ vars:
 ## (Optional) Step 4: Additional configurations
 
 ### Adding passthrough metrics
-By default, this package will select `clicks`, `impressions`, and `cost` from the source reporting tables to store into the staging models. If you would like to pass through additional metrics to the staging models, add the following configuration to your `dbt_project.yml` file:
-> Please ensure you use due diligence when adding metrics to these models. The metrics added by default (`clicks`, `impressions`, and `cost`) have been vetting by the Fivetran team maintaining this package for accuracy. There are metrics included within the source reports which are comprised of averages. You will want to ensure whichever metrics you pass through are indeed appropriate to aggregate.
+By default, this package will select `clicks`, `impressions`, and `cost` from the source reporting tables to store into the staging models. If you would like to pass through additional metrics to the staging models, add the below configurations to your `dbt_project.yml` file. These variables allow for the pass-through fields to be aliased (`alias`) if desired, but not required. Use the below format for declaring the respective pass-through variables:
+
+>**Note** Please ensure you exercised due diligence when adding metrics to these models. The metrics added by default (taps, impressions, and spend) have been vetted by the Fivetran team maintaining this package for accuracy. There are metrics included within the source reports, for example metric averages, which may be inaccurately represented at the grain for reports created in this package. You will want to ensure whichever metrics you pass through are indeed appropriate to aggregate at the respective reporting levels provided in this package.
 
 ```yml
-# dbt_project.yml
-
-...
 vars:
-    google_ads__ad_group_stats_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from google_ads.ad_group_stats
-    google_ads__ad_stats_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from google_ads.ad_stats
-    google_ads__campaign_stats_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from google_ads.campaign_stats
-    google_ads__keyword_stats_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from google_ads.keyword_stats
-    google_ads__account_stats_passthrough_metrics: ['the', 'list', 'of', 'metric', 'columns', 'to', 'include'] # from google_ads.account_stats
+    google_ads__account_stats_passthrough_metrics: 
+      - name: "new_custom_field"
+        alias: "custom_field"
+    google_ads__campaign_stats_passthrough_metrics:
+      - name: "this_field"
+    google_ads__ad_group_stats_passthrough_metrics:
+      - name: "unique_string_field"
+        alias: "field_id"
+    google_ads__keyword_stats_passthrough_metrics:
+      - name: "that_field"
+    google_ads__ad_stats_passthrough_metrics:
+      - name: "other_id"
+        alias: "another_id"
 ```
-
 ### Enable UTM Auto Tagging
 This package assumes you are manually adding UTM tags to your ads. If you are leveraging the auto-tag feature within Google Ads then you will want to enable the `google_auto_tagging_enabled` variable to correctly populate the UTM fields within the `google_ads__utm_report` model.
 ```yml

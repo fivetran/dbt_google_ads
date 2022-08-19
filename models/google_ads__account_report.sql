@@ -1,3 +1,5 @@
+{{ config(enabled=var('ad_reporting__google_ads_enabled', True)) }}
+
 with stats as (
 
     select *
@@ -24,9 +26,7 @@ fields as (
         sum(stats.clicks) as clicks,
         sum(stats.impressions) as impressions
 
-        {% for metric in var('google_ads__ad_group_stats_passthrough_metrics', []) %}
-        , sum(stats.{{ metric }}) as {{ metric }}
-        {% endfor %}
+        {{ fivetran_utils.persist_pass_through_columns(pass_through_variable='google_ads__account_stats_passthrough_metrics', transform = 'sum') }}
 
     from stats
     left join accounts
