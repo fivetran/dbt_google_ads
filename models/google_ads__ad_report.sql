@@ -45,6 +45,7 @@ fields as (
         ad_groups.ad_group_name,
         ad_groups.ad_group_id,
         ads.ad_id,
+        ads.ad_name,
         ads.ad_status,
         ads.ad_type,
         ads.display_url,
@@ -65,7 +66,7 @@ fields as (
         on ad_groups.campaign_id = campaigns.campaign_id
     left join accounts
         on campaigns.account_id = accounts.account_id
-    {{ dbt_utils.group_by(12) }}
+    {{ dbt_utils.group_by(13) }}
 )
 
 select *
