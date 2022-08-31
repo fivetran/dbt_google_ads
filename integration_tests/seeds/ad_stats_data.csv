@@ -1,4 +1,4 @@
-account_id,date,ad_group,keyword_ad_group_criterion,ad_network_type,device,ad_id,campaign_id,clicks,cost_micros,impressions
+customer_id,date,ad_group,keyword_ad_group_criterion,ad_network_type,device,ad_id,campaign_id,clicks,cost_micros,impressions
 2121450128,2021-05-19,customers/2121450128/adGroups/100031227574,customers/2121450128/adGroupCriteria/100031227574~71669451,SEARCH,DESKTOP,514818869462,10059986060,0,0,1
 2121450128,2021-05-27,customers/2121450128/adGroups/100031227574,customers/2121450128/adGroupCriteria/100031227574~71669451,SEARCH,DESKTOP,514818869462,10059986060,0,0,1
 2121450128,2021-05-22,customers/2121450128/adGroups/100031227574,customers/2121450128/adGroupCriteria/100031227574~71669451,SEARCH,MOBILE,514818869462,10059986060,0,0,1
