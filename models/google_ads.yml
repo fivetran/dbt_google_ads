@@ -28,6 +28,8 @@ models:
         description: The unique identifier of the ad.
       - name: base_url
         description: "{{ doc('base_url') }}"
+        tests:
+          - not_null
       - name: url_host
         description: "{{ doc('url_host') }}"
       - name: url_path
@@ -63,6 +65,8 @@ models:
         description: "{{ doc('account_descriptive_name') }}"
       - name: account_id
         description: "{{ doc('external_customer_id') }}"
+        tests:
+          - not_null
       - name: time_zone
         description: The time zone which the account is located.
       - name: currency_code
@@ -98,6 +102,8 @@ models:
         description: "{{ doc('ad_group_name') }}"
       - name: ad_group_id
         description: "{{ doc('ad_group_id') }}"
+        tests:
+          - not_null
       - name: ad_group_status
         description: The status of the ad group.
       - name: ad_group_type
@@ -134,6 +140,8 @@ models:
         description: "{{ doc('ad_group_id') }}"
       - name: ad_id
         description: The unique identifier of the ad.
+        tests:
+          - not_null
       - name: display_url
         description: The url which is displayed with the ad.
       - name: source_final_urls
@@ -169,6 +177,8 @@ models:
         description: "{{ doc('campaign_name') }}"
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
+        tests:
+          - not_null
       - name: advertising_channel_type
         description: The channel type of the ads being served within the campaign.
       - name: advertising_channel_subtype
@@ -207,6 +217,8 @@ models:
         description: "{{ doc('ad_group_id') }}"
       - name: criterion_id
         description: The unique identifier of the criterion being served.
+        tests:
+          - not_null
       - name: type
         description: The type of keyword ad being served.
       - name: status
