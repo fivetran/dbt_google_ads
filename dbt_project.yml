@@ -1,7 +1,7 @@
 name: 'google_ads'
-version: '0.8.0'
+version: '0.9.0'
 config-version: 2
-require-dbt-version: [">=1.0.0", "<2.0.0"]
+require-dbt-version: [">=1.2.0", "<2.0.0"]
 models:
   google_ads:
     +schema: google_ads
@@ -18,9 +18,7 @@ vars:
     campaign_stats: "{{ ref('stg_google_ads__campaign_stats') }}"
     keyword_stats: "{{ ref('stg_google_ads__keyword_stats') }}"
     account_stats: "{{ ref('stg_google_ads__account_stats') }}"
-
   google_auto_tagging_enabled: false
-  
   google_ads__ad_group_stats_passthrough_metrics: []
   google_ads__ad_stats_passthrough_metrics: []
   google_ads__campaign_stats_passthrough_metrics: []
