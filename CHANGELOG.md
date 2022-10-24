@@ -1,3 +1,8 @@
+# dbt_google_ads v0.8.1
+- Added the column *currency_code* to the five (out of six) models that were missing this (*google_ads__ad_group_report*, *google_ads__ad_report*, *google_ads__campaign_report*, *google_ads__keyword_report* and *google_ads__url_report*).
+
+## Contributors
+- [@asmundu](https://github.com/asmundu) ([#20](https://github.com/fivetran/dbt_google_ads/pull/20))
 # dbt_google_ads v0.8.0
 ## 🚨 Breaking Changes 🚨
 - The `adwords` api version of the package has been fully removed. As the Fivetran Google Ads connector now requires the Google Ads API, this functionality is no longer used. ([#34](https://github.com/fivetran/dbt_google_ads/pull/34))
