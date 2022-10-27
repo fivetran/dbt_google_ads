@@ -3,7 +3,7 @@
         href="https://github.com/fivetran/dbt_google_ads/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" /></a>
     <a alt="dbt-core">
-        <img src="https://img.shields.io/badge/dbt_Core™_version->=1.0.0_,<2.0.0-orange.svg" /></a>
+        <img src="https://img.shields.io/badge/dbt_Core™_version->=1.3.0_,<2.0.0-orange.svg" /></a>
     <a alt="Maintained?">
         <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" /></a>
     <a alt="PRs">
@@ -52,7 +52,7 @@ Include the following google_ads package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: [">=0.8.0", "<0.9.0"]
+    version: [">=0.9.0", "<0.10.0"]
 ```
 ## Step 3: Define database and schema variables
 By default, this package runs using your destination and the `google_ads` schema. If this is not where your Google Ads data is (for example, if your Google Ads schema is named `google_ads_fivetran`), add the following configuration to your root `dbt_project.yml` file:
@@ -131,13 +131,13 @@ This dbt package is dependent on the following dbt packages. Please be aware tha
 ```yml
 packages:
     - package: fivetran/google_ads_source
-      version: [">=0.8.0", "<0.9.0"]
+      version: [">=0.9.0", "<0.10.0"]
 
     - package: fivetran/fivetran_utils
-      version: [">=0.3.0", "<0.4.0"]
+      version: [">=0.4.0", "<0.5.0"]
 
     - package: dbt-labs/dbt_utils
-      version: [">=0.8.0", "<0.9.0"]
+      version: [">=1.0.0", "<2.0.0"]
 ```
 # 🙌 How is this package maintained and can I contribute?
 ## Package Maintenance
