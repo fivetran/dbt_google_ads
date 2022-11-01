@@ -138,6 +138,12 @@ packages:
 
     - package: dbt-labs/dbt_utils
       version: [">=1.0.0", "<2.0.0"]
+
+    - package: calogica/dbt_expectations
+      version: [">=0.5.0", "<0.6.0"]
+
+    - package: calogica/dbt_date
+      version: [">=0.6.0", "<0.7.0"]
 ```
 # 🙌 How is this package maintained and can I contribute?
 ## Package Maintenance
