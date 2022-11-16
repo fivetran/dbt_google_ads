@@ -1,3 +1,8 @@
+# dbt_google_ads v0.8.1
+
+## Updates:
+- Updates `google_ads__ad_report` model to get `ad_id` from `ad_stats` table rather than from `ads_history`. ([#37](https://github.com/fivetran/dbt_google_ads/pull/37))
+
 # dbt_google_ads v0.8.0
 ## 🚨 Breaking Changes 🚨
 - The `adwords` api version of the package has been fully removed. As the Fivetran Google Ads connector now requires the Google Ads API, this functionality is no longer used. ([#34](https://github.com/fivetran/dbt_google_ads/pull/34))
