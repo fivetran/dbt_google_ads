@@ -29,7 +29,7 @@ models:
       - name: base_url
         description: "{{ doc('base_url') }}"
         tests:
-          - not_null
+          - not_null:
               config:
                 # Below is so we don't run this test if the user has allowed urls to have null entries
                 enabled: >

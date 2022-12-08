@@ -84,7 +84,7 @@ fields as (
         on campaigns.account_id = accounts.account_id
 
     {% if (var('include_google_ads_null_urls', False)) or
-        (var('include_ad_reporting_null_urls', False))  %}
+        (var('include_ad_reporting_null_urls', False)) %}
         -- In this case, skip where clause to include all rows whether or not the url field is populated.
     {% else %}
         -- We only want utm ads to populate this report. Therefore, we filter where url ads are populated.
