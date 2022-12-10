@@ -8,6 +8,10 @@ vars:
   allow_google_ads_null_urls: True # Use this variable to allow null urls for dbt_google_ads only. Default is False. 
   allow_ad_reporting_null_urls: True # Use this variable to allow null urls for ALL Fivetran ad packages included in your project. Default is False. 
 ```
+- Updated README with this information. 
+## 🚘 Under the Hood 🚘
+- Disabled the `not_null` test for `google_ads__url_report` when null urls are allowed.
+
 # dbt_google_ads v0.9.0
 
 ## 🚨 Breaking Changes 🚨:
