@@ -1,17 +1,3 @@
-# dbt_google_ads v0.9.1
-[PR #39](https://github.com/fivetran/dbt_google_ads/pull/39) includes the following changes:
-## 🎉 Features 🎉
-- Added ability for a user to allow records having nulls in url fields to be included in the `google_ads__url_report` model. This is done by setting one of the variables below to `True` in your `dbt_project.yml` file. 
-- Note that using the variable `allow_ad_reporting_null_urls` will allow records with null urls for ALL Fivetran ad packages included in your project.
-```yml
-vars:
-  allow_google_ads_null_urls: True # Use this variable to allow null urls for dbt_google_ads only. Default is False. 
-  allow_ad_reporting_null_urls: True # Use this variable to allow null urls for ALL Fivetran ad packages included in your project. Default is False. 
-```
-- Updated README with this information. 
-## 🚘 Under the Hood 🚘
-- Disabled the `not_null` test for `google_ads__url_report` when null urls are allowed.
-
 # dbt_google_ads v0.9.0
 
 ## 🚨 Breaking Changes 🚨:
@@ -50,6 +36,11 @@ vars:
     - `dbt.current_timestamp_backcompat`
     - `dbt.current_timestamp_in_utc_backcompat`
 - `packages.yml` has been updated to reflect new default `fivetran/fivetran_utils` version, previously `[">=0.3.0", "<0.4.0"]` now `[">=0.4.0", "<0.5.0"]`.
+
+## 🎉 Features 🎉
+- For use in the [dbt_ad_reporting package](https://github.com/fivetran/dbt_ad_reporting), users can now allow records having nulls in url fields to be included in the `ad_reporting__url_report` model. See the [dbt_ad_reporting README](https://github.com/fivetran/dbt_ad_reporting) for more details ([#39](https://github.com/fivetran/dbt_google_ads/pull/39)). 
+## 🚘 Under the Hood 🚘
+- Disabled the `not_null` test for `google_ads__url_report` when null urls are allowed ([#39](https://github.com/fivetran/dbt_google_ads/pull/39)).
 
 # dbt_google_ads v0.8.0
 ## 🚨 Breaking Changes 🚨
