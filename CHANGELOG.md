@@ -37,6 +37,11 @@
     - `dbt.current_timestamp_in_utc_backcompat`
 - `packages.yml` has been updated to reflect new default `fivetran/fivetran_utils` version, previously `[">=0.3.0", "<0.4.0"]` now `[">=0.4.0", "<0.5.0"]`.
 
+## 🎉 Features 🎉
+- For use in the [dbt_ad_reporting package](https://github.com/fivetran/dbt_ad_reporting), users can now allow records having nulls in url fields to be included in the `ad_reporting__url_report` model. See the [dbt_ad_reporting README](https://github.com/fivetran/dbt_ad_reporting) for more details ([#39](https://github.com/fivetran/dbt_google_ads/pull/39)). 
+## 🚘 Under the Hood 🚘
+- Disabled the `not_null` test for `google_ads__url_report` when null urls are allowed ([#39](https://github.com/fivetran/dbt_google_ads/pull/39)).
+
 # dbt_google_ads v0.8.0
 ## 🚨 Breaking Changes 🚨
 - The `adwords` api version of the package has been fully removed. As the Fivetran Google Ads connector now requires the Google Ads API, this functionality is no longer used. ([#34](https://github.com/fivetran/dbt_google_ads/pull/34))
