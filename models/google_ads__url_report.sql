@@ -83,8 +83,10 @@ fields as (
     left join accounts
         on campaigns.account_id = accounts.account_id
 
-    -- We only want utm ads to populate this report. Therefore, we filter where url ads are populated.
-    where ads.source_final_urls is not null
+    {% if var('ad_reporting__url_report__using_null_filter', True) %}
+        where ads.source_final_urls is not null
+    {% endif %}
+
     {{ dbt_utils.group_by(16) }}
 )
 
