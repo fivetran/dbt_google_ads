@@ -1,3 +1,10 @@
+# dbt_google_ads v0.9.1
+## Bug fixes
+- Adjusted keyword report to leverage the stats ids as opposed to the history ids to have more accurate reporting. ([PR #41](https://github.com/fivetran/dbt_google_ads/pull/41))
+
+## Contributors 
+- [jkokatjuhhavoila](https://github.com/jkokatjuhhavoila) ([PR #41](https://github.com/fivetran/dbt_google_ads/pull/41))
+
 # dbt_google_ads v0.9.0
 
 ## 🚨 Breaking Changes 🚨:
