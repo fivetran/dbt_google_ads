@@ -1,3 +1,13 @@
+# dbt_google_ads_source v0.9.2
+
+## 🎉 Feature Enhancements 🎉
+- Added `utm_source`, `utm_medium`, and `utm_campaign` defined in `stg_google_ads__campaign_history` model from [dbt_google_ads_source] package (https://github.com/fivetran/dbt_google_ads_source) to the `google_ads__campaign_report` model.
+- Added `advertising_channel_type`, `advertising_channel_subtype`, and `campaign_status`into `google_ads__url_report` model to help users easily filter ads from specific campaign types and status.
+- Updated UTM extraction logic in `google_ads__url_report` model to leverage `utm_source`, `utm_medium`, `utm_campaign`,  `utm_content`, and `utm_term` that are already defined using both values from `final_urls` and `final_url_suffix` in `stg_google_ads__ad_history` model from [dbt_google_ads_source] package (https://github.com/fivetran/dbt_google_ads_source).
+
+## Contributors
+- [@jocelyn-metricbox](https://github.com/jocelyn-metricbox) 
+
 # dbt_google_ads v0.9.1
 ## Bug fixes
 - Adjusted keyword report to leverage the stats ids as opposed to the history ids to have more accurate reporting. ([PR #41](https://github.com/fivetran/dbt_google_ads/pull/41))
