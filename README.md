@@ -55,8 +55,10 @@ Include the following google_ads package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: [">=0.9.0", "<0.10.0"]
+    version: [">=0.9.0", "<0.10.0"] # we recommend using ranges to capture non-breaking changes automatically
 ```
+Do **NOT** include the `google_ads_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well.
+
 ## Step 3: Define database and schema variables
 By default, this package runs using your destination and the `google_ads` schema. If this is not where your Google Ads data is (for example, if your Google Ads schema is named `google_ads_fivetran`), add the following configuration to your root `dbt_project.yml` file:
 
