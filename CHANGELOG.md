@@ -1,7 +1,13 @@
 # dbt_google_ads v0.9.2
 
 ## 🎉 Features 🎉
-- Added the column *currency_code* to the five following models:  (*google_ads__ad_group_report*, *google_ads__ad_report*, *google_ads__campaign_report*, *google_ads__keyword_report* and *google_ads__url_report*). ([PR #48](https://github.com/fivetran/dbt_google_ads/pull/49))
+- Added the column `currency_code` to the following models ([PR #48](https://github.com/fivetran/dbt_google_ads/pull/49)): 
+    - `google_ads__ad_group_report`
+    - `google_ads__ad_report`
+    - `google_ads__campaign_report`
+    - `google_ads__keyword_report`
+    - `google_ads__url_report`
+  
 
 ## Contributors
 - [@asmundu](https://github.com/asmundu) ([#36](https://github.com/fivetran/dbt_google_ads/pull/36))
