@@ -1,15 +1,15 @@
 # dbt_google_ads v0.9.2
 
 ## 🎉 Features 🎉
-- Added the column *currency_code* to the five (out of six) models that were missing this (*google_ads__ad_group_report*, *google_ads__ad_report*, *google_ads__campaign_report*, *google_ads__keyword_report* and *google_ads__url_report*).
+- Added the column *currency_code* to the five following models:  (*google_ads__ad_group_report*, *google_ads__ad_report*, *google_ads__campaign_report*, *google_ads__keyword_report* and *google_ads__url_report*). ([PR #48](https://github.com/fivetran/dbt_google_ads/pull/49))
 
 ## Contributors
 - [@asmundu](https://github.com/asmundu) ([#36](https://github.com/fivetran/dbt_google_ads/pull/36))
 
 ## Under the Hood:
 
-- Incorporated the new `fivetran_utils.drop_schemas_automation` macro into the end of each Buildkite integration test job.
-- Updated the pull request [templates](/.github).
+- Incorporated the new `fivetran_utils.drop_schemas_automation` macro into the end of each Buildkite integration test job. ([PR #46](https://github.com/fivetran/dbt_google_ads/pull/46))
+- Updated the pull request [templates](/.github). ([PR #46](https://github.com/fivetran/dbt_google_ads/pull/46))
 # dbt_google_ads v0.9.1
 ## Bug fixes
 - Adjusted keyword report to leverage the stats ids as opposed to the history ids to have more accurate reporting. ([PR #41](https://github.com/fivetran/dbt_google_ads/pull/41))
