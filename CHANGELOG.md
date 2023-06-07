@@ -1,4 +1,4 @@
-# dbt_google_ads v0.9.2
+# dbt_google_ads v0.9.2 
 
 ## 🎉 Features 🎉
 - Added the column `currency_code` to the following models ([PR #48](https://github.com/fivetran/dbt_google_ads/pull/49)): 
