@@ -39,12 +39,12 @@ fields as (
     select
         stats.date_day,
         accounts.account_name,
-        accounts.account_id,
+        stats.account_id,
         accounts.currency_code,
         campaigns.campaign_name,
-        campaigns.campaign_id,
+        stats.campaign_id,
         ad_groups.ad_group_name,
-        ad_groups.ad_group_id,
+        stats.ad_group_id,
         criterions.criterion_id,
         criterions.type,
         criterions.status,
@@ -60,11 +60,11 @@ fields as (
     left join criterions
         on stats.criterion_id = criterions.criterion_id
     left join ad_groups
-        on criterions.ad_group_id = ad_groups.ad_group_id
+        on stats.ad_group_id = ad_groups.ad_group_id
     left join campaigns
-        on ad_groups.campaign_id = campaigns.campaign_id
+        on stats.campaign_id = campaigns.campaign_id
     left join accounts
-        on campaigns.account_id = accounts.account_id
+        on stats.account_id = accounts.account_id
     {{ dbt_utils.group_by(13) }}
 )
 

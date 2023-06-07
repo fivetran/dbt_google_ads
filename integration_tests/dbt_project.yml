@@ -1,10 +1,11 @@
 name: 'google_ads_integration_tests'
-version: '0.8.1'
+version: '0.9.2'
+
 profile: 'integration_tests'
 config-version: 2
 
 vars:
-  google_ads_schema: google_ads_integration_tests_2
+  google_ads_schema: google_ads_integration_tests_31
   google_ads_ad_stats_identifier: "ad_stats_data"
   google_ads_ad_history_identifier: "ad_history_data"
   google_ads_ad_group_history_identifier: "ad_group_history_data"
@@ -32,3 +33,6 @@ seeds:
 dispatch:
   - macro_namespace: dbt_utils
     search_order: ['spark_utils', 'dbt_utils']
+
+  - macro_namespace: dbt_expectations
+    search_order: ['google_ads_source', 'dbt_expectations']

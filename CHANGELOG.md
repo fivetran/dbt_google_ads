@@ -1,8 +1,76 @@
-# dbt_google_ads v0.8.1
-- Added the column *currency_code* to the five (out of six) models that were missing this (*google_ads__ad_group_report*, *google_ads__ad_report*, *google_ads__campaign_report*, *google_ads__keyword_report* and *google_ads__url_report*).
+# dbt_google_ads v0.9.2
+
+## 🎉 Features 🎉
+- Added the column `currency_code` to the following models ([PR #48](https://github.com/fivetran/dbt_google_ads/pull/49)): 
+    - `google_ads__ad_group_report`
+    - `google_ads__ad_report`
+    - `google_ads__campaign_report`
+    - `google_ads__keyword_report`
+    - `google_ads__url_report`
+
+## Under the Hood:
+
+- Incorporated the new `fivetran_utils.drop_schemas_automation` macro into the end of each Buildkite integration test job. ([PR #46](https://github.com/fivetran/dbt_google_ads/pull/46))
+- Updated the pull request [templates](/.github). ([PR #46](https://github.com/fivetran/dbt_google_ads/pull/46))
 
 ## Contributors
 - [@asmundu](https://github.com/asmundu) ([#36](https://github.com/fivetran/dbt_google_ads/pull/36))
+# dbt_google_ads v0.9.1
+## Bug fixes
+- Adjusted keyword report to leverage the stats ids as opposed to the history ids to have more accurate reporting. ([PR #41](https://github.com/fivetran/dbt_google_ads/pull/41))
+
+## Contributors 
+- [jkokatjuhhavoila](https://github.com/jkokatjuhhavoila) ([PR #41](https://github.com/fivetran/dbt_google_ads/pull/41))
+
+# dbt_google_ads v0.9.0
+
+## 🚨 Breaking Changes 🚨:
+[PR #35](https://github.com/fivetran/dbt_google_ads/pull/35) includes the following breaking changes:
+- Dispatch update for dbt-utils to dbt-core cross-db macros migration. Specifically `{{ dbt_utils.<macro> }}` have been updated to `{{ dbt.<macro> }}` for the below macros:
+    - `any_value`
+    - `bool_or`
+    - `cast_bool_to_text`
+    - `concat`
+    - `date_trunc`
+    - `dateadd`
+    - `datediff`
+    - `escape_single_quotes`
+    - `except`
+    - `hash`
+    - `intersect`
+    - `last_day`
+    - `length`
+    - `listagg`
+    - `position`
+    - `replace`
+    - `right`
+    - `safe_cast`
+    - `split_part`
+    - `string_literal`
+    - `type_bigint`
+    - `type_float`
+    - `type_int`
+    - `type_numeric`
+    - `type_string`
+    - `type_timestamp`
+    - `array_append`
+    - `array_concat`
+    - `array_construct`
+- For `current_timestamp` and `current_timestamp_in_utc` macros, the dispatch AND the macro names have been updated to the below, respectively:
+    - `dbt.current_timestamp_backcompat`
+    - `dbt.current_timestamp_in_utc_backcompat`
+- `packages.yml` has been updated to reflect new default `fivetran/fivetran_utils` version, previously `[">=0.3.0", "<0.4.0"]` now `[">=0.4.0", "<0.5.0"]`.
+
+## 🎉 Features 🎉
+- For use in the [dbt_ad_reporting package](https://github.com/fivetran/dbt_ad_reporting), users can now allow records having nulls in url fields to be included in the `ad_reporting__url_report` model. See the [dbt_ad_reporting README](https://github.com/fivetran/dbt_ad_reporting) for more details ([#39](https://github.com/fivetran/dbt_google_ads/pull/39)). 
+## 🚘 Under the Hood 🚘
+- Disabled the `not_null` test for `google_ads__url_report` when null urls are allowed ([#39](https://github.com/fivetran/dbt_google_ads/pull/39)).
+
+# dbt_google_ads v0.8.1
+
+## Updates:
+- Updates `google_ads__ad_report` model to get `ad_id` from `ad_stats` table rather than from `ads_history`. ([#37](https://github.com/fivetran/dbt_google_ads/pull/37))
+
 # dbt_google_ads v0.8.0
 ## 🚨 Breaking Changes 🚨
 - The `adwords` api version of the package has been fully removed. As the Fivetran Google Ads connector now requires the Google Ads API, this functionality is no longer used. ([#34](https://github.com/fivetran/dbt_google_ads/pull/34))
