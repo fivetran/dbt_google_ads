@@ -14,7 +14,8 @@
 - Updated the pull request [templates](/.github). ([PR #46](https://github.com/fivetran/dbt_google_ads/pull/46))
 
 ## Contributors
-- [@asmundu](https://github.com/asmundu) ([#36](https://github.com/fivetran/dbt_google_ads/pull/36))
+- [@asmundu](https://github.com/asmundu) ([PR #36](https://github.com/fivetran/dbt_google_ads/pull/36))
+
 # dbt_google_ads v0.9.1
 ## Bug fixes
 - Adjusted keyword report to leverage the stats ids as opposed to the history ids to have more accurate reporting. ([PR #41](https://github.com/fivetran/dbt_google_ads/pull/41))
