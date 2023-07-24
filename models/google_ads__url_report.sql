@@ -43,6 +43,11 @@ fields as (
         accounts.currency_code,
         campaigns.campaign_name,
         campaigns.campaign_id,
+        --Adding campaign channel type and subchannel type
+        campaigns.advertising_channel_type,
+        campaigns.advertising_channel_subtype,
+        --Adding campaign status
+        campaigns.status,
         ad_groups.ad_group_name,
         ad_groups.ad_group_id,
         ads.ad_id,
@@ -51,11 +56,12 @@ fields as (
         ads.url_path,
 
         {% if var('google_auto_tagging_enabled', false) %}
-
-        coalesce( {{ dbt_utils.get_url_parameter('ads.final_url', 'utm_source') }} , 'google')  as utm_source,
-        coalesce( {{ dbt_utils.get_url_parameter('ads.final_url', 'utm_medium') }} , 'cpc') as utm_medium,
-        coalesce( {{ dbt_utils.get_url_parameter('ads.final_url', 'utm_campaign') }} , campaigns.campaign_name) as utm_campaign,
-        coalesce( {{ dbt_utils.get_url_parameter('ads.final_url', 'utm_content') }} , ad_groups.ad_group_name) as utm_content,
+        --Use the end output of UTMs from the ads cte directly 
+        --because the utm extraction steps have been completed in stg_google_ads__ad_history
+        coalesce( ads.utm_source, 'google')  as utm_source,
+        coalesce( ads.utm_medium, 'cpc') as utm_medium,
+        coalesce( ads.utm_campaign, campaigns.campaign_name) as utm_campaign,
+        coalesce( ads.utm_content, ad_groups.ad_group_name) as utm_content,
 
         {% else %}
 
@@ -88,7 +94,8 @@ fields as (
         where ads.source_final_urls is not null
     {% endif %}
 
-    {{ dbt_utils.group_by(17) }}
+    {{ dbt_utils.group_by(19) }}
+
 )
 
 select *
