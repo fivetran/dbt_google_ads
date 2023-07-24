@@ -1,3 +1,6 @@
 packages:
-- package: fivetran/google_ads_source
-  version: [">=0.9.0", "<0.10.0"]
+# - package: fivetran/google_ads_source
+#   version: [">=0.9.0", "<0.10.0"]
+  - git: https://github.com/fivetran/dbt_google_ads_source.git
+    revision: customer/final-url-suffix-add
+    warn-unpinned: false 

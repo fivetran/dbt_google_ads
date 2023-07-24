@@ -32,22 +32,18 @@ fields as (
         campaigns.advertising_channel_type,
         campaigns.advertising_channel_subtype,
         campaigns.status,
-        --Adding utm parameters defined in stg_google_ads__campaign_history to allow campaign level url reporting 
-        --especially for campaigns that don't exist in google_ads__url_report such as Performance Max Campaigns
-        {% if var('google_auto_tagging_enabled', false) %}
 
-        coalesce( campaigns.utm_source, 'google')  as utm_source,
-        coalesce( campaigns.utm_medium, 'cpc') as utm_medium,
-        coalesce( campaigns.utm_campaign, campaigns.campaign_name) as utm_campaign,
+        {% if var('google_auto_tagging_enabled', false) %}
+        coalesce(campaigns.utm_source, 'google')  as utm_source,
+        coalesce(campaigns.utm_medium, 'cpc') as utm_medium,
+        coalesce(campaigns.utm_campaign, campaigns.campaign_name) as utm_campaign,
 
         {% else %}
-
         campaigns.utm_source,
         campaigns.utm_medium,
         campaigns.utm_campaign,
-        
+
         {% endif %}
-     
         sum(stats.spend) as spend,
         sum(stats.clicks) as clicks,
         sum(stats.impressions) as impressions

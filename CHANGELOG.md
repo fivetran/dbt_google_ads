@@ -1,9 +1,12 @@
 # dbt_google_ads_source v0.10.0
 
+## 🚨 Breaking Changes 🚨
+- The upstream [dbt_google_ads_source](https://github.com/fivetran/dbt_google_ads_source) package update now provides preference to the `final_url_suffix` field as opposed to the `final_urls` which was originally preferred by the package logic. Be sure to pay attention as this could change the output of your Google Ads data from the previous build of the package. This was done to be more in line with Google's guidelines on defining UTM parameters for ads.
+
 ## 🎉 Feature Enhancements 🎉
-- Added `utm_source`, `utm_medium`, and `utm_campaign` defined in `stg_google_ads__campaign_history` model from [dbt_google_ads_source] package (https://github.com/fivetran/dbt_google_ads_source) to the `google_ads__campaign_report` model.
-- Added `advertising_channel_type`, `advertising_channel_subtype`, and `campaign_status`into `google_ads__url_report` model to help users easily filter ads from specific campaign types and status.
-- Updated UTM extraction logic in `google_ads__url_report` model to leverage `utm_source`, `utm_medium`, `utm_campaign`,  `utm_content`, and `utm_term` that are already defined using both values from `final_urls` and `final_url_suffix` in `stg_google_ads__ad_history` model from [dbt_google_ads_source] package (https://github.com/fivetran/dbt_google_ads_source).
+- Added `utm_source`, `utm_medium`, and `utm_campaign` fields defined in `stg_google_ads__campaign_history` model from [dbt_google_ads_source] package (https://github.com/fivetran/dbt_google_ads_source) to the `google_ads__campaign_report` model.
+- Added `advertising_channel_type`, `advertising_channel_subtype`, and `campaign_status` into `google_ads__url_report` model to help users easily filter ads from specific campaign types and status.
+- Updated UTM extraction logic in `google_ads__url_report` model to leverage `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, and `utm_term` that are already defined using both values from `final_urls` and `final_url_suffix` in `stg_google_ads__ad_history` model from [dbt_google_ads_source] package (https://github.com/fivetran/dbt_google_ads_source).
 
 ## Contributors
 - [@jocelyn-metricbox](https://github.com/jocelyn-metricbox) 

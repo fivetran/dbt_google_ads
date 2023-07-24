@@ -25,6 +25,12 @@ models:
         description: "{{ doc('campaign_name') }}"
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
+      - name: advertising_channel_type
+        description: The channel type of the ads being served within the campaign.
+      - name: advertising_channel_subtype
+        description: The channel subtype of the ads being served within the campaign.
+      - name: status
+        description: The status of the ad.
       - name: ad_group_name
         description: "{{ doc('ad_group_name') }}"
       - name: ad_group_id
@@ -154,6 +160,8 @@ models:
         description: The unique identifier of the ad.
         tests:
           - not_null
+      - name: ad_name
+        description: Name of the ad.
       - name: display_url
         description: The url which is displayed with the ad.
       - name: source_final_urls
@@ -199,6 +207,12 @@ models:
         description: The channel subtype of the ads being served within the campaign.
       - name: status
         description: The status of the campaign.
+      - name: utm_source
+        description: "{{ doc('utm_source') }}"
+      - name: utm_medium
+        description: "{{ doc('utm_medium') }}"
+      - name: utm_campaign
+        description: "{{ doc('utm_campaign') }}"
       - name: spend
         description: "{{ doc('cost') }}"
       - name: clicks

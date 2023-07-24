@@ -94,7 +94,7 @@ vars:
         alias: "another_id"
 ```
 ### Enable UTM Auto Tagging
-This package assumes you are manually adding UTM tags to your ads. If you are leveraging the auto-tag feature within Google Ads then you will want to enable the `google_auto_tagging_enabled` variable to correctly populate the UTM fields within the `google_ads__utm_report` model.
+This package assumes you are manually adding UTM tags to your ads. If you are leveraging the auto-tag feature within Google Ads then you will want to enable the `google_auto_tagging_enabled` variable to correctly populate the UTM fields within the `google_ads__url_report` and `google_ads__campaign_report` model.
 ```yml
 vars:
     google_auto_tagging_enabled: true # False by default
