@@ -19,6 +19,8 @@ models:
         description: "{{ doc('account_descriptive_name') }}"
       - name: account_id
         description: "{{ doc('external_customer_id') }}"
+      - name: currency_code
+        description: The currency which the account uses.
       - name: campaign_name
         description: "{{ doc('campaign_name') }}"
       - name: campaign_id
@@ -100,6 +102,8 @@ models:
         description: "{{ doc('account_descriptive_name') }}"
       - name: account_id
         description: "{{ doc('external_customer_id') }}"
+      - name: currency_code
+        description: The currency which the account uses.
       - name: campaign_name
         description: "{{ doc('campaign_name') }}"
       - name: campaign_id
@@ -136,6 +140,8 @@ models:
         description: "{{ doc('account_descriptive_name') }}"
       - name: account_id
         description: "{{ doc('external_customer_id') }}"
+      - name: currency_code
+        description: The currency which the account uses.
       - name: campaign_name
         description: "{{ doc('campaign_name') }}"
       - name: campaign_id
@@ -179,6 +185,8 @@ models:
         description: "{{ doc('account_descriptive_name') }}"
       - name: account_id
         description: "{{ doc('external_customer_id') }}"
+      - name: currency_code
+        description: The currency which the account uses.
       - name: campaign_name
         description: "{{ doc('campaign_name') }}"
       - name: campaign_id
@@ -213,6 +221,8 @@ models:
         description: "{{ doc('account_descriptive_name') }}"
       - name: account_id
         description: "{{ doc('external_customer_id') }}"
+      - name: currency_code
+        description: The currency which the account uses.
       - name: campaign_name
         description: "{{ doc('campaign_name') }}"
       - name: campaign_id

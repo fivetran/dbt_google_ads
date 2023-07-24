@@ -1,4 +1,4 @@
-# dbt_google_ads_source v0.9.2
+# dbt_google_ads_source v0.10.0
 
 ## 🎉 Feature Enhancements 🎉
 - Added `utm_source`, `utm_medium`, and `utm_campaign` defined in `stg_google_ads__campaign_history` model from [dbt_google_ads_source] package (https://github.com/fivetran/dbt_google_ads_source) to the `google_ads__campaign_report` model.
@@ -7,6 +7,24 @@
 
 ## Contributors
 - [@jocelyn-metricbox](https://github.com/jocelyn-metricbox) 
+
+# dbt_google_ads v0.9.2 
+
+## 🎉 Features 🎉
+- Added the column `currency_code` to the following models ([PR #49](https://github.com/fivetran/dbt_google_ads/pull/49)): 
+    - `google_ads__ad_group_report`
+    - `google_ads__ad_report`
+    - `google_ads__campaign_report`
+    - `google_ads__keyword_report`
+    - `google_ads__url_report`
+
+## Under the Hood:
+
+- Incorporated the new `fivetran_utils.drop_schemas_automation` macro into the end of each Buildkite integration test job. ([PR #46](https://github.com/fivetran/dbt_google_ads/pull/46))
+- Updated the pull request [templates](/.github). ([PR #46](https://github.com/fivetran/dbt_google_ads/pull/46))
+
+## Contributors
+- [@asmundu](https://github.com/asmundu) ([PR #36](https://github.com/fivetran/dbt_google_ads/pull/36))
 
 # dbt_google_ads v0.9.1
 ## Bug fixes

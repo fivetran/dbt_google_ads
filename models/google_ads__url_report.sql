@@ -40,6 +40,7 @@ fields as (
         stats.date_day,
         accounts.account_name,
         accounts.account_id,
+        accounts.currency_code,
         campaigns.campaign_name,
         campaigns.campaign_id,
         --Adding campaign channel type and subchannel type
@@ -94,6 +95,7 @@ fields as (
     {% endif %}
 
     {{ dbt_utils.group_by(19) }}
+
 )
 
 select *
