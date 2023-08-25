@@ -1,3 +1,14 @@
+# dbt_google_ads v0.10.0
+[PR #52](https://github.com/fivetran/dbt_google_ads/pull/52) includes the following updates:
+## Feature update 🎉
+- Unioning capability! This adds the ability to union source data from multiple google_ads connectors. Refer to the [README](https://github.com/fivetran/dbt_google_ads/blob/main/README.md) for more details.
+
+## Under the hood 🚘
+- In the source package, updated tmp models to union source data using the `fivetran_utils.union_data` macro. 
+- To distinguish which source each field comes from, added `source_relation` column in each staging and downstream model and applied the `fivetran_utils.source_relation` macro.
+- Updated tests to account for the new `source_relation` column.
+    - The `source_relation` column is included in all joins and window function partition clauses in the transform package. 
+
 # dbt_google_ads v0.9.3
 [PR #57](https://github.com/fivetran/dbt_google_ads/pull/57) includes the following updates:
 ## Bug fixes

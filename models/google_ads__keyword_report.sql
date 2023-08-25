@@ -37,6 +37,7 @@ criterions as (
 fields as (
 
     select
+        stats.source_relation,
         stats.date_day,
         accounts.account_name,
         stats.account_id,
@@ -59,12 +60,16 @@ fields as (
     from stats
     left join criterions
         on stats.criterion_id = criterions.criterion_id
+        and stats.source_relation = criterions.source_relation
     left join ad_groups
         on stats.ad_group_id = ad_groups.ad_group_id
+        and stats.source_relation = ad_groups.source_relation
     left join campaigns
         on stats.campaign_id = campaigns.campaign_id
+        and stats.source_relation = campaigns.source_relation
     left join accounts
         on stats.account_id = accounts.account_id
+        and stats.source_relation = accounts.source_relation
     {{ dbt_utils.group_by(13) }}
 )
 

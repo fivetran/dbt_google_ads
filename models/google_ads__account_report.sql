@@ -16,6 +16,7 @@ accounts as (
 fields as (
 
     select
+        stats.source_relation,
         stats.date_day,
         accounts.account_name,
         stats.account_id,
@@ -31,6 +32,7 @@ fields as (
     from stats
     left join accounts
         on stats.account_id = accounts.account_id
+        and stats.source_relation = accounts.source_relation
     {{ dbt_utils.group_by(6) }}
 )
 
