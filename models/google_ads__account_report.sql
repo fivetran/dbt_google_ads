@@ -1,3 +1,5 @@
+ADD source_relation WHERE NEEDED + CHECK JOINS AND WINDOW FUNCTIONS! (Delete this line when done.)
+
 {{ config(enabled=var('ad_reporting__google_ads_enabled', True)) }}
 
 with stats as (
@@ -16,6 +18,7 @@ accounts as (
 fields as (
 
     select
+        stats.source_relation,
         stats.date_day,
         accounts.account_name,
         accounts.account_id,
@@ -31,6 +34,7 @@ fields as (
     from stats
     left join accounts
         on stats.account_id = accounts.account_id
+        and stats.source_relation = accounts.source_relation
     {{ dbt_utils.group_by(6) }}
 )
 
