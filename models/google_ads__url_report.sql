@@ -1,5 +1,3 @@
-ADD source_relation WHERE NEEDED + CHECK JOINS AND WINDOW FUNCTIONS! (Delete this line when done.)
-
 {{ config(enabled=var('ad_reporting__google_ads_enabled', True)) }}
 
 with stats as (
@@ -95,7 +93,7 @@ fields as (
         where ads.source_final_urls is not null
     {% endif %}
 
-    {{ dbt_utils.group_by(17) }}
+    {{ dbt_utils.group_by(18) }}
 )
 
 select *

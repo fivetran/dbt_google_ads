@@ -1,5 +1,3 @@
-ADD source_relation WHERE NEEDED + CHECK JOINS AND WINDOW FUNCTIONS! (Delete this line when done.)
-
 {{ config(enabled=var('ad_reporting__google_ads_enabled', True)) }}
 
 with stats as (
@@ -74,7 +72,7 @@ fields as (
     left join accounts
         on campaigns.account_id = accounts.account_id
         and campaigns.source_relation = accounts.source_relation
-    {{ dbt_utils.group_by(14) }}
+    {{ dbt_utils.group_by(15) }}
 )
 
 select *
