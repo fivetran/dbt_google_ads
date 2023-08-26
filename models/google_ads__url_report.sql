@@ -93,7 +93,7 @@ fields as (
         where ads.source_final_urls is not null
     {% endif %}
 
-    {{ dbt_utils.group_by(17) }}
+    {{ dbt_utils.group_by(18) }}
 )
 
 select *

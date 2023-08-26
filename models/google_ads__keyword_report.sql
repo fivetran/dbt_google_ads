@@ -70,7 +70,7 @@ fields as (
     left join accounts
         on stats.account_id = accounts.account_id
         and stats.source_relation = accounts.source_relation
-    {{ dbt_utils.group_by(13) }}
+    {{ dbt_utils.group_by(14) }}
 )
 
 select *

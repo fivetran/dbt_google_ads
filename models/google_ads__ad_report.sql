@@ -72,7 +72,7 @@ fields as (
     left join accounts
         on campaigns.account_id = accounts.account_id
         and campaigns.source_relation = accounts.source_relation
-    {{ dbt_utils.group_by(14) }}
+    {{ dbt_utils.group_by(15) }}
 )
 
 select *
