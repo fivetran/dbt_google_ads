@@ -8,6 +8,7 @@
 - To distinguish which source each field comes from, added `source_relation` column in each staging and downstream model and applied the `fivetran_utils.source_relation` macro.
 - Updated tests to account for the new `source_relation` column.
     - The `source_relation` column is included in all joins and window function partition clauses in the transform package. 
+- Updated end models to select key columns from the stats source instead of the reports source to avoid introducing null values.
 
 # dbt_google_ads v0.9.2 
 
