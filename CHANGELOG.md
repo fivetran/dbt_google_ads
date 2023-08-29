@@ -10,6 +10,9 @@
     - The `source_relation` column is included in all joins and window function partition clauses in the transform package. 
 - Updated end models to select key columns from the stats source instead of the reports source to avoid introducing null values.
 
+## Contributors
+- [@edwardskatie](https://github.com/edwardskatie) ([PR #54](https://github.com/fivetran/dbt_google_ads/pull/54))
+
 # dbt_google_ads v0.9.2 
 
 ## 🎉 Features 🎉
