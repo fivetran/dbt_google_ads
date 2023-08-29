@@ -45,7 +45,7 @@ fields as (
         stats.campaign_id,
         ad_groups.ad_group_name,
         stats.ad_group_id,
-        criterions.criterion_id,
+        stats.criterion_id,
         criterions.type,
         criterions.status,
         criterions.keyword_match_type,
