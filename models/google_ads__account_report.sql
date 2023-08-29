@@ -19,7 +19,7 @@ fields as (
         stats.source_relation,
         stats.date_day,
         accounts.account_name,
-        accounts.account_id,
+        stats.account_id,
         accounts.currency_code,
         accounts.auto_tagging_enabled,
         accounts.time_zone,

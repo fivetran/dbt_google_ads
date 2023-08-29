@@ -29,7 +29,7 @@ fields as (
         accounts.account_id,
         accounts.currency_code,
         campaigns.campaign_name,
-        campaigns.campaign_id,
+        stats.campaign_id,
         campaigns.advertising_channel_type,
         campaigns.advertising_channel_subtype,
         campaigns.status,

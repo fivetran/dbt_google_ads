@@ -38,7 +38,7 @@ fields as (
         campaigns.campaign_name,
         campaigns.campaign_id,
         ad_groups.ad_group_name,
-        ad_groups.ad_group_id,
+        stats.ad_group_id,
         ad_groups.ad_group_status,
         ad_groups.ad_group_type,
         sum(stats.spend) as spend,
