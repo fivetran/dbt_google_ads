@@ -55,7 +55,7 @@ Include the following google_ads package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: [">=0.9.0", "<0.10.0"] # we recommend using ranges to capture non-breaking changes automatically
+    version: [">=0.10.0", "<0.11.0"] # we recommend using ranges to capture non-breaking changes automatically
 ```
 Do **NOT** include the `google_ads_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well.
 
@@ -149,7 +149,7 @@ This dbt package is dependent on the following dbt packages. Please be aware tha
 ```yml
 packages:
     - package: fivetran/google_ads_source
-      version: [">=0.9.0", "<0.10.0"]
+      version: [">=0.10.0", "<0.11.0"]
 
     - package: fivetran/fivetran_utils
       version: [">=0.4.0", "<0.5.0"]
