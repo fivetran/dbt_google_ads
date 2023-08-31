@@ -44,7 +44,7 @@ fields as (
         campaigns.campaign_name,
         campaigns.campaign_id,
         ad_groups.ad_group_name,
-        ad_groups.ad_group_id,
+        stats.ad_group_id,
         stats.ad_id,
         ads.ad_name,
         ads.ad_status,
