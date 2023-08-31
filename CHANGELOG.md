@@ -1,7 +1,7 @@
 # dbt_google_ads v0.9.3
 [PR #57](https://github.com/fivetran/dbt_google_ads/pull/57) includes the following updates:
 ## Bug fixes
-- Updated end models to select key columns from the stats source instead of the reports source to avoid introducing null values.
+- Updated end models to select key columns from the `stats` source instead of the `reports` source to avoid introducing null values.
 
 ## Contributors
 - [@edwardskatie](https://github.com/edwardskatie) ([PR #54](https://github.com/fivetran/dbt_google_ads/pull/54))
