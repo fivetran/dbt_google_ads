@@ -10,3 +10,8 @@ This logic was only applied to the `google_ads__url_report` and `google_ads__ad_
 This package contains a `google_ads__url_report` which provides daily metrics for your utm compatible ads. It is important to note that not all Ads within Google's `ad_stats` report do not leverage utm parameters. Therefore, this package takes an opinionated approach to filter out any records that do not contain utm parameters or leverage a url within the ad.
 
 If you would like to leverage a report that contains all ads and their daily metrics, I would suggest you leverage the `google_ads__ad_report` which does not apply any filtering.
+
+## Why don't metrics add up across different grains (Ex. ad level vs campaign level)?
+Not all ads are served at the ad level. In other words, there are some ads that are served only at the ad group, campaign, etc. levels. The implications are that since not ads are included in the ad-level report, their associated spend, for example, won't be included at that grain. Therefore your spend totals may differ across the ad grain and another grain. 
+
+This is a reason why we have broken out the ad reporting packages into separate hierarchical end models (Ad, Ad Group, Campaign, and more). Because if we only used ad-level reports, we could be missing data.
