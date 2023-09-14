@@ -1,3 +1,10 @@
+# dbt_google_ads v0.x.x
+
+[PR #58](https://github.com/fivetran/dbt_google_ads/pull/58) includes the following updates:
+## Under the Hood:
+- Updates the [dbt-expectations](https://github.com/calogica/dbt-expectations/releases) dependency in the [README](README.md) to the latest version.
+- Updates the [DECISIONLOG](DECISIONLOG.md) to clarify why there exist differences among aggregations across different grains.
+
 # dbt_google_ads v0.9.3
 [PR #57](https://github.com/fivetran/dbt_google_ads/pull/57) includes the following updates:
 ## Bug fixes
