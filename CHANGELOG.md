@@ -9,6 +9,10 @@
 - Updated tests to account for the new `source_relation` column.
     - The `source_relation` column is included in all joins in the transform package. 
 
+[PR #58](https://github.com/fivetran/dbt_google_ads/pull/58) includes the following updates:
+## Under the Hood:
+- Updates the [DECISIONLOG](DECISIONLOG.md) to clarify why there exist differences among aggregations across different grains.
+
 # dbt_google_ads v0.9.3
 [PR #57](https://github.com/fivetran/dbt_google_ads/pull/57) includes the following updates:
 ## Bug fixes
