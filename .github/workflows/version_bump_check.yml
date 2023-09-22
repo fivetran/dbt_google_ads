@@ -1,0 +1,75 @@
+name: Version Bump Dependency Check
+
+on:
+  push:
+    paths:
+      - '../../dbt_project.yml'
+      - '../../packages.yml'
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Verify version bump consistency
+      run: |
+        # Parse function to extract major, minor, patch
+        parse_version() {
+            local version=$1
+            local -n major=$2
+            local -n minor=$3
+            local -n patch=$4
+
+            major="${version%%.*}"
+            version="${version#*.}"
+            minor="${version%%.*}"
+            patch="${version#*.}"
+        }
+
+        OLD_PROJECT_VERSION=$(git show HEAD~1:../../dbt_project.yml | yq eval '.version' -)
+        NEW_PROJECT_VERSION=$(yq eval '.version' ../../dbt_project.yml)
+
+        # Parse old and new project versions
+        parse_version $OLD_PROJECT_VERSION OLD_MAJOR_P OLD_MINOR_P OLD_PATCH_P
+        parse_version $NEW_PROJECT_VERSION NEW_MAJOR_P NEW_MINOR_P NEW_PATCH_P
+
+        # Loop through each package in packages.yml
+        package_count=$(yq eval 'length(.packages)' ../../packages.yml)
+        for ((i=0; i<$package_count; i++)); do
+          package_name=$(yq eval ".packages[$i].package" ../../packages.yml)
+          
+          OLD_VERSION_RANGE=$(git show HEAD~1:../../packages.yml | yq eval ".packages[$i].version[]" -)
+          NEW_VERSION_RANGE=$(yq eval ".packages[$i].version[]" ../../packages.yml)
+
+          # Check version bumps for each boundary in the version range
+          for old_bound in $OLD_VERSION_RANGE; do
+            for new_bound in $NEW_VERSION_RANGE; do
+              old_bound_version=${old_bound:3}
+              new_bound_version=${new_bound:3}
+
+              parse_version $old_bound_version OLD_MAJOR_B OLD_MINOR_B OLD_PATCH_B
+              parse_version $new_bound_version NEW_MAJOR_B NEW_MINOR_B NEW_PATCH_B
+
+              # Your version bump comparison logic here...
+              # Example:
+              if (( NEW_MAJOR_P != OLD_MAJOR_P && NEW_MAJOR_B == OLD_MAJOR_B )); then
+                echo "$package_name in packages.yml has not bumped the major version like dbt_project.yml!"
+                exit 1
+              elif (( NEW_MINOR_1 != OLD_MINOR_1 && NEW_MINOR_2 == OLD_MINOR_2 )); then
+                echo "First file has bumped minor version, but the second hasn't!"
+                exit 1
+              elif (( NEW_MAJOR_2 != OLD_MAJOR_2 && NEW_MAJOR_1 == OLD_MAJOR_1 )); then
+                echo "Second file has bumped major version, but the first hasn't!"
+                exit 1
+              elif (( NEW_MINOR_2 != OLD_MINOR_2 && NEW_MINOR_1 == OLD_MINOR_1 )); then
+                echo "Second file has bumped minor version, but the first hasn't!"
+                exit 1
+              fi
+            done
+          done
+        done
+
+      shell: bash
