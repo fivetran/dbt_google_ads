@@ -3,8 +3,8 @@ name: Version Bump Dependency Check
 on:
   push:
     paths:
-      - '../../dbt_project.yml'
-      - '../../packages.yml'
+      - 'dbt_project.yml'
+      - 'packages.yml'
 
 jobs:
   check-version:
