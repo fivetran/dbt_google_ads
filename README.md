@@ -69,6 +69,18 @@ vars:
 
 <details><summary>Expand for configurations</summary>
 
+### Union multiple connectors
+If you have multiple google_ads connectors in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from in the `source_relation` column of each model. To use this functionality, you will need to set either the `google_ads_union_schemas` OR `google_ads_union_databases` variables (cannot do both) in your root `dbt_project.yml` file:
+
+```yml
+vars:
+    google_ads_union_schemas: ['google_ads_usa','google_ads_canada'] # use this if the data is in different schemas/datasets of the same database/project
+    google_ads_union_databases: ['google_ads_usa','google_ads_canada'] # use this if the data is in different databases/projects but uses the same schema name
+```
+Please be aware that the native `source.yml` connection set up in the package will not function when the union schema/database feature is utilized. Although the data will be correctly combined, you will not observe the sources linked to the package models in the Directed Acyclic Graph (DAG). This happens because the package includes only one defined `source.yml`.
+
+To connect your multiple schema/database sources to the package models, follow the steps outlined in the [Union Data Defined Sources Configuration](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#union_data-source) section of the Fivetran Utils documentation for the union_data macro. This will ensure a proper configuration and correct visualization of connections in the DAG.
+
 ### Adding passthrough metrics
 By default, this package will select `clicks`, `impressions`, and `cost` from the source reporting tables to store into the staging models. If you would like to pass through additional metrics to the staging models, add the below configurations to your `dbt_project.yml` file. These variables allow for the pass-through fields to be aliased (`alias`) if desired, but not required. Use the below format for declaring the respective pass-through variables:
 
