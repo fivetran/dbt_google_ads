@@ -39,14 +39,11 @@ To use this dbt package, you must have the following:
 - A **BigQuery**, **Snowflake**, **Redshift**, **PostgreSQL**, or **Databricks** destination.
 
 ### Databricks Dispatch Configuration
-If you are using a Databricks destination with this package you will need to add the below (or a variation of the below) dispatch configuration within your `dbt_project.yml`. This is required in order for the package to accurately search for macros within the `dbt-labs/spark_utils` then the `dbt-labs/dbt_utils` as well as the `calogica/dbt_expectations` then the `google_ads_source` packages respectively.
+If you are using a Databricks destination with this package you will need to add the below (or a variation of the below) dispatch configuration within your `dbt_project.yml`. This is required in order for the package to accurately search for macros within the `dbt-labs/spark_utils` then the `dbt-labs/dbt_utils`.
 ```yml
 dispatch:
   - macro_namespace: dbt_utils
     search_order: ['spark_utils', 'dbt_utils']
-
-  - macro_namespace: dbt_expectations
-    search_order: ['google_ads_source', 'dbt_expectations']
 ```
 
 ## Step 2: Install the package
@@ -159,12 +156,6 @@ packages:
 
     - package: dbt-labs/spark_utils
       version: [">=0.3.0", "<0.4.0"]
-
-    - package: calogica/dbt_expectations
-      version: [">=0.8.0", "<0.9.0"]
-
-    - package: calogica/dbt_date
-      version: [">=0.7.0", "<0.8.0"]
 ```
 # 🙌 How is this package maintained and can I contribute?
 ## Package Maintenance
