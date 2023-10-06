@@ -1,16 +1,19 @@
 # dbt_google_ads v0.10.0
-## Dependency Updates
-- Removes the dependency on `dbt-expectations`. Upstream we specifically removed the `dbt_expectations.expect_column_values_to_not_match_regex_list` test. ([PR #60](https://github.com/fivetran/dbt_google_ads/pull/60)) 
-
-## Feature Update 🎉
-- Unioning capability! This adds the ability to union source data from multiple google_ads connectors. Refer to the [README](https://github.com/fivetran/dbt_google_ads/blob/main/README.md) for more details. ([PR #52](https://github.com/fivetran/dbt_google_ads/pull/52))
+[PR #52](https://github.com/fivetran/dbt_google_ads/pull/52) includes the following updates:
+## Feature update 🎉
+- Unioning capability! This adds the ability to union source data from multiple google_ads connectors. Refer to the [Union Multiple Connectors README section](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#union-multiple-connectors) for more details.
 
 ## Under the Hood 🚘
-- In the source package, updated tmp models to union source data using the `fivetran_utils.union_data` macro. ([PR #52](https://github.com/fivetran/dbt_google_ads/pull/52))
-- To distinguish which source each field comes from, added `source_relation` column in each staging and downstream model and applied the `fivetran_utils.source_relation` macro. ([PR #52](https://github.com/fivetran/dbt_google_ads/pull/52))
-- Updated tests to account for the new `source_relation` column. ([PR #52](https://github.com/fivetran/dbt_google_ads/pull/52))
+- In the source package, updated tmp models to union source data using the `fivetran_utils.union_data` macro. 
+- To distinguish which source each field comes from, added `source_relation` column in each staging and downstream model and applied the `fivetran_utils.source_relation` macro. 
+- Updated tests to account for the new `source_relation` column. 
     - The `source_relation` column is included in all joins in the transform package. 
-- Updates the [DECISIONLOG](DECISIONLOG.md) to clarify why there exist differences among aggregations across different grains. ([PR #58](https://github.com/fivetran/dbt_google_ads/pull/58))
+
+[PR #60](https://github.com/fivetran/dbt_google_ads/pull/60) includes the following update:
+## Dependency Updates
+- Removes the dependency on `dbt-expectations`. Upstream we specifically removed the `dbt_expectations.expect_column_values_to_not_match_regex_list` test.
+## Under the Hood 
+- Updates the [DECISIONLOG](DECISIONLOG.md) to clarify why there exist differences among aggregations across different grains. 
 
 # dbt_google_ads v0.9.3
 [PR #57](https://github.com/fivetran/dbt_google_ads/pull/57) includes the following updates:
