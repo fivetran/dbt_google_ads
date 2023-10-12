@@ -39,14 +39,11 @@ To use this dbt package, you must have the following:
 - A **BigQuery**, **Snowflake**, **Redshift**, **PostgreSQL**, or **Databricks** destination.
 
 ### Databricks Dispatch Configuration
-If you are using a Databricks destination with this package you will need to add the below (or a variation of the below) dispatch configuration within your `dbt_project.yml`. This is required in order for the package to accurately search for macros within the `dbt-labs/spark_utils` then the `dbt-labs/dbt_utils` as well as the `calogica/dbt_expectations` then the `google_ads_source` packages respectively.
+If you are using a Databricks destination with this package you will need to add the below (or a variation of the below) dispatch configuration within your `dbt_project.yml`. This is required in order for the package to accurately search for macros within the `dbt-labs/spark_utils` then the `dbt-labs/dbt_utils`.
 ```yml
 dispatch:
   - macro_namespace: dbt_utils
     search_order: ['spark_utils', 'dbt_utils']
-
-  - macro_namespace: dbt_expectations
-    search_order: ['google_ads_source', 'dbt_expectations']
 ```
 
 ## Step 2: Install the package
@@ -55,7 +52,7 @@ Include the following google_ads package version in your `packages.yml` file:
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: [">=0.9.0", "<0.10.0"] # we recommend using ranges to capture non-breaking changes automatically
+    version: [">=0.10.0", "<0.11.0"] # we recommend using ranges to capture non-breaking changes automatically
 ```
 Do **NOT** include the `google_ads_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well.
 
@@ -70,7 +67,17 @@ vars:
 
 ## (Optional) Step 4: Additional configurations
 
-<details><summary>Expand for configurations</summary>
+### Union multiple connectors
+If you have multiple google_ads connectors in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from in the `source_relation` column of each model. To use this functionality, you will need to set either the `google_ads_union_schemas` OR `google_ads_union_databases` variables (cannot do both) in your root `dbt_project.yml` file:
+
+```yml
+vars:
+    google_ads_union_schemas: ['google_ads_usa','google_ads_canada'] # use this if the data is in different schemas/datasets of the same database/project
+    google_ads_union_databases: ['google_ads_usa','google_ads_canada'] # use this if the data is in different databases/projects but uses the same schema name
+```
+Please be aware that the native `source.yml` connection set up in the package will not function when the union schema/database feature is utilized. Although the data will be correctly combined, you will not observe the sources linked to the package models in the Directed Acyclic Graph (DAG). This happens because the package includes only one defined `source.yml`.
+
+To connect your multiple schema/database sources to the package models, follow the steps outlined in the [Union Data Defined Sources Configuration](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#union_data-source) section of the Fivetran Utils documentation for the union_data macro. This will ensure a proper configuration and correct visualization of connections in the DAG.
 
 ### Adding passthrough metrics
 By default, this package will select `clicks`, `impressions`, and `cost` from the source reporting tables to store into the staging models. If you would like to pass through additional metrics to the staging models, add the below configurations to your `dbt_project.yml` file. These variables allow for the pass-through fields to be aliased (`alias`) if desired, but not required. Use the below format for declaring the respective pass-through variables:
@@ -121,8 +128,6 @@ vars:
     google_ads_<default_source_table_name>_identifier: your_table_name 
 ```
 
-</details>
-
 ## (Optional) Step 5: Orchestrate your models with Fivetran Transformations for dbt Core™    
 <details><summary>Expand for more details</summary>
 
@@ -137,7 +142,7 @@ This dbt package is dependent on the following dbt packages. Please be aware tha
 ```yml
 packages:
     - package: fivetran/google_ads_source
-      version: [">=0.9.0", "<0.10.0"]
+      version: [">=0.10.0", "<0.11.0"]
 
     - package: fivetran/fivetran_utils
       version: [">=0.4.0", "<0.5.0"]
@@ -147,12 +152,6 @@ packages:
 
     - package: dbt-labs/spark_utils
       version: [">=0.3.0", "<0.4.0"]
-
-    - package: calogica/dbt_expectations
-      version: [">=0.8.0", "<0.9.0"]
-
-    - package: calogica/dbt_date
-      version: [">=0.7.0", "<0.8.0"]
 ```
 # 🙌 How is this package maintained and can I contribute?
 ## Package Maintenance

@@ -30,6 +30,7 @@ ad_groups as (
 fields as (
 
     select
+        stats.source_relation,
         stats.date_day,
         accounts.account_name,
         accounts.account_id,
@@ -49,11 +50,14 @@ fields as (
     from stats
     left join ad_groups
         on stats.ad_group_id = ad_groups.ad_group_id
+        and stats.source_relation = ad_groups.source_relation
     left join campaigns
         on ad_groups.campaign_id = campaigns.campaign_id
+        and ad_groups.source_relation = campaigns.source_relation
     left join accounts
         on campaigns.account_id = accounts.account_id
-    {{ dbt_utils.group_by(10) }}
+        and campaigns.source_relation = accounts.source_relation
+    {{ dbt_utils.group_by(11) }}
 )
 
 select *

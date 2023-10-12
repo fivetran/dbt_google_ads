@@ -1,5 +1,5 @@
 name: 'google_ads_integration_tests'
-version: '0.9.3'
+version: '0.10.0'
 
 profile: 'integration_tests'
 config-version: 2
@@ -33,6 +33,3 @@ seeds:
 dispatch:
   - macro_namespace: dbt_utils
     search_order: ['spark_utils', 'dbt_utils']
-
-  - macro_namespace: dbt_expectations
-    search_order: ['google_ads_source', 'dbt_expectations']
