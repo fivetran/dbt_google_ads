@@ -18,6 +18,7 @@
 - Materializes output models designed to work simultaneously with our [multi-platform Ad Reporting package](https://github.com/fivetran/dbt_ad_reporting).
 - Generates a comprehensive data dictionary of your source and modeled Google Ads data through the [dbt docs site](https://fivetran.github.io/dbt_google_ads/).
 
+<!--section="google_ads_transformation_model-->
 The following table provides a detailed list of all models materialized within this package by default. 
 > TIP: See more details about these models in the package's [dbt docs site](https://fivetran.github.io/dbt_google_ads/#!/overview?g_v=1&g_e=seeds).
 
@@ -29,6 +30,8 @@ The following table provides a detailed list of all models materialized within t
 | [google_ads__keyword_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__keyword_report)            | Each record in this table represents the daily performance at the ad group level for keywords. |
 | [google_ads__ad_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__ad_report)            | Each record in this table represents the daily performance at the ad level. |
 | [google_ads__url_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__url_report)            | Each record in this table represents the daily performance of URLs at the ad level. |
+
+<!--section-end-->
 
 # 🎯 How do I use the dbt package?
 
