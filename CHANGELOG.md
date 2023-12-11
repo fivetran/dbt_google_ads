@@ -1,8 +1,12 @@
 # dbt_google_ads v0.10.1
-[PR #]() includes the following updates: ## Bug Fixes - This package now leverages the new `google_ads_extract_url_parameter()` (located within the dbt_google_ads_source package) for use in parsing out url parameters. This was added to create special logic for Databricks instances not supported by `dbt_utils.get_url_parameter()`.
+[PR #62](https://github.com/fivetran/dbt_google_ads/pull/62) includes the following updates: 
+
+## Bug Fixes 
+- This package now leverages the new `google_ads_extract_url_parameter()` (located within the dbt_google_ads_source package) for use in parsing out url parameters. This was added to create special logic for Databricks instances not supported by `dbt_utils.get_url_parameter()`.
   - This macro will be replaced with the `fivetran_utils.extract_url_parameter()` in the next breaking change.
 
-## Under the Hood - Included auto-releaser GitHub Actions workflow to automate future releases.
+## Under the Hood 
+- Included auto-releaser GitHub Actions workflow to automate future releases.
 
 # dbt_google_ads v0.10.0
 [PR #52](https://github.com/fivetran/dbt_google_ads/pull/52) includes the following updates:
