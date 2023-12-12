@@ -1,6 +1,6 @@
-
+package-lock.yml
 target/
 dbt_modules/
 logs/
-
+env/
 dbt_packages/
