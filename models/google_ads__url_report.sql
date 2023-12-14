@@ -53,10 +53,10 @@ fields as (
 
         {% if var('google_auto_tagging_enabled', false) %}
 
-        coalesce( {{ dbt_utils.get_url_parameter('ads.final_url', 'utm_source') }} , 'google')  as utm_source,
-        coalesce( {{ dbt_utils.get_url_parameter('ads.final_url', 'utm_medium') }} , 'cpc') as utm_medium,
-        coalesce( {{ dbt_utils.get_url_parameter('ads.final_url', 'utm_campaign') }} , campaigns.campaign_name) as utm_campaign,
-        coalesce( {{ dbt_utils.get_url_parameter('ads.final_url', 'utm_content') }} , ad_groups.ad_group_name) as utm_content,
+        coalesce( {{ google_ads_source.google_ads_extract_url_parameter('ads.final_url', 'utm_source') }} , 'google')  as utm_source,
+        coalesce( {{ google_ads_source.google_ads_extract_url_parameter('ads.final_url', 'utm_medium') }} , 'cpc') as utm_medium,
+        coalesce( {{ google_ads_source.google_ads_extract_url_parameter('ads.final_url', 'utm_campaign') }} , campaigns.campaign_name) as utm_campaign,
+        coalesce( {{ google_ads_source.google_ads_extract_url_parameter('ads.final_url', 'utm_content') }} , ad_groups.ad_group_name) as utm_content,
 
         {% else %}
 
