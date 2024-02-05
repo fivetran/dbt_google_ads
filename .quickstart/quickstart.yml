@@ -1,5 +1,5 @@
-database_key: github_database
-schema_key: github_schema
+database_key: google_ads_database
+schema_key: google_ads_schema
 
 dbt_versions: ">=1.3.0 <2.0.0"
 
