@@ -61,6 +61,12 @@ models:
         description: "{{ doc('clicks') }}"
       - name: impressions
         description: "{{ doc('impressions') }}"
+      - name: conversions
+        description: "{{ doc('conversions') }}"
+      - name: conversion_value
+        description: "{{ doc('conversion_value') }}"
+      - name: view_through_conversions
+        description: "{{ doc('view_through_conversions') }}"
 
   - name: google_ads__account_report
     description: Each record in this table represents the daily performance at the account level.
@@ -93,6 +99,12 @@ models:
         description: "{{ doc('clicks') }}"
       - name: impressions
         description: "{{ doc('impressions') }}"
+      - name: conversions
+        description: "{{ doc('conversions') }}"
+      - name: conversion_value
+        description: "{{ doc('conversion_value') }}"
+      - name: view_through_conversions
+        description: "{{ doc('view_through_conversions') }}"
 
   - name: google_ads__ad_group_report
     description: Each record in this table represents the daily performance at the ad group level.
@@ -133,6 +145,12 @@ models:
         description: "{{ doc('clicks') }}"
       - name: impressions
         description: "{{ doc('impressions') }}"
+      - name: conversions
+        description: "{{ doc('conversions') }}"
+      - name: conversion_value
+        description: "{{ doc('conversion_value') }}"
+      - name: view_through_conversions
+        description: "{{ doc('view_through_conversions') }}"
 
   - name: google_ads__ad_report
     description: Each record in this table represents the daily performance at the ad level.
@@ -180,6 +198,12 @@ models:
         description: "{{ doc('clicks') }}"
       - name: impressions
         description: "{{ doc('impressions') }}"
+      - name: conversions
+        description: "{{ doc('conversions') }}"
+      - name: conversion_value
+        description: "{{ doc('conversion_value') }}"
+      - name: view_through_conversions
+        description: "{{ doc('view_through_conversions') }}"
 
   - name: google_ads__campaign_report
     description: Each record in this table represents the daily performance of a campaign at the campaign/advertising_channel/advertising_channel_subtype level.
@@ -220,6 +244,12 @@ models:
         description: "{{ doc('clicks') }}"
       - name: impressions
         description: "{{ doc('impressions') }}"
+      - name: conversions
+        description: "{{ doc('conversions') }}"
+      - name: conversion_value
+        description: "{{ doc('conversion_value') }}"
+      - name: view_through_conversions
+        description: "{{ doc('view_through_conversions') }}"
 
   - name: google_ads__keyword_report
     description: Each record in this table represents the daily performance at the ad group level for keywords.
@@ -267,3 +297,9 @@ models:
         description: "{{ doc('clicks') }}"
       - name: impressions
         description: "{{ doc('impressions') }}"
+      - name: conversions
+        description: "{{ doc('conversions') }}"
+      - name: conversion_value
+        description: "{{ doc('conversion_value') }}"
+      - name: view_through_conversions
+        description: "{{ doc('view_through_conversions') }}"

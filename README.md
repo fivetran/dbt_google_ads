@@ -49,13 +49,13 @@ dispatch:
     search_order: ['spark_utils', 'dbt_utils']
 ```
 
-## Step 2: Install the package
-Include the following google_ads package version in your `packages.yml` file:
+## Step 2: Install the package (skip if also using the `ad_reporting` combo package)
+Include the following google_ads package version in your `packages.yml` file _if_ you are not also using the upstream [Ad Reporting combination package](https://github.com/fivetran/dbt_ad_reporting):
 > TIP: Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: [">=0.10.0", "<0.11.0"] # we recommend using ranges to capture non-breaking changes automatically
+    version: [">=0.11.0", "<0.12.0"] # we recommend using ranges to capture non-breaking changes automatically
 ```
 Do **NOT** include the `google_ads_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well.
 
@@ -83,7 +83,7 @@ Please be aware that the native `source.yml` connection set up in the package wi
 To connect your multiple schema/database sources to the package models, follow the steps outlined in the [Union Data Defined Sources Configuration](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#union_data-source) section of the Fivetran Utils documentation for the union_data macro. This will ensure a proper configuration and correct visualization of connections in the DAG.
 
 ### Adding passthrough metrics
-By default, this package will select `clicks`, `impressions`, and `cost` from the source reporting tables to store into the staging models. If you would like to pass through additional metrics to the staging models, add the below configurations to your `dbt_project.yml` file. These variables allow for the pass-through fields to be aliased (`alias`) if desired, but not required. Use the below format for declaring the respective pass-through variables:
+By default, this package will select `clicks`, `impressions`, `cost`, `conversions`, `conversion_value`, and `view_through_conversions` from the source reporting tables to store into the staging models. If you would like to pass through additional metrics to the staging models, add the below configurations to your `dbt_project.yml` file. These variables allow for the pass-through fields to be aliased (`alias`) if desired, but not required. Use the below format for declaring the respective pass-through variables:
 
 >**Note** Please ensure you exercised due diligence when adding metrics to these models. The metrics added by default (taps, impressions, and spend) have been vetted by the Fivetran team maintaining this package for accuracy. There are metrics included within the source reports, for example metric averages, which may be inaccurately represented at the grain for reports created in this package. You will want to ensure whichever metrics you pass through are indeed appropriate to aggregate at the respective reporting levels provided in this package.
 
@@ -99,7 +99,7 @@ vars:
         alias: "field_id"
     google_ads__keyword_stats_passthrough_metrics:
       - name: "that_field"
-    google_ads__ad_stats_passthrough_metrics:
+    google_ads__ad_stats_passthrough_metrics: # these metrics are included in google_ads__url_report as well
       - name: "other_id"
         alias: "another_id"
 ```
@@ -122,7 +122,7 @@ models:
 ```
     
 ### Change the source table references
-If an individual source table has a different name than the package expects, add the table name as it appears in your destination to the respective variable:
+If an individual source table has a different name than the package expects, add the table name as it appears in your destination to the respective variable. This is not available when running the package on multiple unioned connectors.
 
 > IMPORTANT: See this project's [`dbt_project.yml`](https://github.com/fivetran/dbt_google_ads/blob/main/dbt_project.yml) variable declarations to see the expected names.
 
