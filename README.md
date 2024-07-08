@@ -111,7 +111,7 @@ vars:
 ```
 
 ### Change the build schema
-By default, this package builds the Google Ads staging models within a schema titled (`<target_schema>` + `_google_ads_source`) and your Google Ads modeling models within a schema titled (`<target_schema>` + `_google_ads`) in your destination. If this is not where you would like your Google Ads data to be written to, add the following configuration to your root `dbt_project.yml` file:
+By default, this package builds the Google Ads staging models (10 views, 10 tables) within a schema titled (`<target_schema>` + `_google_ads_source`) and your Google Ads modeling models (6 tables) within a schema titled (`<target_schema>` + `_google_ads`) in your destination. If this is not where you would like your Google Ads data to be written to, add the following configuration to your root `dbt_project.yml` file:
 
 ```yml
 models:
@@ -145,7 +145,7 @@ This dbt package is dependent on the following dbt packages. Please be aware tha
 ```yml
 packages:
     - package: fivetran/google_ads_source
-      version: [">=0.10.0", "<0.11.0"]
+      version: [">=0.11.0", "<0.12.0"]
 
     - package: fivetran/fivetran_utils
       version: [">=0.4.0", "<0.5.0"]
@@ -171,4 +171,3 @@ We highly encourage and welcome contributions to this package. Check out [this d
 # 🏪 Are there any resources available?
 - If you have questions or want to reach out for help, please refer to the [GitHub Issue](https://github.com/fivetran/dbt_google_ads/issues/new/choose) section to find the right avenue of support for you.
 - If you would like to provide feedback to the dbt package team at Fivetran or would like to request a new dbt package, fill out our [Feedback Form](https://www.surveymonkey.com/r/DQ7K7WW).
-- Have questions or want to be part of the community discourse? Create a post in the [Fivetran community](https://community.fivetran.com/t5/user-group-for-dbt/gh-p/dbt-user-group) and our team along with the community can join in on the discussion!
