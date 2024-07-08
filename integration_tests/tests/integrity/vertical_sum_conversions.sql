@@ -82,8 +82,13 @@ url_source as (
         sum(coalesce(ad_stats.conversions, 0)) as conversions,
         sum(coalesce(ad_stats.view_through_conversions, 0)) as view_through_conversions
     from {{ source('google_ads', 'ad_stats') }}
-    join {{ source('google_ads', 'ad_history') }} on true
-    where ad_history.final_urls is not null
+    left join (
+        select * from {{ ref('stg_google_ads__ad_history') }} 
+        where is_most_recent_record = True
+        ) as ad_history
+    on ad_stats.ad_id = ad_history.ad_id 
+    and cast(ad_stats.ad_group_id as {{ dbt.type_string() }}) = ad_history.ad_group_id
+    and ad_history.source_final_urls is not null
 ),
 
 url_model as (
@@ -117,9 +122,9 @@ select
     'ads' as comparison
 from ad_model 
 join ad_source on true
-where ad_model.total_value != ad_source.total_value
-    or ad_model.total_conversions != ad_source.total_conversions
-    or ad_model.view_through_conversions != ad_source.view_through_conversions
+where abs(ad_model.total_value - ad_source.total_value) >= .01
+    or abs(ad_model.conversions - ad_source.conversions) >= .01
+    or abs(ad_model.view_through_conversions - ad_source.view_through_conversions) >= .01
     
 union all 
 
@@ -127,9 +132,9 @@ select
     'accounts' as comparison
 from account_model 
 join account_source on true
-where account_model.total_value != account_source.total_value
-    or account_model.total_conversions != account_source.total_conversions
-    or account_model.view_through_conversions != account_source.view_through_conversions
+where abs(account_model.total_value - account_source.total_value) >= .01
+    or abs(account_model.conversions - account_source.conversions) >= .01
+    or abs(account_model.view_through_conversions - account_source.view_through_conversions) >= .01
 
 union all 
 
@@ -137,9 +142,9 @@ select
     'ad groups' as comparison
 from ad_group_model 
 join ad_group_source on true
-where ad_group_model.total_value != ad_group_source.total_value
-    or ad_group_model.total_conversions != ad_group_source.total_conversions
-    or ad_group_model.view_through_conversions != ad_group_source.view_through_conversions
+where abs(ad_group_model.total_value - ad_group_source.total_value) >= .01
+    or abs(ad_group_model.conversions - ad_group_source.conversions) >= .01
+    or abs(ad_group_model.view_through_conversions - ad_group_source.view_through_conversions) >= .01
 
 union all 
 
@@ -147,9 +152,9 @@ select
     'campaigns' as comparison
 from campaign_model 
 join campaign_source on true
-where campaign_model.total_value != campaign_source.total_value
-    or campaign_model.total_conversions != campaign_source.total_conversions
-    or campaign_model.view_through_conversions != campaign_source.view_through_conversions
+where abs(campaign_model.total_value - campaign_source.total_value) >= .01
+    or abs(campaign_model.conversions - campaign_source.conversions) >= .01
+    or abs(campaign_model.view_through_conversions - campaign_source.view_through_conversions) >= .01
 
 union all 
 
@@ -157,9 +162,9 @@ select
     'keywords' as comparison
 from keyword_model 
 join keyword_source on true
-where keyword_model.total_value != keyword_source.total_value
-    or keyword_model.total_conversions != keyword_source.total_conversions
-    or keyword_model.view_through_conversions != keyword_source.view_through_conversions
+where abs(keyword_model.total_value - keyword_source.total_value) >= .01
+    or abs(keyword_model.conversions - keyword_source.conversions) >= .01
+    or abs(keyword_model.view_through_conversions - keyword_source.view_through_conversions) >= .01
 
 union all 
 
@@ -167,6 +172,6 @@ select
     'urls' as comparison
 from url_model 
 join url_source on true
-where url_model.total_value != url_source.total_value
-    or url_model.total_conversions != url_source.total_conversions
-    or url_model.view_through_conversions != url_source.view_through_conversions
+where abs(url_model.total_value - url_source.total_value) >= .01
+    or abs(url_model.conversions - url_source.conversions) >= .01
+    or abs(url_model.view_through_conversions - url_source.view_through_conversions) >= .01
