@@ -63,8 +63,8 @@ models:
         description: "{{ doc('impressions') }}"
       - name: conversions
         description: "{{ doc('conversions') }}"
-      - name: conversion_value
-        description: "{{ doc('conversion_value') }}"
+      - name: conversions_value
+        description: "{{ doc('conversions_value') }}"
       - name: view_through_conversions
         description: "{{ doc('view_through_conversions') }}"
 
@@ -101,8 +101,8 @@ models:
         description: "{{ doc('impressions') }}"
       - name: conversions
         description: "{{ doc('conversions') }}"
-      - name: conversion_value
-        description: "{{ doc('conversion_value') }}"
+      - name: conversions_value
+        description: "{{ doc('conversions_value') }}"
       - name: view_through_conversions
         description: "{{ doc('view_through_conversions') }}"
 
@@ -147,8 +147,8 @@ models:
         description: "{{ doc('impressions') }}"
       - name: conversions
         description: "{{ doc('conversions') }}"
-      - name: conversion_value
-        description: "{{ doc('conversion_value') }}"
+      - name: conversions_value
+        description: "{{ doc('conversions_value') }}"
       - name: view_through_conversions
         description: "{{ doc('view_through_conversions') }}"
 
@@ -200,8 +200,8 @@ models:
         description: "{{ doc('impressions') }}"
       - name: conversions
         description: "{{ doc('conversions') }}"
-      - name: conversion_value
-        description: "{{ doc('conversion_value') }}"
+      - name: conversions_value
+        description: "{{ doc('conversions_value') }}"
       - name: view_through_conversions
         description: "{{ doc('view_through_conversions') }}"
 
@@ -246,8 +246,8 @@ models:
         description: "{{ doc('impressions') }}"
       - name: conversions
         description: "{{ doc('conversions') }}"
-      - name: conversion_value
-        description: "{{ doc('conversion_value') }}"
+      - name: conversions_value
+        description: "{{ doc('conversions_value') }}"
       - name: view_through_conversions
         description: "{{ doc('view_through_conversions') }}"
 
@@ -299,7 +299,7 @@ models:
         description: "{{ doc('impressions') }}"
       - name: conversions
         description: "{{ doc('conversions') }}"
-      - name: conversion_value
-        description: "{{ doc('conversion_value') }}"
+      - name: conversions_value
+        description: "{{ doc('conversions_value') }}"
       - name: view_through_conversions
         description: "{{ doc('view_through_conversions') }}"

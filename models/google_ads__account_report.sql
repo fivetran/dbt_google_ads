@@ -27,10 +27,10 @@ fields as (
         sum(stats.clicks) as clicks,
         sum(stats.impressions) as impressions,
         sum(stats.conversions) as conversions,
-        sum(stats.conversion_value) as conversion_value,
+        sum(stats.conversions_value) as conversions_value,
         sum(stats.view_through_conversions) as view_through_conversions
 
-        {{ google_ads_persist_pass_through_columns(pass_through_variable='google_ads__account_stats_passthrough_metrics', identifier='stats', transform='sum', coalesce_with=0, exclude_fields=['conversions','conversion_value','view_through_conversions']) }}
+        {{ google_ads_persist_pass_through_columns(pass_through_variable='google_ads__account_stats_passthrough_metrics', identifier='stats', transform='sum', coalesce_with=0, exclude_fields=['conversions','conversions_value','view_through_conversions']) }}
 
     from stats
     left join accounts
