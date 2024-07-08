@@ -7,7 +7,7 @@ with ad_report as (
 
     select 
         sum(conversions) as total_conversions,
-        sum(conversion_value) as total_value,
+        sum(conversions_value) as total_value,
         sum(view_through_conversions) as total_view_through_conversions
     from {{ ref('google_ads__ad_report') }}
 ),
@@ -16,7 +16,7 @@ account_report as (
 
     select 
         sum(conversions) as total_conversions,
-        sum(conversion_value) as total_value,
+        sum(conversions_value) as total_value,
         sum(view_through_conversions) as total_view_through_conversions
     from {{ ref('google_ads__account_report') }}
 ),
@@ -25,7 +25,7 @@ ad_group_report as (
 
     select 
         sum(conversions) as total_conversions,
-        sum(conversion_value) as total_value,
+        sum(conversions_value) as total_value,
         sum(view_through_conversions) as total_view_through_conversions
     from {{ ref('google_ads__ad_group_report') }}
 ),
@@ -34,7 +34,7 @@ campaign_report as (
 
     select 
         sum(conversions) as total_conversions,
-        sum(conversion_value) as total_value,
+        sum(conversions_value) as total_value,
         sum(view_through_conversions) as total_view_through_conversions
     from {{ ref('google_ads__campaign_report') }}
 ),
@@ -43,7 +43,7 @@ url_report as (
 
     select 
         sum(conversions) as total_conversions,
-        sum(conversion_value) as total_value,
+        sum(conversions_value) as total_value,
         sum(view_through_conversions) as total_view_through_conversions
     from {{ ref('google_ads__url_report') }}
 ),
@@ -52,7 +52,7 @@ ad_w_url_report as (
 
     select 
         sum(ads.conversions) as total_conversions,
-        sum(ads.conversion_value) as total_value,
+        sum(ads.conversions_value) as total_value,
         sum(ads.view_through_conversions) as total_view_through_conversions
     from {{ ref('google_ads__ad_report') }} ads
     join {{ ref('google_ads__url_report') }} urls
@@ -64,7 +64,7 @@ keyword_report as (
 
     select 
         sum(conversions) as total_conversions,
-        sum(conversion_value) as total_value,
+        sum(conversions_value) as total_value,
         sum(view_through_conversions) as total_view_through_conversions
     from {{ ref('google_ads__keyword_report') }}
 ),
@@ -73,7 +73,7 @@ ad_w_keyword_report as (
 
     select 
         sum(ads.conversions) as total_conversions,
-        sum(ads.conversion_value) as total_value,
+        sum(ads.conversions_value) as total_value,
         sum(ads.view_through_conversions) as total_view_through_conversions
     from {{ ref('google_ads__ad_report') }} ads
     join {{ ref('google_ads__keywords_report') }} keywords

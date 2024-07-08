@@ -1,7 +1,12 @@
+{{ config(
+    tags="fivetran_validations",
+    enabled=var('fivetran_validation_tests_enabled', false)
+) }}
+
 with account_source as (
 
     select 
-        sum(coalesce(conversion_value, 0)) as total_value,
+        sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
     from {{ source('google_ads', 'account_stats') }}
@@ -10,7 +15,7 @@ with account_source as (
 account_model as (
 
     select 
-        sum(coalesce(conversion_value, 0)) as total_value,
+        sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
     from {{ ref('google_ads__account_report') }}
@@ -19,7 +24,7 @@ account_model as (
 ad_source as (
 
     select 
-        sum(coalesce(conversion_value, 0)) as total_value,
+        sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
     from {{ source('google_ads', 'ad_stats') }}
@@ -28,7 +33,7 @@ ad_source as (
 ad_model as (
 
     select 
-        sum(coalesce(conversion_value, 0)) as total_value,
+        sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
     from {{ ref('google_ads__ad_report') }}
@@ -37,7 +42,7 @@ ad_model as (
 ad_group_source as (
 
     select 
-        sum(coalesce(conversion_value, 0)) as total_value,
+        sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
     from {{ source('google_ads', 'ad_group_stats') }}
@@ -46,7 +51,7 @@ ad_group_source as (
 ad_group_model as (
 
     select 
-        sum(coalesce(conversion_value, 0)) as total_value,
+        sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
     from {{ ref('google_ads__ad_group_report') }}
@@ -55,7 +60,7 @@ ad_group_model as (
 campaign_source as (
 
     select 
-        sum(coalesce(conversion_value, 0)) as total_value,
+        sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
     from {{ source('google_ads', 'campaign_stats') }}
@@ -64,7 +69,7 @@ campaign_source as (
 campaign_model as (
 
     select 
-        sum(coalesce(conversion_value, 0)) as total_value,
+        sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
     from {{ ref('google_ads__campaign_report') }}
@@ -73,7 +78,7 @@ campaign_model as (
 url_source as (
 
     select 
-        sum(coalesce(ad_stats.conversion_value, 0)) as total_value,
+        sum(coalesce(ad_stats.conversions_value, 0)) as total_value,
         sum(coalesce(ad_stats.conversions, 0)) as conversions,
         sum(coalesce(ad_stats.view_through_conversions, 0)) as view_through_conversions
     from {{ source('google_ads', 'ad_stats') }}
@@ -84,7 +89,7 @@ url_source as (
 url_model as (
 
     select 
-        sum(coalesce(conversion_value, 0)) as total_value,
+        sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
     from {{ ref('google_ads__url_report') }}
@@ -93,7 +98,7 @@ url_model as (
 keyword_source as (
 
     select 
-        sum(coalesce(conversion_value, 0)) as total_value,
+        sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
     from {{ source('google_ads', 'keyword_stats') }}
@@ -102,7 +107,7 @@ keyword_source as (
 keyword_model as (
 
     select 
-        sum(coalesce(conversion_value, 0)) as total_value,
+        sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
     from {{ ref('google_ads__keyword_report') }}
