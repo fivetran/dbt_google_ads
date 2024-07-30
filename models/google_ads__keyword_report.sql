@@ -53,9 +53,12 @@ fields as (
         criterions.keyword_text,
         sum(stats.spend) as spend,
         sum(stats.clicks) as clicks,
-        sum(stats.impressions) as impressions
+        sum(stats.impressions) as impressions,
+        sum(conversions) as conversions,
+        sum(conversions_value) as conversions_value,
+        sum(view_through_conversions) as view_through_conversions
 
-        {{ fivetran_utils.persist_pass_through_columns(pass_through_variable='google_ads__keyword_stats_passthrough_metrics', transform = 'sum') }}
+        {{ google_ads_persist_pass_through_columns(pass_through_variable='google_ads__keyword_stats_passthrough_metrics', identifier='stats', transform='sum', coalesce_with=0, exclude_fields=['conversions','conversions_value','view_through_conversions']) }}
 
     from stats
     left join criterions

@@ -1,3 +1,24 @@
+# dbt_google_ads v0.11.0
+
+[PR #66](https://github.com/fivetran/dbt_google_ads/pull/66) includes the following updates:
+
+## Feature Updates: Conversion Support!
+- We have added the following source fields to each `google_ads` end model:
+  - `conversions`: The number of conversions you've received, across your conversion actions. Conversions are measured with conversion tracking and may include [modeled](https://support.google.com/google-ads/answer/10081327?sjid=12862894247631803415-NC) conversions in cases where you are not able to observe all conversions that took place. You can use this column to see how often your ads led customers to actions that you’ve defined as valuable for your business.
+  - `conversions_value`: The sum of monetary values for your `conversions`. You have to enter a value in the Google Ads UI for your conversion actions to make this metric useful.
+  - `view_through_conversions`: For video campaigns, view-through conversions tell you when an _impression_ of your video ad leads to a conversion on your site. The last impression of a video ad will get credit for the view-through conversion. An impression is different than a “view” of a video ad. A “view” is counted when someone watches 30 seconds (or the whole ad if it’s shorter than 30 seconds) or clicks on a part of the ad. A “view” that leads to a conversion is counted in the `conversions` column.
+- In the event that you were already passing the above fields in via our [passthrough columns](https://github.com/fivetran/dbt_google_ads?tab=readme-ov-file#passing-through-additional-metrics), the package will dynamically avoid "duplicate column" errors.
+> The above new field additions are 🚨 **breaking changes** 🚨 for users who were not already bringing in conversion fields via passthrough columns.
+
+## Under the Hood
+- Updated the package maintainer PR template.
+- Created `google_ads_persist_pass_through_columns` macro to ensure that the new conversion fields are backwards compatible with users who have already included them via passthrough fields.
+- Added integrity and consistency validation tests within `integration_tests` folder for the transformation models (to be used by maintainers only).
+
+## Contributors
+- [Seer Interactive](https://www.seerinteractive.com/?utm_campaign=Fivetran%20%7C%20Models&utm_source=Fivetran&utm_medium=Fivetran%20Documentation)
+- [@fivetran-poonamagate](https://github.com/fivetran-poonamagate)
+
 # dbt_google_ads v0.10.1
 [PR #62](https://github.com/fivetran/dbt_google_ads/pull/62) includes the following updates: 
 
