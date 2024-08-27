@@ -8,3 +8,12 @@ destination_configurations:
     dispatch:
       - macro_namespace: dbt_utils
         search_order: [ 'spark_utils', 'dbt_utils' ]
+
+public_models: [
+  "google_ads__keyword_report",
+  "google_ads__campaign_report",
+  "google_ads__url_report",
+  "google_ads__ad_report",
+  "google_ads__ad_group_report",
+  "google_ads__account_report"
+]
