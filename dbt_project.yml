@@ -1,27 +1,34 @@
-name: 'google_ads'
-version: '0.11.0'
-
+# Project name and version
+name: 'snowflake_fivetran_vhol'
+version: '1.7.14'
 config-version: 2
-require-dbt-version: [">=1.3.0", "<2.0.0"]
-models:
-  google_ads:
-    +schema: google_ads
-    +materialized: table
+
+# Profile configuration
+profile: 'default'
+
+# File path configurations
+source-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+data-paths: ["data"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+# Target directory configuration
+target-path: "target"
+clean-targets:
+    - "target"
+    - "dbt_modules"
+
+# Configuring models
+# (Example of configuring materialization)
+# models:
+#   snowflake_fivetran_vhol:
+#       my_model:
+#           materialized: view
+
+# Variables
 vars:
-  google_ads:
-    ad_stats: "{{ ref('stg_google_ads__ad_stats') }}"
-    account_history: "{{ ref('stg_google_ads__account_history') }}"
-    campaign_history: "{{ ref('stg_google_ads__campaign_history') }}"
-    ad_group_history: "{{ ref('stg_google_ads__ad_group_history') }}"
-    ad_history: "{{ ref('stg_google_ads__ad_history') }}"
-    ad_group_criterion_history: "{{ ref('stg_google_ads__ad_group_criterion_history') }}"
-    ad_group_stats: "{{ ref('stg_google_ads__ad_group_stats') }}"
-    campaign_stats: "{{ ref('stg_google_ads__campaign_stats') }}"
-    keyword_stats: "{{ ref('stg_google_ads__keyword_stats') }}"
-    account_stats: "{{ ref('stg_google_ads__account_stats') }}"
-  google_auto_tagging_enabled: false
-  google_ads__ad_group_stats_passthrough_metrics: []
-  google_ads__ad_stats_passthrough_metrics: []
-  google_ads__campaign_stats_passthrough_metrics: []
-  google_ads__keyword_stats_passthrough_metrics: []
-  google_ads__account_stats_passthrough_metrics: []
+    google_ads_schema: 'GOOGLE_SHEETS'
+    google_ads_database: 'DATA'
+    google_ads_table: 'JOB'
