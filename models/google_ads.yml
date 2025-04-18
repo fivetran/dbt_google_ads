@@ -303,3 +303,54 @@ models:
         description: "{{ doc('conversions_value') }}"
       - name: view_through_conversions
         description: "{{ doc('view_through_conversions') }}"
+
+  - name: google_ads__search_term_report
+    description: Each record in this table represents the daily performance at the ad group level for search terms matching tracked keywords.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - source_relation
+            - ad_group_id
+            - search_term
+            - keyword_text
+            - date_day
+            - search_term_match_type
+    columns:
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
+      - name: date_day
+        description: "{{ doc('date') }}"
+      - name: account_name
+        description: "{{ doc('account_descriptive_name') }}"
+      - name: account_id
+        description: "{{ doc('external_customer_id') }}"
+      - name: currency_code
+        description: The currency which the account uses.
+      - name: campaign_name
+        description: "{{ doc('campaign_name') }}"
+      - name: campaign_id
+        description: "{{ doc('campaign_id') }}"
+      - name: ad_group_name
+        description: "{{ doc('ad_group_name') }}"
+      - name: ad_group_id
+        description: "{{ doc('ad_group_id') }}"
+      - name: search_term
+        description: '{{ doc("search_term") }}'
+      - name: keyword_text 
+        description: '{{ doc("info_text") }}'
+      - name: search_term_match_type
+        description: '{{ doc("search_term_match_type") }}'
+      - name: status
+        description: '{{ doc("search_term_status") }}'
+      - name: spend
+        description: "{{ doc('cost') }}"
+      - name: clicks
+        description: "{{ doc('clicks') }}"
+      - name: impressions
+        description: "{{ doc('impressions') }}"
+      - name: conversions
+        description: "{{ doc('conversions') }}"
+      - name: conversions_value
+        description: "{{ doc('conversions_value') }}"
+      - name: view_through_conversions
+        description: "{{ doc('view_through_conversions') }}"

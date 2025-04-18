@@ -1,8 +1,12 @@
-# dbt_google_ads version.version
+# dbt_google_ads v0.12.0
+
+## Feature Updates
+- New Model Alert - `google_ads__search_term_report`
 
 ## Documentation
 - Added Quickstart model counts to README. ([#73](https://github.com/fivetran/dbt_google_ads/pull/73))
 - Corrected references to connectors and connections in the README. ([#73](https://github.com/fivetran/dbt_google_ads/pull/73))
+- Updated LICENSE.
 
 # dbt_google_ads v0.11.0
 
