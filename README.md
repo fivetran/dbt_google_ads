@@ -31,6 +31,7 @@ The following table provides a detailed list of all tables materialized within t
 | [google_ads__keyword_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__keyword_report)            | Each record in this table represents the daily performance at the ad group level for keywords. |
 | [google_ads__ad_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__ad_report)            | Each record in this table represents the daily performance at the ad level. |
 | [google_ads__url_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__url_report)            | Each record in this table represents the daily performance of URLs at the ad level. |
+| [google_ads__search_term_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__search_term_report)            | Each record in this table represents the daily performance at the ad group level for search terms. |
 
 ### Materialized Models
 Each Quickstart transformation job run materializes 29 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
@@ -84,6 +85,17 @@ vars:
 > NOTE: The native `source.yml` connection set up in the package will not function when the union schema/database feature is utilized. Although the data will be correctly combined, you will not observe the sources linked to the package models in the Directed Acyclic Graph (DAG). This happens because the package includes only one defined `source.yml`.
 
 To connect your multiple schema/database sources to the package models, follow the steps outlined in the [Union Data Defined Sources Configuration](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#union_data-source) section of the Fivetran Utils documentation for the union_data macro. This will ensure a proper configuration and correct visualization of connections in the DAG.
+
+#### Disable Search Term Keyword Stats
+This package uses the `search_term_keyword_stats` pre-built report introduced in [April 2025](https://fivetran.com/docs/connectors/applications/google-ads/changelog#april2025), but takes into consideration that not every user may sync or want to use this table. By default, if you do not have the `search_term_keyword_stats` report and are not running the Google Ads package via Fivetran Quickstart, we will create empty staging `search_term_keyword_stats` models so as to not cause downstream transformation failures.
+
+To **totally** disable transformations of `search_term_keyword_stats`, add the following variable configuration to your root `dbt_project.yml` file:
+```yml
+vars:
+    google_ads__using_search_term_keyword_stats: False # True by default
+```
+
+> This variable is dynamically set in Fivetran Quickstart.
 
 #### Adding passthrough metrics
 By default, this package will select `clicks`, `impressions`, `cost`, `conversions`, `conversions_value`, and `view_through_conversions` from the source reporting tables to store into the staging models. If you would like to pass through additional metrics to the staging models, add the below configurations to your `dbt_project.yml` file. These variables allow for the pass-through fields to be aliased (`alias`) if desired, but not required. Use the below format for declaring the respective pass-through variables:

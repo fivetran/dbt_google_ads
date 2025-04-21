@@ -16,7 +16,9 @@ vars:
   google_ads_ad_group_stats_identifier: "ad_group_stats_data"
   google_ads_campaign_stats_identifier: "campaign_stats_data"
   google_ads_ad_group_criterion_history_identifier: "ad_group_criterion_history_data"
+  google_ads_search_term_keyword_stats_identifier: "search_term_keyword_stats_data"
 
+# Comment out for docs generation
   google_ads__campaign_stats_passthrough_metrics:
     - name: conversions
     - name: view_through_conversions

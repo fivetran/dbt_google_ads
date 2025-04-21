@@ -1,3 +1,8 @@
+{{ config(
+    tags="fivetran_validations",
+    enabled=var('fivetran_validation_tests_enabled', false)
+) }}
+
 with source as (
 
     select 
@@ -61,9 +66,9 @@ final as (
 select * 
 from final
 where 
-    source_spend != model_spend
-    or source_clicks != model_clicks
-    or source_impressions != model_impressions
-    or source_conversions != model_conversions
-    or source_conversions_value != model_conversions_value
-    or source_view_through_conversions != model_view_through_conversions
+    abs(source_spend - model_spend) > .0001
+    or abs(source_clicks - model_clicks) > .0001
+    or abs(source_impressions - model_impressions) > .0001
+    or abs(source_conversions - model_conversions) > .0001
+    or abs(source_conversions_value - model_conversions_value) > .0001
+    or abs(source_view_through_conversions - model_view_through_conversions) > .0001

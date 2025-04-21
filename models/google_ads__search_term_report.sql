@@ -1,4 +1,4 @@
-{{ config(enabled=var('ad_reporting__google_ads_enabled', True)) }}
+{{ config(enabled=var('ad_reporting__google_ads_enabled', True) and var('google_ads__using_search_term_keyword_stats', True)) }}
 
 with stats as (
 
@@ -40,11 +40,9 @@ fields as (
         ad_groups.ad_group_name,
         stats.ad_group_id,
         stats.search_term,
-        {# stats.search_term_id, #}
         stats.keyword_text,
         stats.search_term_match_type,
         stats.status,
-        {# stats.ad_group_criterion_id, #}
         sum(stats.spend) as spend,
         sum(stats.clicks) as clicks,
         sum(stats.impressions) as impressions,
