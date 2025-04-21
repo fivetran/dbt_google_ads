@@ -31,7 +31,7 @@ The following table provides a detailed list of all tables materialized within t
 | [google_ads__keyword_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__keyword_report)            | Each record in this table represents the daily performance at the ad group level for keywords. |
 | [google_ads__ad_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__ad_report)            | Each record in this table represents the daily performance at the ad level. |
 | [google_ads__url_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__url_report)            | Each record in this table represents the daily performance of URLs at the ad level. |
-| [google_ads__search_term_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__search_term_report)            | Each record in this table represents the daily performance at the ad group level for search terms. |
+| [google_ads__search_term_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__search_term_report)            | Each record in this table represents the daily performance at the ad group level for search terms matching tracked keywords. |
 
 ### Materialized Models
 Each Quickstart transformation job run materializes 29 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.

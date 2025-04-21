@@ -11,6 +11,7 @@
 - Corrected references to connectors and connections in the README. ([#73](https://github.com/fivetran/dbt_google_ads/pull/73))
 - Updated the LICENSE. ([#76](https://github.com/fivetran/dbt_google_ads/pull/76))
 - Adjusted README header format. ([#76](https://github.com/fivetran/dbt_google_ads/pull/76))
+- Added discussion of `keyword_text` qualifiers to the [DECISIONLOG](https://github.com/fivetran/dbt_google_ads_source/blob/main/DECISIONLOG.md). ([#76](https://github.com/fivetran/dbt_google_ads/pull/76))
 
 ## Under the Hood
 - Removed the `horizontal_sum_conversions` integrity test, as it is based on a false premise of metrics tying out across different grains, which we discuss [here](https://github.com/fivetran/dbt_google_ads/blob/main/DECISIONLOG.md#why-dont-metrics-add-up-across-different-grains-ex-ad-level-vs-campaign-level). ([#76](https://github.com/fivetran/dbt_google_ads/pull/76))

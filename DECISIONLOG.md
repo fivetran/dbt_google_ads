@@ -15,3 +15,8 @@ If you would like to leverage a report that contains all ads and their daily met
 Not all ads are served at the ad level. In other words, there are some ads that are served only at the ad group, campaign, etc. levels. The implications are that since not ads are included in the ad-level report, their associated spend, for example, won't be included at that grain. Therefore your spend totals may differ across the ad grain and another grain. 
 
 This is a reason why we have broken out the ad reporting packages into separate hierarchical end models (Ad, Ad Group, Campaign, and more). Because if we only used ad-level reports, we could be missing data.
+
+## Inclusion of Search Term Keyword Qualifiers
+In the the `google_ads__search_term_report` model, some keywords may be prepended with plus signs (`+`) or may be wrapped in 2 single quotes (`''keyword''`). The former is a legacy of Broad Match Modifier (BMM), which was [deprecated](https://support.google.com/google-ads/answer/10286719?hl=en) and merged into Phrase Match in July 2021 by Google. The latter likely indicates a phrase match for the keyword, though it may not match the `search_term_match_type` value for the record.
+
+We have opted to leave these qualifiers in the `keyword_text` values, rather than strip them out. Please reach out and create an [issue](https://github.com/fivetran/dbt_google_ads/issues) if you would like cleaned `keyword_text` values for standardization.
