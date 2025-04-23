@@ -5,7 +5,7 @@
 **3 total changes • 0 possible breaking changes**
 | **Model/Column** | **Change type** | **Old name** | **New name** | **Notes** |
 | ---------------- | --------------- | ------------ | ------------ | --------- |
-| [google_ads__search_term_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__search_term_report)  | New Transform Model |   |   |  Uses new `search_term_keyword_stats` source table  |
+| [google_ads__search_term_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__search_term_report)  | New Transform Model |   |   |  Each record represents daily performance of search terms matching tracked keywords, at the ad group level.  |
 | stg_google_ads__search_term_keyword_stats | New Staging Model |   |   |  Uses new `search_term_keyword_stats` source table  |
 | stg_google_ads__search_term_keyword_stats_tmp | New Staging Model |   |   | Uses new `search_term_keyword_stats` source table   |
 
