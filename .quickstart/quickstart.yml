@@ -19,5 +19,6 @@ public_models: [
   "google_ads__url_report",
   "google_ads__ad_report",
   "google_ads__ad_group_report",
-  "google_ads__account_report"
+  "google_ads__account_report",
+  "google_ads__search_term_report"
 ]
