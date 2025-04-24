@@ -1,4 +1,6 @@
-<p align="center">
+# Google Ads Transformation dbt Package ([Docs](https://fivetran.github.io/dbt_google_ads/))
+
+<p align="left">
     <a alt="License"
         href="https://github.com/fivetran/dbt_google_ads/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" /></a>
@@ -10,7 +12,6 @@
         <img src="https://img.shields.io/badge/Contributions-welcome-blueviolet" /></a>
 </p>
 
-# Google Ads Transformation dbt Package ([Docs](https://fivetran.github.io/dbt_google_ads/))
 ## What does this dbt package do?
 - Produces modeled tables that leverage Google Ads data from [Fivetran's connector](https://fivetran.com/docs/applications/google-ads) in the format described by [this ERD](https://fivetran.com/docs/applications/google-ads#schemainformation) and builds off the output of our [Google Ads source package](https://github.com/fivetran/dbt_google_ads_source).
 - Enables you to better understand the performance of your ads across varying grains:
@@ -30,9 +31,10 @@ The following table provides a detailed list of all tables materialized within t
 | [google_ads__keyword_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__keyword_report)            | Each record in this table represents the daily performance at the ad group level for keywords. |
 | [google_ads__ad_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__ad_report)            | Each record in this table represents the daily performance at the ad level. |
 | [google_ads__url_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__url_report)            | Each record in this table represents the daily performance of URLs at the ad level. |
+| [google_ads__search_term_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__search_term_report)            | Each record in this table represents the daily performance at the ad group level for search terms matching tracked keywords. |
 
 ### Materialized Models
-Each Quickstart transformation job run materializes 26 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
+Each Quickstart transformation job run materializes 29 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
 <!--section-end-->
 
 ## How do I use the dbt package?
@@ -84,6 +86,17 @@ vars:
 
 To connect your multiple schema/database sources to the package models, follow the steps outlined in the [Union Data Defined Sources Configuration](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#union_data-source) section of the Fivetran Utils documentation for the union_data macro. This will ensure a proper configuration and correct visualization of connections in the DAG.
 
+#### Disable Search Term Keyword Stats
+This package uses the `search_term_keyword_stats` pre-built report introduced in [April 2025](https://fivetran.com/docs/connectors/applications/google-ads/changelog#april2025), but takes into consideration that not every user may sync or want to use this table. By default, if you do not have the `search_term_keyword_stats` report and are not running the Google Ads package via Fivetran Quickstart, we will create empty staging `search_term_keyword_stats` models so as to not cause downstream transformation failures.
+
+To **totally** disable transformations of `search_term_keyword_stats`, add the following variable configuration to your root `dbt_project.yml` file:
+```yml
+vars:
+    google_ads__using_search_term_keyword_stats: False # True by default
+```
+
+> This variable is dynamically set in Fivetran Quickstart.
+
 #### Adding passthrough metrics
 By default, this package will select `clicks`, `impressions`, `cost`, `conversions`, `conversions_value`, and `view_through_conversions` from the source reporting tables to store into the staging models. If you would like to pass through additional metrics to the staging models, add the below configurations to your `dbt_project.yml` file. These variables allow for the pass-through fields to be aliased (`alias`) if desired, but not required. Use the below format for declaring the respective pass-through variables:
 
@@ -104,6 +117,10 @@ vars:
     google_ads__ad_stats_passthrough_metrics: # these metrics are included in google_ads__url_report as well
       - name: "other_id"
         alias: "another_id"
+    google_ads__search_term_keyword_stats_passthrough_metrics:
+      - name: "some_metric"
+        alias: "metric_pct"
+        transform_sql: "metric_pct / 100.0"
 ```
 #### Enable UTM Auto Tagging
 This package assumes you are manually adding UTM tags to your ads. If you are leveraging the auto-tag feature within Google Ads then you will want to enable the `google_auto_tagging_enabled` variable to correctly populate the UTM fields within the `google_ads__utm_report` model.
@@ -147,7 +164,7 @@ This dbt package is dependent on the following dbt packages. These dependencies 
 ```yml
 packages:
     - package: fivetran/google_ads_source
-      version: [">=0.11.0", "<0.12.0"]
+      version: [">=0.12.0", "<0.13.0"]
 
     - package: fivetran/fivetran_utils
       version: [">=0.4.0", "<0.5.0"]
