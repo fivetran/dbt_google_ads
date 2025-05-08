@@ -1,5 +1,5 @@
 name: 'google_ads_integration_tests'
-version: '0.12.0'
+version: '0.13.0'
 
 profile: 'integration_tests'
 config-version: 2
@@ -39,6 +39,8 @@ seeds:
       ad_group_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
       ad_group_criterion_criterion_id:  "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
       base_adgroup_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
+  +docs:
+    show: false
 
 dispatch:
   - macro_namespace: dbt_utils
