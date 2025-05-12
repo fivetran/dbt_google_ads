@@ -59,7 +59,7 @@ Include the following google_ads package version in your `packages.yml` file _if
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: [">=0.12.0", "<0.13.0"] # we recommend using ranges to capture non-breaking changes automatically
+    version: [">=0.13.0", "<0.14.0"] # we recommend using ranges to capture non-breaking changes automatically
 ```
 Do **NOT** include the `google_ads_source` package in this file. The transformation package itself has a dependency on it and will install the source package as well.
 
