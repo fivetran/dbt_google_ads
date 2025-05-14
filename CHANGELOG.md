@@ -6,12 +6,10 @@
 | **Model/Column** | **Change type** | **Old name** | **New name** | **Notes** |
 | ---------------- | --------------- | ------------ | ------------ | --------- |
 | [google_ads__search_term_report](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__search_term_report) | New Column |   |  `criterion_id` | **BREAKING:** This may change the model's grain, as a single `keyword_text` can have multiple `criterion_id` values. `criterion_id` is included in uniqueness tests for this model. |
-| [stg_google_ads__search_term_keyword_stats](https://fivetran.github.io/dbt_google_ads_source/#!/model/model.google_ads_source.stg_google_ads__search_term_keyword_stats) | New Column |   |  `criterion_id` |  Parsed out of `keyword_ad_group_criterion` field |
+| [stg_google_ads__search_term_keyword_stats](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads_source.stg_google_ads__search_term_keyword_stats) | New Column |   |  `criterion_id` |  Parsed out of `keyword_ad_group_criterion` field |
 
 ## Feature Updates
-- Added `criterion_id` to the recently introduced `google_ads__search_term_report` model. This is parsed from the source `keyword_ad_group_criterion` table to extract the ID of the associated keyword. 
-  - A single `keyword_text` can be associated with multiple `criterion_id` values, so this may impact the grain/volume of the end model and has therefore been included in model uniqueness tests. 
-  - This was added to align with other advertising platforms in the downstream [Ad Reporting](https://github.com/fivetran/dbt_ad_reporting/tree/main?tab=readme-ov-file) data model, which includes keyword IDs in the combined [search report](https://fivetran.github.io/dbt_ad_reporting/#!/model/model.ad_reporting.ad_reporting__search_report) end model.
+- Added `criterion_id` to the recently introduced `google_ads__search_term_report` model. This was added to align with other advertising platforms in the downstream [Ad Reporting](https://github.com/fivetran/dbt_ad_reporting/tree/main?tab=readme-ov-file) data model, which includes keyword IDs in the combined [search report](https://fivetran.github.io/dbt_ad_reporting/#!/model/model.ad_reporting.ad_reporting__search_report) end model.
 
 ## Under the Hood
 - Added a consistency data validation test for `google_ads__search_term_report`. 
