@@ -312,9 +312,9 @@ models:
             - source_relation
             - ad_group_id
             - search_term
-            - keyword_text
             - date_day
             - search_term_match_type
+            - criterion_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -354,3 +354,5 @@ models:
         description: "{{ doc('conversions_value') }}"
       - name: view_through_conversions
         description: "{{ doc('view_through_conversions') }}"
+      - name: criterion_id
+        description: Reference to the ad group criterion used for the associated keyword. One `keyword_text` may have multiple `criterion_id` values.
