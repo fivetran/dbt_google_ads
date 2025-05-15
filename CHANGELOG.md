@@ -1,5 +1,7 @@
 # dbt_google_ads v0.13.0
 
+[PR #77](https://github.com/fivetran/dbt_google_ads/pull/77) introduces the following updates:
+
 ## Schema Updates
 
 **2 total changes • 1 possible breaking change**
@@ -10,6 +12,7 @@
 
 ## Feature Updates
 - Added `criterion_id` to the recently introduced `google_ads__search_term_report` model. This was added to align with other advertising platforms in the downstream [Ad Reporting](https://github.com/fivetran/dbt_ad_reporting/tree/main?tab=readme-ov-file) data model, which includes keyword IDs in the combined [search report](https://fivetran.github.io/dbt_ad_reporting/#!/model/model.ad_reporting.ad_reporting__search_report) end model.
+- Removed `keyword_text` from the uniqueness test for `google_ads__search_term_report` in favor of `criterion_id`.
 
 ## Under the Hood
 - Added a consistency data validation test for `google_ads__search_term_report`. 
