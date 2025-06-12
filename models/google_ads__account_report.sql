@@ -3,13 +3,13 @@
 with stats as (
 
     select *
-    from {{ var('account_stats') }}
+    from {{ ref('stg_google_ads__account_stats') }}
 ), 
 
 accounts as (
 
     select *
-    from {{ var('account_history') }}
+    from {{ ref('stg_google_ads__account_history') }}
     where is_most_recent_record = True
 ), 
 

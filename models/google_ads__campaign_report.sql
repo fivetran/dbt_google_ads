@@ -3,20 +3,20 @@
 with stats as (
 
     select *
-    from {{ var('campaign_stats') }}
+    from {{ ref('stg_google_ads__campaign_stats') }}
 ), 
 
 accounts as (
 
     select *
-    from {{ var('account_history') }}
+    from {{ ref('stg_google_ads__account_history') }}
     where is_most_recent_record = True
 ), 
 
 campaigns as (
 
     select *
-    from {{ var('campaign_history') }}
+    from {{ ref('stg_google_ads__campaign_history') }}
     where is_most_recent_record = True
 ), 
 
