@@ -1,6 +1,6 @@
 # dbt_google_ads v0.14.0
 
-[PR #78](https://github.com/fivetran/dbt_google_ads/pull/78) includes the following updates:
+[PR #79](https://github.com/fivetran/dbt_google_ads/pull/79) includes the following updates:
 
 ## Breaking Change for dbt Core < 1.9.5
 > *Note: This is not relevant to Fivetran Quickstart users.*
