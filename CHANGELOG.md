@@ -19,6 +19,10 @@
   - Removed all `accepted_values` tests.
   - Moved `loaded_at_field: _fivetran_synced` under the `config:` block in `src_google_ads.yml`.
 
+### Under the Hood
+- Updated conditions in `.github/workflows/auto-release.yml`.
+- Added `.github/workflows/generate-docs.yml`. 
+
 # dbt_google_ads v0.14.0
 
 [PR #79](https://github.com/fivetran/dbt_google_ads/pull/79) includes the following updates:
