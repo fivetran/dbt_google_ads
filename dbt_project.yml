@@ -9,7 +9,9 @@ models:
     +materialized: table
     staging:
       +schema: google_ads_source
-      +materialized: view
+      +materialized: table
+      tmp:
+        +materialized: view
 vars:
   google_ads:
     ad_stats: "{{ source('google_ads', 'ad_stats') }}"
