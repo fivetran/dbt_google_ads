@@ -20,14 +20,16 @@ vars:
 
 # Comment out for docs generation
   google_ads__campaign_stats_passthrough_metrics:
-    - name: conversions
-    - name: view_through_conversions
-      alias: view_through_conversions_aliased
+    - name: conversions # @docs-ignore
+    - name: view_through_conversions # @docs-ignore
+      alias: view_through_conversions_aliased # @docs-ignore
 
 models:
   +schema: "google_ads_{{ var('directed_schema','dev') }}"
 
 seeds:
+  +docs:
+    show: false
   google_ads_integration_tests:
     +column_types:
       customer_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
@@ -39,8 +41,6 @@ seeds:
       ad_group_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
       ad_group_criterion_criterion_id:  "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
       base_adgroup_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
-  +docs:
-    show: false
 
 dispatch:
   - macro_namespace: dbt_utils
