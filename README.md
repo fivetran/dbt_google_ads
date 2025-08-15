@@ -1,4 +1,4 @@
-# Google Ads Transformation dbt Package ([Docs](https://fivetran.github.io/dbt_google_ads/))
+# Google Ads dbt Package ([Docs](https://fivetran.github.io/dbt_google_ads/))
 
 <p align="left">
     <a alt="License"
