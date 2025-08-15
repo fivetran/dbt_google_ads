@@ -1,33 +1,36 @@
 name: 'google_ads_integration_tests'
-version: '0.14.0'
+version: '1.0.0'
 
 profile: 'integration_tests'
 config-version: 2
 
 vars:
-  google_ads_schema: google_ads_integration_tests_31
-  google_ads_ad_stats_identifier: "ad_stats_data"
-  google_ads_ad_history_identifier: "ad_history_data"
-  google_ads_ad_group_history_identifier: "ad_group_history_data"
-  google_ads_campaign_history_identifier: "campaign_history_data"
-  google_ads_account_history_identifier: "account_history_data"
-  google_ads_keyword_stats_identifier: "keyword_stats_data"
-  google_ads_account_stats_identifier: "account_stats_data"
-  google_ads_ad_group_stats_identifier: "ad_group_stats_data"
-  google_ads_campaign_stats_identifier: "campaign_stats_data"
-  google_ads_ad_group_criterion_history_identifier: "ad_group_criterion_history_data"
-  google_ads_search_term_keyword_stats_identifier: "search_term_keyword_stats_data"
+  google_ads:
+    google_ads_schema: google_ads_integration_tests_31
+    google_ads_ad_stats_identifier: "ad_stats_data"
+    google_ads_ad_history_identifier: "ad_history_data"
+    google_ads_ad_group_history_identifier: "ad_group_history_data"
+    google_ads_campaign_history_identifier: "campaign_history_data"
+    google_ads_account_history_identifier: "account_history_data"
+    google_ads_keyword_stats_identifier: "keyword_stats_data"
+    google_ads_account_stats_identifier: "account_stats_data"
+    google_ads_ad_group_stats_identifier: "ad_group_stats_data"
+    google_ads_campaign_stats_identifier: "campaign_stats_data"
+    google_ads_ad_group_criterion_history_identifier: "ad_group_criterion_history_data"
+    google_ads_search_term_keyword_stats_identifier: "search_term_keyword_stats_data"
 
 # Comment out for docs generation
   google_ads__campaign_stats_passthrough_metrics:
-    - name: conversions
-    - name: view_through_conversions
-      alias: view_through_conversions_aliased
+    - name: conversions # @docs-ignore
+    - name: view_through_conversions # @docs-ignore
+      alias: view_through_conversions_aliased # @docs-ignore
 
 models:
   +schema: "google_ads_{{ var('directed_schema','dev') }}"
 
 seeds:
+  +docs:
+    show: false
   google_ads_integration_tests:
     +column_types:
       customer_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
@@ -39,9 +42,11 @@ seeds:
       ad_group_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
       ad_group_criterion_criterion_id:  "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
       base_adgroup_id: "{{ 'INT64' if target.type == 'bigquery' else 'bigint' }}"
-  +docs:
-    show: false
 
 dispatch:
   - macro_namespace: dbt_utils
     search_order: ['spark_utils', 'dbt_utils']
+
+flags:
+  send_anonymous_usage_stats: False
+  use_colors: True

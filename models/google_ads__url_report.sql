@@ -3,34 +3,34 @@
 with stats as (
 
     select *
-    from {{ var('ad_stats') }}
+    from {{ ref('stg_google_ads__ad_stats') }}
 ), 
 
 accounts as (
 
     select *
-    from {{ var('account_history') }}
+    from {{ ref('stg_google_ads__account_history') }}
     where is_most_recent_record = True
 ), 
 
 campaigns as (
 
     select *
-    from {{ var('campaign_history') }}
+    from {{ ref('stg_google_ads__campaign_history') }}
     where is_most_recent_record = True
 ), 
 
 ad_groups as (
 
     select *
-    from {{ var('ad_group_history') }}
+    from {{ ref('stg_google_ads__ad_group_history') }}
     where is_most_recent_record = True
 ),
 
 ads as (
 
     select *
-    from {{ var('ad_history') }}
+    from {{ ref('stg_google_ads__ad_history') }}
     where is_most_recent_record = True
 ), 
 
@@ -53,10 +53,10 @@ fields as (
 
         {% if var('google_auto_tagging_enabled', false) %}
 
-        coalesce( {{ google_ads_source.google_ads_extract_url_parameter('ads.final_url', 'utm_source') }} , 'google')  as utm_source,
-        coalesce( {{ google_ads_source.google_ads_extract_url_parameter('ads.final_url', 'utm_medium') }} , 'cpc') as utm_medium,
-        coalesce( {{ google_ads_source.google_ads_extract_url_parameter('ads.final_url', 'utm_campaign') }} , campaigns.campaign_name) as utm_campaign,
-        coalesce( {{ google_ads_source.google_ads_extract_url_parameter('ads.final_url', 'utm_content') }} , ad_groups.ad_group_name) as utm_content,
+        coalesce( {{ google_ads.google_ads_extract_url_parameter('ads.final_url', 'utm_source') }} , 'google')  as utm_source,
+        coalesce( {{ google_ads.google_ads_extract_url_parameter('ads.final_url', 'utm_medium') }} , 'cpc') as utm_medium,
+        coalesce( {{ google_ads.google_ads_extract_url_parameter('ads.final_url', 'utm_campaign') }} , campaigns.campaign_name) as utm_campaign,
+        coalesce( {{ google_ads.google_ads_extract_url_parameter('ads.final_url', 'utm_content') }} , ad_groups.ad_group_name) as utm_content,
 
         {% else %}
 
