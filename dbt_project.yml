@@ -12,6 +12,7 @@ models:
       +materialized: table
       tmp:
         +materialized: view
+
 vars:
   google_ads:
     ad_stats: "{{ source('google_ads', 'ad_stats') }}"

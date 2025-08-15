@@ -9,7 +9,7 @@
   - All functionality from the source package has been merged into this transformation package for improved maintainability and clarity.
   - If you reference `fivetran/google_ads_source` in your `packages.yml`, you must remove this dependency to avoid conflicts.
   - Any source overrides referencing the `fivetran/google_ads_source` package will also need to be removed or updated to reference this package.
-  - Update any google_ads_source-scoped variables to be scoped to only under this package. See the [README](https://github.com/fivetran/dbt_google_ads/blob/main/README.md) for how to configure the build schema of staging models.
+  - Update any google_ads_source-scoped variables to be scoped to only under this package. See the [README](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#change-the-build-schema) for how to configure the build schema of staging models.
 - As part of the consolidation, vars are no longer used to reference staging models, and only sources are represented by vars. Staging models are now referenced directly with `ref()` in downstream models.
 
 ### dbt Fusion Compatibility Updates
