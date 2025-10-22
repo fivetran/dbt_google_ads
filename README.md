@@ -36,6 +36,18 @@ The following table provides a detailed list of all tables materialized within t
 | [`google_ads__search_term_report`](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__search_term_report) | Represents daily performance at the search term and keyword level, enriched with account, campaign, and ad group context. Includes metrics such as `spend`, `clicks`, `impressions`, and `conversions`.<br><br>**Example Analytics Questions:**<br>• What new search terms are emerging that I should add as keywords?<br>• Which irrelevant search terms should be added as negatives to reduce wasted spend?<br>• Are there seasonal shifts in search terms driving conversions? |
 | [`google_ads__url_report`](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__url_report) | Represents daily performance at the ad and landing page level, enriched with account, campaign, ad group, and ad context. Includes URL breakdowns (`base_url`, `url_host`, `url_path`) and UTM parameters (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`). Includes metrics such as `spend`, `clicks`, `impressions`, and `conversions`.<br><br>**Example Analytics Questions:**<br>• Which landing pages have the highest bounce rate despite high traffic?<br>• Do certain URLs outperform others for mobile vs. desktop traffic?<br>• How much revenue is attributable to specific product landing pages? |
 
+Many of the above reports are now configurable for [visualization via Streamlit](https://github.com/fivetran/streamlit_ad_reporting). Check out some [sample reports here](https://fivetran-ad-reporting.streamlit.app/ad_performance).
+
+### Example Visualizations
+
+Curious what these tables can do? The Google Ads models provide advertising performance data that can be visualized to track key metrics like spend, impressions, click-through rates, conversion rates, and return on ad spend across different campaign structures and time periods. Check out example visualizations in the [Fivetran Ad Reporting Streamlit App](https://fivetran-ad-reporting.streamlit.app/ad_performance), and see how you can use these tables in your own reporting. Below is a screenshot of an example dashboard; explore the app for more.
+
+<p align="center">
+  <a href="https://fivetran-ad-reporting.streamlit.app/ad_performance">
+    <img src="https://raw.githubusercontent.com/fivetran/dbt_google_ads/main/images/streamlit_example.png" alt="Fivetran Ad Reporting Streamlit App" width="100%">
+  </a>
+</p>
+
 ### Materialized Models
 Each Quickstart transformation job run materializes 29 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
 <!--section-end-->
