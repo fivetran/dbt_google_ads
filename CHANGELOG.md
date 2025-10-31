@@ -1,3 +1,18 @@
+# dbt_google_ads v1.0.1
+
+[PR #](https://github.com/fivetran/dbt_google_ads/pull/) includes the following updates:
+
+## Under the Hood
+- Introduced `partition_by_source_relation` macro to dynamically handle
+source_relation partitioning based on union configuration.
+- Updated window functions in the following staging models to use the new 
+conditional partitioning macro:
+  - `stg_google_ads__account_history`
+  - `stg_google_ads__ad_group_criterion_history`
+  - `stg_google_ads__ad_group_history`
+  - `stg_google_ads__ad_history`
+  - `stg_google_ads__campaign_history`
+
 # dbt_google_ads v1.0.0
 
 [PR #82](https://github.com/fivetran/dbt_google_ads/pull/82) includes the following updates:

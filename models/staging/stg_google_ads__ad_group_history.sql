@@ -37,7 +37,7 @@ final as (
         campaign_name, 
         name as ad_group_name, 
         status as ad_group_status,
-        row_number() over (partition by source_relation, id order by updated_at desc) = 1 as is_most_recent_record
+        row_number() over (partition by id {{ google_ads.partition_by_source_relation() }} order by updated_at desc) = 1 as is_most_recent_record
     from fields
     where coalesce(_fivetran_active, true)
 )
