@@ -1,6 +1,6 @@
 # dbt_google_ads v1.0.1
 
-[PR #](https://github.com/fivetran/dbt_google_ads/pull/) includes the following updates:
+[PR #89](https://github.com/fivetran/dbt_google_ads/pull/89) includes the following updates:
 
 ## Under the Hood
 - Introduced `partition_by_source_relation` macro to dynamically handle source_relation partitioning based on union configuration.
@@ -10,6 +10,7 @@
   - `stg_google_ads__ad_group_history`
   - `stg_google_ads__ad_history`
   - `stg_google_ads__campaign_history`
+- Updated the `vertical_sum_conversions` to work properly when using the union_data feature.
 
 # dbt_google_ads v1.0.0
 

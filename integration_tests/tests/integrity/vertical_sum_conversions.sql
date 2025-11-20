@@ -9,7 +9,7 @@ with account_source as (
         sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
-    from {{ source('google_ads', 'account_stats') }}
+    from {{ ref('stg_google_ads__account_stats_tmp') }}
 ),
 
 account_model as (
@@ -27,7 +27,7 @@ ad_source as (
         sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
-    from {{ source('google_ads', 'ad_stats') }}
+    from {{ ref('stg_google_ads__ad_stats_tmp') }}
 ),
 
 ad_model as (
@@ -45,7 +45,7 @@ ad_group_source as (
         sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
-    from {{ source('google_ads', 'ad_group_stats') }}
+    from {{ ref('stg_google_ads__ad_group_stats_tmp') }}
 ),
 
 ad_group_model as (
@@ -63,7 +63,7 @@ campaign_source as (
         sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
-    from {{ source('google_ads', 'campaign_stats') }}
+    from {{ ref('stg_google_ads__campaign_stats_tmp') }}
 ),
 
 campaign_model as (
@@ -81,13 +81,14 @@ url_source as (
         sum(coalesce(ad_stats.conversions_value, 0)) as total_value,
         sum(coalesce(ad_stats.conversions, 0)) as conversions,
         sum(coalesce(ad_stats.view_through_conversions, 0)) as view_through_conversions
-    from {{ source('google_ads', 'ad_stats') }}
+    from {{ ref('stg_google_ads__ad_stats') }} as ad_stats
     left join (
         select * from {{ ref('stg_google_ads__ad_history') }} 
         where is_most_recent_record = True
         ) as ad_history
     on ad_stats.ad_id = ad_history.ad_id 
     and cast(ad_stats.ad_group_id as {{ dbt.type_string() }}) = ad_history.ad_group_id
+    and ad_stats.source_relation = ad_history.source_relation 
     and ad_history.source_final_urls is not null
 ),
 
@@ -106,7 +107,7 @@ keyword_source as (
         sum(coalesce(conversions_value, 0)) as total_value,
         sum(coalesce(conversions, 0)) as conversions,
         sum(coalesce(view_through_conversions, 0)) as view_through_conversions
-    from {{ source('google_ads', 'keyword_stats') }}
+    from {{ ref('stg_google_ads__keyword_stats_tmp') }}
 ),
 
 keyword_model as (
