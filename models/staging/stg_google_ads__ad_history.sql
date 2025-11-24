@@ -38,7 +38,7 @@ final as (
         display_url,
         final_urls as source_final_urls,
         replace(replace(final_urls, '[', ''),']','') as final_urls,
-        row_number() over (partition by source_relation, id, ad_group_id order by updated_at desc) = 1 as is_most_recent_record
+        row_number() over (partition by id, ad_group_id {{ google_ads.partition_by_source_relation() }} order by updated_at desc) = 1 as is_most_recent_record
     from fields
     where coalesce(_fivetran_active, true)
 ),

@@ -41,7 +41,7 @@ final as (
         serving_status,
         status,
         tracking_url_template,
-        row_number() over (partition by source_relation, id order by updated_at desc) = 1 as is_most_recent_record
+        row_number() over (partition by id {{ google_ads.partition_by_source_relation() }} order by updated_at desc) = 1 as is_most_recent_record
     from fields
     where coalesce(_fivetran_active, true)
 )
