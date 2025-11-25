@@ -1,5 +1,5 @@
 name: 'google_ads_integration_tests'
-version: '1.0.1'
+version: '1.1.0'
 
 profile: 'integration_tests'
 config-version: 2
