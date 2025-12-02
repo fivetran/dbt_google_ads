@@ -1,3 +1,10 @@
+# dbt_google_ads v1.1.0
+
+[PR #90](https://github.com/fivetran/dbt_google_ads/pull/90) includes the following updates:
+
+## Features
+  - Increases the required dbt version upper limit to v3.0.0
+
 # dbt_google_ads v1.0.1
 
 [PR #89](https://github.com/fivetran/dbt_google_ads/pull/89) includes the following updates:
