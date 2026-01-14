@@ -22,3 +22,41 @@ public_models: [
   "google_ads__account_report",
   "google_ads__search_term_report"
 ]
+
+supported_vars:
+  google_auto_tagging_enabled:
+    type: boolean
+    value: false
+    description: "Are you leveraging the auto-tag feature within Google Ads instead of manually adding UTMs to ads?"
+    display_name: "Auto-Tagging Enabled"
+
+  google_ads__ad_stats_passthrough_metrics:
+    type: dictionary
+    description: "Addtional `AD_STATS` report columns to include in `google_ads__ad_report` and `google_ads__url_report`"
+    display_name: "Additional Ad Stats Metrics"
+
+  google_ads__campaign_stats_passthrough_metrics:
+    type: dictionary
+    description: "Addtional `CAMPAIGN_STATS` report columns to include in `google_ads__campaign_report`"
+    display_name: "Additional Campaign Stats Metrics"
+
+  google_ads__ad_group_stats_passthrough_metrics:
+    type: dictionary
+    description: "Addtional `AD_GROUP_STATS` report columns to include in `google_ads__ad_group_report`"
+    display_name: "Additional Ad Group Stats Metrics"
+
+  google_ads__account_stats_passthrough_metrics:
+    type: dictionary
+    description: "Addtional `ACCOUNT_STATS` report columns to include in `google_ads__account_report`"
+    display_name: "Additional Account Stats Metrics"
+
+  google_ads__keyword_stats_passthrough_metrics:
+    type: dictionary
+    description: "Addtional `KEYWORD_STATS` report columns to include in `google_ads__keyword_report`"
+    display_name: "Additional Keyword Stats Metrics"
+
+  google_ads__search_term_keyword_stats_passthrough_metrics:
+    type: dictionary
+    description: "Addtional `SEARCH_TERM_KEYWORD_STATS` report columns to include in `google_ads__search_term_report`"
+    display_name: "Additional Search Term Keyword Stats Metrics"
+

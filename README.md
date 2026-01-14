@@ -1,4 +1,5 @@
-# Google Ads dbt Package ([Docs](https://fivetran.github.io/dbt_google_ads/))
+<!--section="google-ads_transformation_model"-->
+# Google Ads dbt Package
 
 <p align="left">
     <a alt="License"
@@ -15,19 +16,36 @@
         <img src="https://img.shields.io/badge/Fivetran_Quickstart_Compatible%3F-yes-green.svg" /></a>
 </p>
 
+This dbt package transforms data from Fivetran's Google Ads connector into analytics-ready tables.
+
+## Resources
+
+- Number of materialized models¹: 29
+- Connector documentation
+  - [Google Ads connector documentation](https://fivetran.com/docs/connectors/applications/google-ads)
+  - [Google Ads ERD](https://fivetran.com/docs/connectors/applications/google-ads#schemainformation)
+- dbt package documentation
+  - [GitHub repository](https://github.com/fivetran/dbt_google_ads)
+  - [dbt Docs](https://fivetran.github.io/dbt_google_ads/#!/overview)
+  - [DAG](https://fivetran.github.io/dbt_google_ads/#!/overview?g_v=1)
+  - [Changelog](https://github.com/fivetran/dbt_google_ads/blob/main/CHANGELOG.md)
+
 ## What does this dbt package do?
-- Produces modeled tables that leverage Google Ads data from [Fivetran's connector](https://fivetran.com/docs/applications/google-ads) in the format described by [this ERD](https://fivetran.com/docs/applications/google-ads#schemainformation).
-- Enables you to better understand the performance of your ads across varying grains:
-  - Providing an account, campaign, ad group, keyword, ad, and utm level reports.
-- Materializes output models designed to work simultaneously with our [multi-platform Ad Reporting package](https://github.com/fivetran/dbt_ad_reporting).
-- Generates a comprehensive data dictionary of your source and modeled Google Ads data through the [dbt docs site](https://fivetran.github.io/dbt_google_ads/).
+This package enables you to better understand the performance of your ads across varying grains and produces modeled tables that leverage Google Ads data. It creates enriched models with metrics focused on account, campaign, ad group, keyword, ad, and utm level reports.
 
-<!--section="google_ads_transformation_model-->
-The following table provides a detailed list of all tables materialized within this package by default.
-> TIP: See more details about these tables in the package's [dbt docs site](https://fivetran.github.io/dbt_google_ads/#!/overview?g_v=1&g_e=seeds).
+### Output schema
+Final output tables are generated in the following target schema:
 
-| **Table** | **Details** |
-|-----------|-------------|
+```
+<your_database>.<connector/schema_name>_google_ads
+```
+
+### Final output tables
+
+By default, this package materializes the following final tables:
+
+| Table | Description |
+| :---- | :---- |
 | [`google_ads__account_report`](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__account_report) | Represents daily performance aggregated at the account level, including `spend`, `clicks`, `impressions`, and `conversions`.<br><br>**Example Analytics Questions:**<ul><li>How does performance compare across different accounts by account manager?</li><li>Are currency fluctuations affecting results across markets?</li></ul> |
 | [`google_ads__ad_group_report`](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__ad_group_report) | Represents daily performance aggregated at the ad group level, including `spend`, `clicks`, `impressions`, and `conversions`.<br><br>**Example Analytics Questions:**<ul><li>Which ad groups have the strongest engagement relative to their budget?</li><li>Do certain ad groups dominate impressions within a campaign?</li><li>Are new ad groups ramping up as expected after launch?</li></ul> |
 | [`google_ads__ad_report`](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__ad_report) | Represents daily performance at the individual ad level, including `spend`, `clicks`, `impressions`, and `conversions`.<br><br>**Example Analytics Questions:**<ul><li>Which ad creatives are driving the lowest cost per click?</li><li>Do expanded text ads perform better than responsive search ads?</li><li>How do performance trends change after refreshing ad copy?</li></ul> |
@@ -36,11 +54,12 @@ The following table provides a detailed list of all tables materialized within t
 | [`google_ads__search_term_report`](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__search_term_report) | Represents daily performance at the individual search term level, including `spend`, `clicks`, `impressions`, and `conversions`, enriched with account, campaign, and ad group context.<br><br>**Example Analytics Questions:**<ul><li>What new search terms are emerging that I should add as keywords?</li><li>Which irrelevant search terms should be added as negatives to reduce wasted spend?</li><li>Are there seasonal shifts in search terms driving conversions?</li></ul> |
 | [`google_ads__url_report`](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__url_report) | Represents daily performance at the individual URL level, including `spend`, `clicks`, `impressions`, and `conversions`, enriched with ad context. Includes URL breakdowns (`base_url`, `url_host`, `url_path`) and UTM parameters (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`).<br><br>**Example Analytics Questions:**<ul><li>Which landing pages are driving the highest conversion rates?</li><li>Are certain URLs performing better with specific ad creative combinations?</li><li>How much revenue is attributable to specific product landing pages?</li></ul> |
 
-Many of the above reports are now configurable for [visualization via Streamlit](https://github.com/fivetran/streamlit_ad_reporting). Check out some [sample reports here](https://fivetran-ad-reporting.streamlit.app/ad_performance).
+¹ Each Quickstart transformation job run materializes these models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
 
-### Example Visualizations
+---
 
-Curious what these tables can do? The Google Ads models provide advertising performance data that can be visualized to track key metrics like spend, impressions, click-through rates, conversion rates, and return on ad spend across different campaign structures and time periods. Check out example visualizations in the [Fivetran Ad Reporting Streamlit App](https://fivetran-ad-reporting.streamlit.app/ad_performance), and see how you can use these tables in your own reporting. Below is a screenshot of an example dashboard; explore the app for more.
+## Visualizations
+Many of the above reports are now configurable for [visualization via Streamlit](https://github.com/fivetran/streamlit_google-ads). Check out some [sample reports here](https://fivetran-google-ads.streamlit.app/).
 
 <p align="center">
   <a href="https://fivetran-ad-reporting.streamlit.app/ad_performance">
@@ -48,17 +67,29 @@ Curious what these tables can do? The Google Ads models provide advertising perf
   </a>
 </p>
 
-### Materialized Models
-Each Quickstart transformation job run materializes 29 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
-<!--section-end-->
-
-## How do I use the dbt package?
-
-### Step 1: Prerequisites
+## Prerequisites
 To use this dbt package, you must have the following:
 
 - At least one Fivetran Google Ads connection syncing data into your destination.
 - A **BigQuery**, **Snowflake**, **Redshift**, **PostgreSQL**, or **Databricks** destination.
+
+## How do I use the dbt package?
+You can either add this dbt package in the Fivetran dashboard or import it into your dbt project:
+
+- To add the package in the Fivetran dashboard, follow our [Quickstart guide](https://fivetran.com/docs/transformations/dbt).
+- To add the package to your dbt project, follow the setup instructions in the dbt package's [README file](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#how-do-i-use-the-dbt-package) to use this package.
+
+<!--section-end-->
+
+### Install the package (skip if also using the `ad_reporting` combo package)
+Include the following google_ads package version in your `packages.yml` file _if_ you are not also using the upstream [Ad Reporting combination package](https://github.com/fivetran/dbt_ad_reporting):
+> TIP: Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
+```yaml
+packages:
+  - package: fivetran/google_ads
+    version: [">=1.2.0", "<1.3.0"] # we recommend using ranges to capture non-breaking changes automatically
+```
+> All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/google_ads_source` in your `packages.yml` since this package has been deprecated.
 
 #### Databricks Dispatch Configuration
 If you are using a Databricks destination with this package you will need to add the below (or a variation of the below) dispatch configuration within your `dbt_project.yml`. This is required in order for the package to accurately search for macros within the `dbt-labs/spark_utils` then the `dbt-labs/dbt_utils`.
@@ -68,17 +99,7 @@ dispatch:
     search_order: ['spark_utils', 'dbt_utils']
 ```
 
-### Step 2: Install the package (skip if also using the `ad_reporting` combo package)
-Include the following google_ads package version in your `packages.yml` file _if_ you are not also using the upstream [Ad Reporting combination package](https://github.com/fivetran/dbt_ad_reporting):
-> TIP: Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
-```yaml
-packages:
-  - package: fivetran/google_ads
-    version: [">=1.1.0", "<1.2.0"] # we recommend using ranges to capture non-breaking changes automatically
-```
-> All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/google_ads_source` in your `packages.yml` since this package has been deprecated.
-
-### Step 3: Define database and schema variables
+### Define database and schema variables
 By default, this package runs using your destination and the `google_ads` schema. If this is not where your Google Ads data is (for example, if your Google Ads schema is named `google_ads_fivetran`), add the following configuration to your root `dbt_project.yml` file:
 
 ```yml
@@ -87,7 +108,7 @@ vars:
     google_ads_schema: your_schema_name 
 ```
 
-### (Optional) Step 4: Additional configurations
+### (Optional) Additional configurations
 
 #### Union multiple connections
 If you have multiple google_ads connections in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from in the `source_relation` column of each model. To use this functionality, you will need to set either the `google_ads_union_schemas` OR `google_ads_union_databases` variables (cannot do both) in your root `dbt_project.yml` file:
@@ -165,7 +186,7 @@ vars:
     google_ads_<default_source_table_name>_identifier: your_table_name 
 ```
 
-### (Optional) Step 5: Orchestrate your models with Fivetran Transformations for dbt Core™
+### (Optional) Orchestrate your models with Fivetran Transformations for dbt Core™
 <details><summary>Expand for more details</summary>
 
 Fivetran offers the ability for you to orchestrate your dbt project through [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt). Learn how to set up your project for orchestration through Fivetran in our [Transformations for dbt Core setup guides](https://fivetran.com/docs/transformations/dbt#setupguide).
@@ -187,22 +208,27 @@ packages:
     - package: dbt-labs/spark_utils
       version: [">=0.3.0", "<0.4.0"]
 ```
-## How is this package maintained and can I contribute?
-### Package Maintenance
-The Fivetran team maintaining this package _only_ maintains the latest version of the package. We highly recommend you stay consistent with the [latest version](https://hub.getdbt.com/fivetran/google_ads/latest/) of the package and refer to the [CHANGELOG](https://github.com/fivetran/dbt_google_ads/blob/main/CHANGELOG.md) and release notes for more information on changes across versions.
 
-### Opinionated Decisions
-In creating this package, which is meant for a wide range of use cases, we had to take opinionated stances on a few different questions we came across during development. We've consolidated significant choices we made in the [DECISIONLOG.md](https://github.com/fivetran/dbt_google_ads/blob/main/DECISIONLOG.md), and will continue to update as the package evolves. We are always open to and encourage feedback on these choices, and the package in general.
+<!--section="google-ads_maintenance"-->
+## How is this package maintained and can I contribute?
+
+### Package Maintenance
+The Fivetran team maintaining this package only maintains the [latest version](https://hub.getdbt.com/fivetran/google_ads/latest/) of the package. We highly recommend you stay consistent with the latest version of the package and refer to the [CHANGELOG](https://github.com/fivetran/dbt_google_ads/blob/main/CHANGELOG.md) and release notes for more information on changes across versions.
 
 ### Contributions
 A small team of analytics engineers at Fivetran develops these dbt packages. However, the packages are made better by community contributions.
 
-We highly encourage and welcome contributions to this package. Check out [this dbt Discourse article](https://discourse.getdbt.com/t/contributing-to-a-dbt-package/657) on the best workflow for contributing to a package.
+We highly encourage and welcome contributions to this package. Learn how to contribute to a package in dbt's [Contributing to an external dbt package article](https://discourse.getdbt.com/t/contributing-to-a-dbt-package/657).
+
+### Opinionated Decisions
+In creating this package, which is meant for a wide range of use cases, we had to take opinionated stances on a few different questions we came across during development. We've consolidated significant choices we made in the [DECISIONLOG.md](https://github.com/fivetran/dbt_google_ads/blob/main/DECISIONLOG.md), and will continue to update as the package evolves. We are always open to and encourage feedback on these choices, and the package in general.
 
 #### Contributors
 We thank [everyone](https://github.com/fivetran/dbt_google_ads/graphs/contributors) who has taken the time to contribute. Each PR, bug report, and feature request has made this package better and is truly appreciated.
 
 A special thank you to [Seer Interactive](https://www.seerinteractive.com/?utm_campaign=Fivetran%20%7C%20Models&utm_source=Fivetran&utm_medium=Fivetran%20Documentation), who we closely collaborated with to introduce native conversion support to our Ad packages.
+
+<!--section-end-->
 
 ## Are there any resources available?
 - If you have questions or want to reach out for help, see the [GitHub Issue](https://github.com/fivetran/dbt_google_ads/issues/new/choose) section to find the right avenue of support for you.
