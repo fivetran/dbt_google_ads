@@ -1,3 +1,14 @@
+# dbt_google_ads v1.2.0
+
+[PR #91](https://github.com/fivetran/dbt_google_ads/pull/91) includes the following updates:
+
+## Documentation
+- Updates README with standardized Fivetran formatting.
+
+## Under the Hood
+- In the `quickstart.yml` file:
+  - Adds `supported_vars` for Quickstart UI customization.
+
 # dbt_google_ads v1.1.0
 
 [PR #90](https://github.com/fivetran/dbt_google_ads/pull/90) includes the following updates:
