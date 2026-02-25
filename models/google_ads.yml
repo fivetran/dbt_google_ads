@@ -303,3 +303,145 @@ models:
         description: "{{ doc('view_through_conversions') }}"
       - name: criterion_id
         description: Reference to the ad group criterion used for the associated keyword. One `keyword_text` may have multiple `criterion_id` values.
+
+  - name: google_ads__campaign_bid_modifiers_report
+    description: Each record in this table represents a campaign's bid modifier configuration and performance insights.
+    columns:
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
+      - name: account_name
+        description: "{{ doc('account_descriptive_name') }}"
+      - name: account_id
+        description: "{{ doc('account_id') }}"
+      - name: campaign_id
+        description: "{{ doc('campaign_id') }}"
+        tests:
+          - not_null
+      - name: campaign_name
+        description: "{{ doc('campaign_name') }}"
+      - name: advertising_channel_type
+        description: The type of advertising channel being used by the campaign.
+      - name: advertising_channel_subtype
+        description: The advertising channel subtype that is being used by the campaign.
+      - name: campaign_status
+        description: General status of the campaign.
+      - name: serving_status
+        description: Status of the ads and how they are currently being served.
+      - name: bidding_strategy_type
+        description: The type of bidding strategy (MANUAL_CPC, TARGET_CPA, etc.).
+      - name: target_cpa
+        description: Target cost per acquisition.
+      - name: target_roas
+        description: Target return on ad spend.
+      - name: enhanced_cpc
+        description: Boolean indicating if enhanced CPC is enabled.
+      - name: manual_cpa
+        description: Manual cost per acquisition setting.
+      - name: manual_cpm
+        description: Manual cost per mille setting.
+      - name: manual_cpv
+        description: Manual cost per view setting.
+      - name: bidding_status
+        description: The status of the bidding strategy.
+      - name: criterion_id
+        description: Unique identifier of the criterion that the bid modifier is applied to.
+      - name: bid_modifier
+        description: The modifier applied to the bid for this criterion.
+      - name: interaction_type
+        description: The type of interaction for the bid modifier.
+      - name: interaction_event_types
+        description: The event types for the interaction.
+      - name: modifier_type
+        description: The type of modifier (device, location, age_range, gender, etc.).
+      - name: modifier_direction
+        description: Direction of the modifier (positive adjustment, negative adjustment, no adjustment, no modifier set).
+      - name: modifier_percentage
+        description: The bid modifier percentage change.
+      - name: total_spend
+        description: Total spend in the last 30 days.
+      - name: avg_ctr_percent
+        description: Average click-through rate percentage.
+      - name: avg_cpc
+        description: Average cost per click.
+      - name: bid_modifier_recommendation
+        description: Automated recommendation based on performance analysis.
+
+  - name: google_ads__campaign_budget_diagnostics_report
+    description: Each record in this table represents a campaign's budget constraints and performance diagnostics.
+    columns:
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
+      - name: campaign_id
+        description: "{{ doc('campaign_id') }}"
+        tests:
+          - not_null
+      - name: date_day
+        description: "{{ doc('date') }}"
+      - name: campaign_name
+        description: "{{ doc('campaign_name') }}"
+      - name: account_name
+        description: "{{ doc('account_descriptive_name') }}"
+      - name: account_id
+        description: "{{ doc('account_id') }}"
+      - name: advertising_channel_type
+        description: The type of advertising channel being used by the campaign.
+      - name: advertising_channel_subtype
+        description: The advertising channel subtype that is being used by the campaign.
+      - name: campaign_status
+        description: General status of the campaign.
+      - name: serving_status
+        description: Status of the ads and how they are currently being served.
+      - name: daily_budget
+        description: The daily budget amount for the campaign.
+      - name: total_budget
+        description: The total budget amount for lifetime campaigns.
+      - name: budget_type
+        description: The type of budget (DAILY, LIFETIME, etc.).
+      - name: budget_status
+        description: The status of the budget.
+      - name: has_recommended_budget
+        description: Boolean indicating if Google has a recommended budget for this campaign.
+      - name: recommended_daily_budget
+        description: Google's recommended daily budget amount.
+      - name: bidding_strategy_type
+        description: The type of bidding strategy (MANUAL_CPC, TARGET_CPA, etc.).
+      - name: target_cpa
+        description: Target cost per acquisition.
+      - name: target_roas
+        description: Target return on ad spend.
+      - name: enhanced_cpc
+        description: Boolean indicating if enhanced CPC is enabled.
+      - name: impressions
+        description: "{{ doc('impressions') }}"
+      - name: spend
+        description: "{{ doc('cost') }}"
+      - name: ctr_percent
+        description: Click-through rate percentage.
+      - name: budget_utilization_percent
+        description: Percentage of daily budget utilized.
+      - name: total_targeting_criteria
+        description: Total number of targeting criteria set for the campaign.
+      - name: location_targeting_count
+        description: Number of location targeting criteria.
+      - name: audience_targeting_count
+        description: Number of audience targeting criteria.
+      - name: location_targeting_assessment
+        description: Assessment of location targeting constraints.
+      - name: device_targeting_assessment
+        description: Assessment of device targeting constraints.
+      - name: audience_targeting_assessment
+        description: Assessment of audience targeting constraints.
+      - name: avg_top_impression_share
+        description: Average top impression share percentage.
+      - name: avg_absolute_top_impression_share
+        description: Average absolute top impression share percentage.
+      - name: constraint_status
+        description: The type of constraint affecting campaign performance.
+      - name: constraint_severity
+        description: The severity level of the constraint (high, medium, low, minimal).
+      - name: recommendation
+        description: Automated recommendation for improving performance.
+      - name: daily_budget_efficiency_percent
+        description: Daily budget efficiency percentage.
+      - name: monthly_budget_opportunity
+        description: Potential monthly budget increase opportunity.

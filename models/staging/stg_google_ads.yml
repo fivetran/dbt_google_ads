@@ -358,3 +358,119 @@ models:
         description: '{{ doc("cost") }}'
       - name: criterion_id
         description: Reference to the ad group criterion used for the associated keyword. One `keyword_text` may have multiple `criterion_id` values.
+
+  - name: stg_google_ads__campaign_bid_modifier_history
+    description: Each record represents a historical version of a campaign bid modifier in Google Ads.
+    columns:
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
+      - name: campaign_id
+        description: "{{ doc('campaign_id') }}"
+        tests:
+          - not_null
+      - name: criterion_id
+        description: Unique identifier of the criterion that the bid modifier is applied to.
+      - name: bid_modifier
+        description: The modifier applied to the bid for this criterion.
+      - name: interaction_type
+        description: The type of interaction for the bid modifier.
+      - name: interaction_event_types
+        description: The event types for the interaction.
+      - name: updated_at
+        description: "{{ doc('updated_at') }}"
+      - name: is_most_recent_record
+        description: "{{ doc('is_most_recent_record') }}"
+
+  - name: stg_google_ads__campaign_budget_history
+    description: Each record represents a historical version of a campaign budget in Google Ads.
+    columns:
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
+      - name: campaign_id
+        description: "{{ doc('campaign_id') }}"
+        tests:
+          - not_null
+      - name: amount_micros
+        description: The daily budget amount in micros.
+      - name: delivery_method
+        description: The delivery method for the budget (STANDARD or ACCELERATED).
+      - name: has_recommended_budget
+        description: Boolean indicating if Google has a recommended budget for this campaign.
+      - name: recommended_budget_amount_micros
+        description: Google's recommended daily budget amount in micros.
+      - name: total_amount_micros
+        description: The total budget amount in micros for lifetime budgets.
+      - name: budget_type
+        description: The type of budget (DAILY, LIFETIME, etc.).
+      - name: budget_status
+        description: The status of the budget.
+      - name: updated_at
+        description: "{{ doc('updated_at') }}"
+      - name: is_most_recent_record
+        description: "{{ doc('is_most_recent_record') }}"
+
+  - name: stg_google_ads__campaign_criterion_history
+    description: Each record represents a historical version of a campaign criterion in Google Ads.
+    columns:
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
+      - name: criterion_id
+        description: Unique identifier of the campaign criterion.
+        tests:
+          - not_null
+      - name: campaign_id
+        description: "{{ doc('campaign_id') }}"
+      - name: device_type
+        description: The device type for targeting (MOBILE, DESKTOP, TABLET).
+      - name: geo_target_constant_id
+        description: The geographic target constant ID for location targeting.
+      - name: age_range_type
+        description: The age range type for demographic targeting.
+      - name: gender_type
+        description: The gender type for demographic targeting.
+      - name: income_range_type
+        description: The income range type for demographic targeting.
+      - name: parental_status_type
+        description: The parental status type for demographic targeting.
+      - name: user_list_id
+        description: The user list ID for audience targeting.
+      - name: keyword_text
+        description: The keyword text for keyword targeting.
+      - name: topic_constant_id
+        description: The topic constant ID for topic targeting.
+      - name: placement_url
+        description: The placement URL for placement targeting.
+      - name: updated_at
+        description: "{{ doc('updated_at') }}"
+      - name: is_most_recent_record
+        description: "{{ doc('is_most_recent_record') }}"
+
+  - name: stg_google_ads__campaign_bidding_strategy_history
+    description: Each record represents a historical version of a campaign bidding strategy in Google Ads.
+    columns:
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
+      - name: campaign_id
+        description: "{{ doc('campaign_id') }}"
+        tests:
+          - not_null
+      - name: bidding_strategy_type
+        description: The type of bidding strategy (MANUAL_CPC, TARGET_CPA, etc.).
+      - name: target_cpa_micros
+        description: Target cost per acquisition in micros.
+      - name: target_roas
+        description: Target return on ad spend.
+      - name: enhanced_cpc
+        description: Boolean indicating if enhanced CPC is enabled.
+      - name: manual_cpa
+        description: Manual cost per acquisition setting.
+      - name: manual_cpm
+        description: Manual cost per mille setting.
+      - name: manual_cpv
+        description: Manual cost per view setting.
+      - name: bidding_status
+        description: The status of the bidding strategy.
+      - name: updated_at
+        description: "{{ doc('updated_at') }}"
+      - name: is_most_recent_record
+        description: "{{ doc('is_most_recent_record') }}"

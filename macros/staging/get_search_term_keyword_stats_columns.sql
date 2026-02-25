@@ -17,6 +17,8 @@
     {"name": "search_term", "datatype": dbt.type_string()},
     {"name": "search_term_match_type", "datatype": dbt.type_string()},
     {"name": "status", "datatype": dbt.type_string()},
+    {"name": "top_impression_percentage", "datatype": dbt.type_float()},
+    {"name": "absolute_top_impression_percentage", "datatype": dbt.type_float()},
     {"name": "view_through_conversions", "datatype": dbt.type_int()}
 ] %}
 
