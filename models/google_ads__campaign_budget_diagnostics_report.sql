@@ -90,9 +90,9 @@ campaign_performance_agg as (
         sum(impressions) as impressions,
         sum(spend) as spend,
         {{ dbt_utils.safe_divide('sum(clicks)', 'sum(impressions)') }} * 100 as ctr_percent
-
     from campaign_stats_cast
-    group by 1, 2, 3),
+    group by 1, 2, 3
+),
 
 {% if var('google_ads__using_search_term_keyword_stats', true) %}
 -- Search term stats for impression share (if available)
@@ -100,9 +100,6 @@ search_term_stats as (
     select *
     from {{ ref('stg_google_ads__search_term_keyword_stats') }}
 ),
-{% endif %}
-
-{% if var('google_ads__using_search_term_keyword_stats', true) %}
 -- Aggregate impression share metrics by primary keys
 impression_share_agg as (
     select
@@ -113,7 +110,9 @@ impression_share_agg as (
         avg(coalesce(absolute_top_impression_percentage, 0)) as avg_absolute_top_impression_share
 
     from search_term_stats
-    group by 1, 2, 3),
+    group by 1, 2, 3
+),
+
 {% else %}
 -- Dummy CTE when search term stats are not available
 impression_share_agg as (
@@ -123,7 +122,6 @@ impression_share_agg as (
         cast(null as {{ dbt.type_date() }}) as date_day,
         cast(0 as {{ dbt.type_float() }}) as avg_top_impression_share,
         cast(0 as {{ dbt.type_float() }}) as avg_absolute_top_impression_share
-    where 1 = 0
 ),
 {% endif %}
 

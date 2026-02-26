@@ -35,7 +35,8 @@
     {"name": "type", "datatype": dbt.type_string()},
     {"name": "youtube_channel_id", "datatype": dbt.type_string()},
     {"name": "youtube_video_id", "datatype": dbt.type_string()},
-    {"name": "_fivetran_active", "datatype": "boolean"}
+    {"name": "_fivetran_active", "datatype": "boolean"},
+    {"name": "_fivetran_synced", "datatype": dbt.type_timestamp()}
 ] %}
 
 {{ return(columns) }}
