@@ -1,3 +1,8 @@
+# dbt_google_ads v1.3.0
+
+[PR #94](https://github.com/fivetran/dbt_google_ads/pull/94) includes the following updates:
+
+
 # dbt_google_ads v1.2.0
 
 [PR #91](https://github.com/fivetran/dbt_google_ads/pull/91) includes the following updates:
