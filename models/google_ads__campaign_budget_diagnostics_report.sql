@@ -119,7 +119,7 @@ impression_share_agg as (
     select
         cast(null as {{ dbt.type_int() }}) as campaign_id,
         cast(null as {{ dbt.type_string() }}) as source_relation,
-        cast(null as {{ dbt.type_date() }}) as date_day,
+        cast(null as date) as date_day,
         cast(0 as {{ dbt.type_float() }}) as avg_top_impression_share,
         cast(0 as {{ dbt.type_float() }}) as avg_absolute_top_impression_share
 ),
