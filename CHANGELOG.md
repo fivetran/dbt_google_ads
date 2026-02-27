@@ -2,6 +2,7 @@
 
 [PR #94](https://github.com/fivetran/dbt_google_ads/pull/94) includes the following updates:
 
+- Schema updates.
 
 # dbt_google_ads v1.2.0
 
