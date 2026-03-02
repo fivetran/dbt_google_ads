@@ -26,6 +26,9 @@ vars:
       alias: view_through_conversions_aliased # @docs-ignore
 
 models:
+  +persist_docs:
+    relation: true
+    columns: "{{ false if target.type in ('databricks') else true }}"
   +schema: "google_ads_{{ var('directed_schema','dev') }}"
 
 seeds:
