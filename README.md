@@ -1,21 +1,6 @@
 <!--section="google-ads_transformation_model"-->
 # Google Ads dbt Package
 
-<p align="left">
-    <a alt="License"
-        href="https://github.com/fivetran/dbt_google_ads/blob/main/LICENSE">
-        <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" /></a>
-    <a alt="dbt-core">
-        <img src="https://img.shields.io/badge/dbt_Core™_version->=1.3.0,_<3.0.0-orange.svg" /></a>
-    <a alt="Maintained?">
-        <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" /></a>
-    <a alt="PRs">
-        <img src="https://img.shields.io/badge/Contributions-welcome-blueviolet" /></a>
-    <a alt="Fivetran Quickstart Compatible"
-        href="https://fivetran.com/docs/transformations/data-models/quickstart-management#quickstartmanagement">
-        <img src="https://img.shields.io/badge/Fivetran_Quickstart_Compatible%3F-yes-green.svg" /></a>
-</p>
-
 This dbt package transforms data from Fivetran's Google Ads connector into analytics-ready tables.
 
 ## Resources
@@ -29,6 +14,8 @@ This dbt package transforms data from Fivetran's Google Ads connector into analy
   - [dbt Docs](https://fivetran.github.io/dbt_google_ads/#!/overview)
   - [DAG](https://fivetran.github.io/dbt_google_ads/#!/overview?g_v=1)
   - [Changelog](https://github.com/fivetran/dbt_google_ads/blob/main/CHANGELOG.md)
+- dbt Core™ supported versions
+  - `>=1.3.0, <3.0.0`
 
 ## What does this dbt package do?
 This package enables you to better understand the performance of your ads across varying grains and produces modeled tables that leverage Google Ads data. It creates enriched models with metrics focused on account, campaign, ad group, keyword, ad, and utm level reports.
@@ -220,13 +207,13 @@ A small team of analytics engineers at Fivetran develops these dbt packages. How
 
 We highly encourage and welcome contributions to this package. Learn how to contribute to a package in dbt's [Contributing to an external dbt package article](https://discourse.getdbt.com/t/contributing-to-a-dbt-package/657).
 
-### Opinionated Decisions
-In creating this package, which is meant for a wide range of use cases, we had to take opinionated stances on a few different questions we came across during development. We've consolidated significant choices we made in the [DECISIONLOG.md](https://github.com/fivetran/dbt_google_ads/blob/main/DECISIONLOG.md), and will continue to update as the package evolves. We are always open to and encourage feedback on these choices, and the package in general.
-
 #### Contributors
 We thank [everyone](https://github.com/fivetran/dbt_google_ads/graphs/contributors) who has taken the time to contribute. Each PR, bug report, and feature request has made this package better and is truly appreciated.
 
 A special thank you to [Seer Interactive](https://www.seerinteractive.com/?utm_campaign=Fivetran%20%7C%20Models&utm_source=Fivetran&utm_medium=Fivetran%20Documentation), who we closely collaborated with to introduce native conversion support to our Ad packages.
+
+### Opinionated Decisions
+In creating this package, which is meant for a wide range of use cases, we had to take opinionated stances on a few different questions we came across during development. We've consolidated significant choices we made in the [DECISIONLOG.md](https://github.com/fivetran/dbt_google_ads/blob/main/DECISIONLOG.md), and will continue to update as the package evolves. We are always open to and encourage feedback on these choices, and the package in general.
 
 <!--section-end-->
 
