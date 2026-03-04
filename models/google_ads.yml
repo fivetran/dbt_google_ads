@@ -201,6 +201,8 @@ models:
         description: The channel subtype of the ads being served within the campaign.
       - name: status
         description: The status of the campaign.
+      - name: serving_status
+        description: Status of the ads and how they are currently being served.
       - name: spend
         description: "{{ doc('cost') }}"
       - name: clicks
@@ -307,6 +309,11 @@ models:
   - name: google_ads__campaign_bid_modifiers_report
     description: Each record in this table represents a campaign's bid modifier configuration and performance insights.
     columns:
+      - name: bid_modifier_report_key
+        description: Surrogate key for the campaign bid modifiers report, combining source_relation, account_id, campaign_id, and criterion_id.
+        tests:
+          - unique
+          - not_null
       - name: source_relation
         description: "{{ doc('source_relation') }}"
       - name: account_name
@@ -363,12 +370,21 @@ models:
         description: Average click-through rate percentage.
       - name: avg_cpc
         description: Average cost per click.
-      - name: bid_modifier_recommendation
-        description: Automated recommendation based on performance analysis.
+      - name: performance_observation
+        description: Performance observation that drives the recommendation (High CPC, Low CTR, High spend, etc.).
+      - name: recommended_action
+        description: Recommended action for bid modifier optimization (Add modifiers, Review adjustments, Monitor performance, Monitor).
+      - name: priority
+        description: Priority level for focusing on most critical issues first (high, medium, low).
 
   - name: google_ads__campaign_budget_diagnostics_report
     description: Each record in this table represents a campaign's budget constraints and performance diagnostics.
     columns:
+      - name: budget_diagnostics_report_key
+        description: Surrogate key for the campaign budget diagnostics report, combining source_relation, account_id, campaign_id, and date_day.
+        tests:
+          - unique
+          - not_null
       - name: source_relation
         description: "{{ doc('source_relation') }}"
       - name: campaign_id

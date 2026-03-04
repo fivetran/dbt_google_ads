@@ -1,18 +1,6 @@
 {{ config(enabled=var('ad_reporting__google_ads_enabled', True)) }}
 
-with campaigns as (
-    select *
-    from {{ ref('stg_google_ads__campaign_history') }}
-    where is_most_recent_record = True
-),
-
-accounts as (
-    select *
-    from {{ ref('stg_google_ads__account_history') }}
-    where is_most_recent_record = True
-),
-
-bid_modifiers as (
+with bid_modifiers as (
     select *
     from {{ ref('stg_google_ads__campaign_bid_modifier_history') }}
     where is_most_recent_record = True
@@ -30,41 +18,41 @@ campaign_criterion as (
     where is_most_recent_record = True
 ),
 
-campaign_stats as (
-    select
-        campaign_id,
-        source_relation,
-        date_day,
-        spend,
-        cast(clicks as {{ dbt.type_float() }}) as clicks, -- Cast to float for accurate division in CTR/CPC calculations
-        cast(impressions as {{ dbt.type_float() }}) as impressions -- Cast to float to avoid integer division truncation
-    from {{ ref('stg_google_ads__campaign_stats') }}
-    where date_day >= {{ dbt.dateadd('day', -30, dbt.current_timestamp()) }}
+campaigns_enhanced as (
+    select *
+    from {{ ref('int_google_ads__campaigns_enhanced') }}
 ),
 
--- Performance by campaign (last 30 days)
+-- Performance by campaign last 30 days from intermediate model
 recent_campaign_performance as (
     select
         campaign_id,
         source_relation,
         sum(spend) as total_spend,
-        avg({{ dbt_utils.safe_divide('clicks', 'impressions') }} * 100) as avg_ctr_percent,
-        avg({{ dbt_utils.safe_divide('spend', 'clicks') }}) as avg_cpc
-    from campaign_stats
+        sum(clicks) as total_clicks,
+        sum(impressions) as total_impressions,
+
+        -- CTR = Click-Through Rate (shows if bid adjustments improve engagement)
+        {{ dbt_utils.safe_divide('sum(clicks)', 'sum(impressions)') }} * 100 as avg_ctr_percent,
+        -- CPC = Cost Per Click (shows actual cost impact of bid modifications)
+        {{ dbt_utils.safe_divide('sum(spend)', 'sum(clicks)') }} as avg_cpc
+    from campaigns_enhanced
+    where date_day >= {{ dbt.dateadd('day', -30, dbt.current_timestamp()) }}
     group by 1, 2
 ),
 
-final as (
+-- Determine recommendation reason based on performance thresholds and current bid settings
+recommendation_logic as (
     select
-        campaigns.source_relation,
-        accounts.account_name,
-        accounts.account_id,
-        campaigns.campaign_id,
-        campaigns.campaign_name,
-        campaigns.advertising_channel_type,
-        campaigns.advertising_channel_subtype,
-        campaigns.status as campaign_status,
-        campaigns.serving_status,
+        campaigns_enhanced.source_relation,
+        campaigns_enhanced.account_name,
+        campaigns_enhanced.account_id,
+        campaigns_enhanced.campaign_id,
+        campaigns_enhanced.campaign_name,
+        campaigns_enhanced.advertising_channel_type,
+        campaigns_enhanced.advertising_channel_subtype,
+        campaigns_enhanced.campaign_status,
+        campaigns_enhanced.serving_status,
 
         -- Bidding strategy information
         coalesce(bidding_strategy.bidding_strategy_type, 'unknown') as bidding_strategy_type,
@@ -110,50 +98,71 @@ final as (
             else 0
         end as modifier_percentage,
 
-        -- Performance context
+        -- Performance metrics to evaluate bid modifier effectiveness
         recent_campaign_performance.total_spend,
         recent_campaign_performance.avg_ctr_percent,
         recent_campaign_performance.avg_cpc,
 
-        -- Enhanced analysis based on actual data
+        -- Performance observation that drives the recommendation
         case
-            when recent_campaign_performance.avg_cpc > 2.0
+            when recent_campaign_performance.avg_cpc > {{ var('google_ads__high_cpc_threshold', 3.0) }}
                 and bid_modifiers.bid_modifier is null
-                then 'Consider adding bid modifiers to optimize performance'
-            when recent_campaign_performance.avg_ctr_percent < 2.0
+                then 'high cpc'
+            when recent_campaign_performance.avg_ctr_percent < {{ var('google_ads__low_ctr_threshold', 1.5) }}
                 and bid_modifiers.bid_modifier > 1
-                then 'Review positive bid adjustments - low CTR may indicate poor targeting'
-            when recent_campaign_performance.total_spend > 1000
+                then 'low ctr'
+            when recent_campaign_performance.total_spend > {{ var('google_ads__high_spend_threshold', 500.0) }}
                 and bid_modifiers.bid_modifier is null
-                then 'High spend campaigns should leverage bid modifiers for better control'
+                then 'high spend'
             when lower(bidding_strategy.bidding_strategy_type) in ('manual_cpc', 'enhanced_cpc')
                 and bid_modifiers.bid_modifier is null
-                then 'Manual bidding campaigns benefit from bid modifier optimization'
-            when bid_modifiers.bid_modifier > 1.5
-                then 'High positive bid modifier - monitor performance impact'
-            when bid_modifiers.bid_modifier < 0.7
-                then 'Significant negative bid modifier - ensure targeting is still valuable'
-            else 'Monitor bid modifier performance and adjust based on goals'
-        end as bid_modifier_recommendation
+                then 'manual bidding'
+            when bid_modifiers.bid_modifier > {{ var('google_ads__high_bid_modifier_threshold', 1.5) }}
+                then 'high positive modifier'
+            when bid_modifiers.bid_modifier < {{ var('google_ads__low_bid_modifier_threshold', 0.7) }}
+                then 'significant negative modifier'
+            else 'normal performance'
+        end as performance_observation
 
-    from campaigns
-    left join accounts
-        on campaigns.account_id = accounts.account_id
-        and campaigns.source_relation = accounts.source_relation
+    from campaigns_enhanced
     left join bidding_strategy
-        on campaigns.campaign_id = bidding_strategy.campaign_id
-        and campaigns.source_relation = bidding_strategy.source_relation
+        on campaigns_enhanced.campaign_id = bidding_strategy.campaign_id
+        and campaigns_enhanced.source_relation = bidding_strategy.source_relation
     left join bid_modifiers
-        on campaigns.campaign_id = bid_modifiers.campaign_id
-        and campaigns.source_relation = bid_modifiers.source_relation
+        on campaigns_enhanced.campaign_id = bid_modifiers.campaign_id
+        and campaigns_enhanced.source_relation = bid_modifiers.source_relation
     left join campaign_criterion
         on bid_modifiers.criterion_id = campaign_criterion.criterion_id
-        and campaigns.campaign_id = campaign_criterion.campaign_id
-        and campaigns.source_relation = campaign_criterion.source_relation
+        and campaigns_enhanced.campaign_id = campaign_criterion.campaign_id
+        and campaigns_enhanced.source_relation = campaign_criterion.source_relation
     left join recent_campaign_performance
-        on campaigns.campaign_id = recent_campaign_performance.campaign_id
-        and campaigns.source_relation = recent_campaign_performance.source_relation
+        on campaigns_enhanced.campaign_id = recent_campaign_performance.campaign_id
+        and campaigns_enhanced.source_relation = recent_campaign_performance.source_relation
+),
+
+-- derive action from reason to avoid duplicating threshold logic
+final as (
+    select
+        *,
+        -- recommended action based on the performance observation
+        case
+            when performance_observation in ('high cpc', 'high spend', 'manual bidding') then 'add modifiers'
+            when performance_observation in ('low ctr', 'significant negative modifier') then 'review adjustments'
+            when performance_observation = 'high positive modifier' then 'monitor performance'
+            else 'monitor'
+        end as recommended_action,
+
+        -- priority level for focusing on most critical issues first
+        case
+            when performance_observation in ('high cpc', 'high spend') then 'high'
+            when performance_observation in ('significant negative modifier', 'low ctr') then 'medium'
+            when performance_observation in ('manual bidding', 'high positive modifier') then 'medium'
+            else 'low'
+        end as priority
+    from recommendation_logic
 )
 
-select *
+select
+    *,
+    {{ dbt_utils.generate_surrogate_key(['source_relation', 'account_id', 'campaign_id', 'criterion_id']) }} as bid_modifier_report_key
 from final

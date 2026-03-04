@@ -20,7 +20,9 @@ public_models: [
   "google_ads__ad_report",
   "google_ads__ad_group_report",
   "google_ads__account_report",
-  "google_ads__search_term_report"
+  "google_ads__search_term_report",
+  "google_ads__campaign_bid_modifiers_report",
+  "google_ads__campaign_budget_diagnostics_report"
 ]
 
 supported_vars:
@@ -60,3 +62,32 @@ supported_vars:
     description: "Additional `SEARCH_TERM_KEYWORD_STATS` report columns to include in `google_ads__search_term_report`"
     display_name: "Additional Search Term Keyword Stats Metrics"
 
+  google_ads__high_cpc_threshold:
+    type: float
+    value: 3.0
+    description: "Cost Per Click threshold (in dollars) above which campaigns should consider bid modifiers for optimization"
+    display_name: "High Cost Per Click Threshold"
+
+  google_ads__low_ctr_threshold:
+    type: float
+    value: 1.5
+    description: "Click-Through Rate percentage threshold below which positive bid adjustments should be reviewed"
+    display_name: "Low Click-Through Rate Threshold"
+
+  google_ads__high_spend_threshold:
+    type: float
+    value: 500.0
+    description: "Total spend threshold (in dollars) above which campaigns should leverage bid modifiers"
+    display_name: "High Spend Threshold"
+
+  google_ads__high_bid_modifier_threshold:
+    type: float
+    value: 1.5
+    description: "Bid modifier threshold above which to flag for performance monitoring"
+    display_name: "High Bid Modifier Threshold"
+
+  google_ads__low_bid_modifier_threshold:
+    type: float
+    value: 0.7
+    description: "Bid modifier threshold below which to flag as significant negative adjustment"
+    display_name: "Low Bid Modifier Threshold"
