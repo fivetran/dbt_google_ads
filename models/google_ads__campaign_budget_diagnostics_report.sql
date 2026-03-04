@@ -62,6 +62,7 @@ campaign_targeting_analysis as (
 campaign_diagnostics_base as (
     select
         campaign_report.source_relation,
+        campaign_report.date_day,
         campaign_report.campaign_id,
         campaign_report.campaign_name,
         campaign_report.account_name,
@@ -70,7 +71,6 @@ campaign_diagnostics_base as (
         campaign_report.advertising_channel_subtype,
         campaign_report.status as campaign_status,
         campaign_report.serving_status,
-        campaign_report.date_day,
 
         -- Budget information
         coalesce(daily_budget, 0) as daily_budget,
