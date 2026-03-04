@@ -18,12 +18,12 @@ campaign_criterion as (
     where is_most_recent_record = True
 ),
 
-campaigns_enhanced as (
+campaigns_accounts as (
     select *
-    from {{ ref('int_google_ads__campaigns_enhanced') }}
+    from {{ ref('int_google_ads__campaigns_accounts') }}
 ),
 
--- Performance by campaign last 30 days from intermediate model
+-- Performance by campaign last 30 days from staging
 recent_campaign_performance as (
     select
         campaign_id,
@@ -36,7 +36,7 @@ recent_campaign_performance as (
         {{ dbt_utils.safe_divide('sum(clicks)', 'sum(impressions)') }} * 100 as avg_ctr_percent,
         -- CPC = Cost Per Click (shows actual cost impact of bid modifications)
         {{ dbt_utils.safe_divide('sum(spend)', 'sum(clicks)') }} as avg_cpc
-    from campaigns_enhanced
+    from {{ ref('stg_google_ads__campaign_stats') }}
     where date_day >= {{ dbt.dateadd('day', -30, dbt.current_timestamp()) }}
     group by 1, 2
 ),
@@ -44,15 +44,15 @@ recent_campaign_performance as (
 -- Determine recommendation reason based on performance thresholds and current bid settings
 recommendation_logic as (
     select
-        campaigns_enhanced.source_relation,
-        campaigns_enhanced.account_name,
-        campaigns_enhanced.account_id,
-        campaigns_enhanced.campaign_id,
-        campaigns_enhanced.campaign_name,
-        campaigns_enhanced.advertising_channel_type,
-        campaigns_enhanced.advertising_channel_subtype,
-        campaigns_enhanced.campaign_status,
-        campaigns_enhanced.serving_status,
+        campaigns_accounts.source_relation,
+        campaigns_accounts.account_name,
+        campaigns_accounts.account_id,
+        campaigns_accounts.campaign_id,
+        campaigns_accounts.campaign_name,
+        campaigns_accounts.advertising_channel_type,
+        campaigns_accounts.advertising_channel_subtype,
+        campaigns_accounts.campaign_status,
+        campaigns_accounts.serving_status,
 
         -- Bidding strategy information
         coalesce(bidding_strategy.bidding_strategy_type, 'unknown') as bidding_strategy_type,
@@ -124,20 +124,20 @@ recommendation_logic as (
             else 'normal performance'
         end as performance_observation
 
-    from campaigns_enhanced
+    from campaigns_accounts
     left join bidding_strategy
-        on campaigns_enhanced.campaign_id = bidding_strategy.campaign_id
-        and campaigns_enhanced.source_relation = bidding_strategy.source_relation
+        on campaigns_accounts.campaign_id = bidding_strategy.campaign_id
+        and campaigns_accounts.source_relation = bidding_strategy.source_relation
     left join bid_modifiers
-        on campaigns_enhanced.campaign_id = bid_modifiers.campaign_id
-        and campaigns_enhanced.source_relation = bid_modifiers.source_relation
+        on campaigns_accounts.campaign_id = bid_modifiers.campaign_id
+        and campaigns_accounts.source_relation = bid_modifiers.source_relation
     left join campaign_criterion
         on bid_modifiers.criterion_id = campaign_criterion.criterion_id
-        and campaigns_enhanced.campaign_id = campaign_criterion.campaign_id
-        and campaigns_enhanced.source_relation = campaign_criterion.source_relation
+        and campaigns_accounts.campaign_id = campaign_criterion.campaign_id
+        and campaigns_accounts.source_relation = campaign_criterion.source_relation
     left join recent_campaign_performance
-        on campaigns_enhanced.campaign_id = recent_campaign_performance.campaign_id
-        and campaigns_enhanced.source_relation = recent_campaign_performance.source_relation
+        on campaigns_accounts.campaign_id = recent_campaign_performance.campaign_id
+        and campaigns_accounts.source_relation = recent_campaign_performance.source_relation
 ),
 
 -- derive action from reason to avoid duplicating threshold logic
