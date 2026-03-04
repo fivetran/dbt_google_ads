@@ -390,16 +390,26 @@ models:
         description: "{{ doc('campaign_id') }}"
         tests:
           - not_null
-      - name: amount_micros
-        description: The daily budget amount in micros.
+      - name: budget_id
+        description: Unique identifier of the budget.
+      - name: daily_budget
+        description: The daily budget amount in dollars.
       - name: delivery_method
         description: The delivery method for the budget (STANDARD or ACCELERATED).
+      - name: explicitly_shared
+        description: Boolean indicating if the budget is explicitly shared across campaigns.
+      - name: budget_name
+        description: The name of the budget.
+      - name: reference_count
+        description: The number of campaigns using this budget.
       - name: has_recommended_budget
         description: Boolean indicating if Google has a recommended budget for this campaign.
-      - name: recommended_budget_amount_micros
-        description: Google's recommended daily budget amount in micros.
-      - name: total_amount_micros
-        description: The total budget amount in micros for lifetime budgets.
+      - name: period
+        description: The budget period (DAILY, etc.).
+      - name: recommended_daily_budget
+        description: Google's recommended daily budget amount in dollars.
+      - name: total_budget
+        description: The total budget amount in dollars for lifetime budgets.
       - name: budget_type
         description: The type of budget (DAILY, LIFETIME, etc.).
       - name: budget_status
@@ -454,23 +464,37 @@ models:
         description: "{{ doc('campaign_id') }}"
         tests:
           - not_null
-      - name: bidding_strategy_type
-        description: The type of bidding strategy (MANUAL_CPC, TARGET_CPA, etc.).
-      - name: target_cpa_micros
-        description: Target cost per acquisition in micros.
-      - name: target_roas
-        description: Target return on ad spend.
+      - name: updated_at
+        description: "{{ doc('updated_at') }}"
+      - name: cpc_bid_ceiling_micros
+        description: The maximum CPC bid ceiling in micros.
+      - name: cpc_bid_floor_micros
+        description: The minimum CPC bid floor in micros.
       - name: enhanced_cpc
         description: Boolean indicating if enhanced CPC is enabled.
+      - name: enhanced_cpc_enabled
+        description: Boolean indicating if enhanced CPC is enabled (alternative field).
+      - name: location
+        description: The location setting for the bidding strategy.
+      - name: location_fraction_micros
+        description: The location fraction in micros.
       - name: manual_cpa
         description: Manual cost per acquisition setting.
       - name: manual_cpm
         description: Manual cost per mille setting.
       - name: manual_cpv
         description: Manual cost per view setting.
+      - name: bidding_strategy_name
+        description: The name of the bidding strategy.
       - name: bidding_status
         description: The status of the bidding strategy.
-      - name: updated_at
-        description: "{{ doc('updated_at') }}"
+      - name: target_cpa
+        description: Target cost per acquisition in dollars.
+      - name: target_cpm
+        description: Target cost per mille.
+      - name: target_roas
+        description: Target return on ad spend.
+      - name: bidding_strategy_type
+        description: The type of bidding strategy (MANUAL_CPC, TARGET_CPA, etc.).
       - name: is_most_recent_record
         description: "{{ doc('is_most_recent_record') }}"

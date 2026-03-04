@@ -215,6 +215,8 @@ models:
         description: "{{ doc('conversions_value') }}"
       - name: view_through_conversions
         description: "{{ doc('view_through_conversions') }}"
+      - name: ctr_percent
+        description: Click-through rate as a percentage, calculated as (clicks / impressions) * 100. Shows ad relevance and engagement.
 
   - name: google_ads__keyword_report
     description: Each record in this table represents the daily performance at the ad group level for keywords.
@@ -307,7 +309,7 @@ models:
         description: Reference to the ad group criterion used for the associated keyword. One `keyword_text` may have multiple `criterion_id` values.
 
   - name: google_ads__campaign_bid_modifiers_report
-    description: Each record in this table represents a campaign's bid modifier configuration and performance insights.
+    description: Each record in this table represents a specific bid modifier and its performance insights. Data is at the campaign-criterion grain since bid modifiers are campaign-level settings, and analysis focuses on overall modifier effectiveness.
     columns:
       - name: bid_modifier_report_key
         description: Surrogate key for the campaign bid modifiers report, combining source_relation, account_id, campaign_id, and criterion_id.
@@ -441,8 +443,8 @@ models:
         description: Number of location targeting criteria.
       - name: audience_targeting_count
         description: Number of audience targeting criteria.
-      - name: location_targeting_assessment
-        description: Assessment of location targeting constraints.
+      - name: location_targeting_breadth
+        description: Assessment of location targeting breadth - 'limited' (< 5 locations), 'broad' (> 50 locations), or 'normal'.
       - name: device_targeting_assessment
         description: Assessment of device targeting constraints.
       - name: audience_targeting_assessment
@@ -461,3 +463,9 @@ models:
         description: Daily budget efficiency percentage.
       - name: monthly_budget_opportunity
         description: Potential monthly budget increase opportunity.
+      - name: performance_observation
+        description: Performance observation that drives the budget recommendation (budget constrained, placement constrained, etc.).
+      - name: recommended_action
+        description: Recommended action for budget optimization (increase budget, optimize targeting/bids, improve relevance, etc.).
+      - name: priority
+        description: Priority level for focusing on most critical budget issues first (high, medium, low).

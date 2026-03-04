@@ -33,7 +33,7 @@ final as (
         id as budget_id,
         updated_at,
         campaign_id,
-        amount_micros,
+        amount_micros / 1000000.0 as daily_budget,
         delivery_method,
         explicitly_shared,
         name as budget_name,
@@ -41,8 +41,8 @@ final as (
         status as budget_status,
         has_recommended_budget,
         period,
-        recommended_budget_amount_micros,
-        total_amount_micros,
+        recommended_budget_amount_micros / 1000000.0 as recommended_daily_budget,
+        total_amount_micros / 1000000.0 as total_budget,
         type as budget_type,
         row_number() over (partition by campaign_id {{ google_ads.partition_by_source_relation() }} order by updated_at desc) = 1 as is_most_recent_record
     from fields

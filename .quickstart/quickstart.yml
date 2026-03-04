@@ -65,29 +65,23 @@ supported_vars:
   google_ads__high_cpc_threshold:
     type: float
     value: 3.0
-    description: "Cost Per Click threshold (in dollars) above which campaigns should consider bid modifiers for optimization"
+    description: "Cost Per Click threshold (in dollars) above which campaigns should consider bid modifiers for optimization. Low CTR (1.5%) and bid modifier thresholds (1.5 high, 0.7 low) are calculated."
     display_name: "High Cost Per Click Threshold"
-
-  google_ads__low_ctr_threshold:
-    type: float
-    value: 1.5
-    description: "Click-Through Rate percentage threshold below which positive bid adjustments should be reviewed"
-    display_name: "Low Click-Through Rate Threshold"
 
   google_ads__high_spend_threshold:
     type: float
     value: 500.0
-    description: "Total spend threshold (in dollars) above which campaigns should leverage bid modifiers"
+    description: "Daily spend threshold above which campaigns should consider bid modifiers for cost optimization. Low CTR (1.5%) and bid modifier thresholds (1.5 high, 0.7 low) are calculated."
     display_name: "High Spend Threshold"
 
-  google_ads__high_bid_modifier_threshold:
+  google_ads__limited_location_threshold:
     type: float
-    value: 1.5
-    description: "Bid modifier threshold above which to flag for performance monitoring"
-    display_name: "High Bid Modifier Threshold"
+    value: 5.0
+    description: "Location targeting count below which to flag as limited targeting. Broad threshold is calculated as 10x this value (order of magnitude)."
+    display_name: "Limited Location Targeting Threshold"
 
-  google_ads__low_bid_modifier_threshold:
+  google_ads__budget_constrained_threshold:
     type: float
-    value: 0.7
-    description: "Bid modifier threshold below which to flag as significant negative adjustment"
-    display_name: "Low Bid Modifier Threshold"
+    value: 95.0
+    description: "Budget utilization percentage above which campaigns are considered budget constrained. Moderate threshold is calculated as 75% of this value."
+    display_name: "Budget Constrained Threshold"

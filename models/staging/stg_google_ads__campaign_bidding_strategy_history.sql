@@ -43,7 +43,7 @@ final as (
         manual_cpv,
         name as bidding_strategy_name,
         status as bidding_status,
-        target_cpa_micros,
+        target_cpa_micros / 1000000.0 as target_cpa,
         target_cpm,
         target_roas,
         type as bidding_strategy_type,

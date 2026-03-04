@@ -56,7 +56,7 @@ recommendation_logic as (
 
         -- Bidding strategy information
         coalesce(bidding_strategy.bidding_strategy_type, 'unknown') as bidding_strategy_type,
-        coalesce(bidding_strategy.target_cpa_micros / 1000000.0, 0) as target_cpa,
+        coalesce(bidding_strategy.target_cpa, 0) as target_cpa,
         bidding_strategy.target_roas,
         bidding_strategy.enhanced_cpc,
         bidding_strategy.manual_cpa,
@@ -108,7 +108,7 @@ recommendation_logic as (
             when recent_campaign_performance.avg_cpc > {{ var('google_ads__high_cpc_threshold', 3.0) }}
                 and bid_modifiers.bid_modifier is null
                 then 'high cpc'
-            when recent_campaign_performance.avg_ctr_percent < {{ var('google_ads__low_ctr_threshold', 1.5) }}
+            when recent_campaign_performance.avg_ctr_percent < 1.5
                 and bid_modifiers.bid_modifier > 1
                 then 'low ctr'
             when recent_campaign_performance.total_spend > {{ var('google_ads__high_spend_threshold', 500.0) }}
@@ -117,9 +117,9 @@ recommendation_logic as (
             when lower(bidding_strategy.bidding_strategy_type) in ('manual_cpc', 'enhanced_cpc')
                 and bid_modifiers.bid_modifier is null
                 then 'manual bidding'
-            when bid_modifiers.bid_modifier > {{ var('google_ads__high_bid_modifier_threshold', 1.5) }}
+            when bid_modifiers.bid_modifier > 1.5  -- 1.0 + 50%
                 then 'high positive modifier'
-            when bid_modifiers.bid_modifier < {{ var('google_ads__low_bid_modifier_threshold', 0.7) }}
+            when bid_modifiers.bid_modifier < 0.7  -- 1.0 - 30%
                 then 'significant negative modifier'
             else 'normal performance'
         end as performance_observation

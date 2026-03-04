@@ -31,7 +31,8 @@ fields as (
         sum(stats.impressions) as impressions,
         sum(stats.conversions) as conversions,
         sum(stats.conversions_value) as conversions_value,
-        sum(stats.view_through_conversions) as view_through_conversions
+        sum(stats.view_through_conversions) as view_through_conversions,
+        {{ dbt_utils.safe_divide('sum(stats.clicks)', 'sum(stats.impressions)') }} * 100 as ctr_percent -- Click-through rate (shows ad relevance and engagement)
 
         {{ google_ads_persist_pass_through_columns(pass_through_variable='google_ads__campaign_stats_passthrough_metrics', identifier='stats', transform='sum', coalesce_with=0, exclude_fields=['conversions','conversions_value','view_through_conversions']) }}
 
