@@ -1,4 +1,7 @@
-{{ config(enabled=var('ad_reporting__google_ads_enabled', True)) }}
+{{ config(enabled=var('ad_reporting__google_ads_enabled', True) and var('google_ads__using_campaign_bid_modifier_history', True)) }}
+
+{% set using_campaign_bidding_strategy_history = var('google_ads__using_campaign_bidding_strategy_history', True) %}
+{% set using_campaign_criterion_history = var('google_ads__using_campaign_criterion_history', True) %}
 
 with bid_modifiers as (
     select *
@@ -6,17 +9,21 @@ with bid_modifiers as (
     where is_most_recent_record = True
 ),
 
+{% if using_campaign_bidding_strategy_history %}
 bidding_strategy as (
     select *
     from {{ ref('stg_google_ads__campaign_bidding_strategy_history') }}
     where is_most_recent_record = True
 ),
+{% endif %}
 
+{% if using_campaign_criterion_history %}
 campaign_criterion as (
     select *
     from {{ ref('stg_google_ads__campaign_criterion_history') }}
     where is_most_recent_record = True
 ),
+{% endif %}
 
 campaigns_accounts as (
     select *
@@ -54,6 +61,7 @@ recommendation_logic as (
         campaigns_accounts.campaign_status,
         campaigns_accounts.serving_status,
 
+        {% if var('google_ads__using_campaign_bidding_strategy_history', True) %}
         -- Bidding strategy information
         coalesce(bidding_strategy.bidding_strategy_type, 'unknown') as bidding_strategy_type,
         coalesce(bidding_strategy.target_cpa, 0) as target_cpa,
@@ -63,6 +71,7 @@ recommendation_logic as (
         bidding_strategy.manual_cpm,
         bidding_strategy.manual_cpv,
         bidding_strategy.bidding_status,
+        {% endif %}
 
         -- Bid modifier information
         bid_modifiers.criterion_id,
@@ -70,6 +79,7 @@ recommendation_logic as (
         bid_modifiers.interaction_type,
         bid_modifiers.interaction_event_types,
 
+        {% if var('google_ads__using_campaign_criterion_history', True) %}
         -- Categorize modifier type based on criterion relationships
         case
             when campaign_criterion.device_type is not null then 'device'
@@ -84,6 +94,9 @@ recommendation_logic as (
             when campaign_criterion.placement_url is not null then 'placement'
             else 'other'
         end as modifier_type,
+        {% else %}
+        'unknown' as modifier_type,
+        {% endif %}
 
         case
             when bid_modifiers.bid_modifier > 1 then 'positive adjustment'
@@ -114,9 +127,11 @@ recommendation_logic as (
             when recent_campaign_performance.total_spend > {{ var('google_ads__high_spend_threshold', 500.0) }}
                 and bid_modifiers.bid_modifier is null
                 then 'high spend'
+            {% if var('google_ads__using_campaign_bidding_strategy_history', True) %}
             when lower(bidding_strategy.bidding_strategy_type) in ('manual_cpc', 'enhanced_cpc')
                 and bid_modifiers.bid_modifier is null
                 then 'manual bidding'
+            {% endif %}
             when bid_modifiers.bid_modifier > 1.5  -- 1.0 + 50%
                 then 'high positive modifier'
             when bid_modifiers.bid_modifier < 0.7  -- 1.0 - 30%
@@ -125,19 +140,25 @@ recommendation_logic as (
         end as performance_observation
 
     from campaigns_accounts
-    left join bidding_strategy
-        on campaigns_accounts.campaign_id = bidding_strategy.campaign_id
-        and campaigns_accounts.source_relation = bidding_strategy.source_relation
     left join bid_modifiers
         on campaigns_accounts.campaign_id = bid_modifiers.campaign_id
         and campaigns_accounts.source_relation = bid_modifiers.source_relation
+    left join recent_campaign_performance
+        on campaigns_accounts.campaign_id = recent_campaign_performance.campaign_id
+        and campaigns_accounts.source_relation = recent_campaign_performance.source_relation
+
+    {% if var('google_ads__using_campaign_bidding_strategy_history', True) %}
+    left join bidding_strategy
+        on campaigns_accounts.campaign_id = bidding_strategy.campaign_id
+        and campaigns_accounts.source_relation = bidding_strategy.source_relation
+    {% endif %}
+
+    {% if var('google_ads__using_campaign_criterion_history', True) %}
     left join campaign_criterion
         on bid_modifiers.criterion_id = campaign_criterion.criterion_id
         and campaigns_accounts.campaign_id = campaign_criterion.campaign_id
         and campaigns_accounts.source_relation = campaign_criterion.source_relation
-    left join recent_campaign_performance
-        on campaigns_accounts.campaign_id = recent_campaign_performance.campaign_id
-        and campaigns_accounts.source_relation = recent_campaign_performance.source_relation
+    {% endif %}
 ),
 
 -- derive action from reason to avoid duplicating threshold logic

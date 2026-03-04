@@ -1,4 +1,4 @@
-{{ config(enabled=var('ad_reporting__google_ads_enabled', True)) }}
+{{ config(enabled=var('ad_reporting__google_ads_enabled', True) and var('google_ads__using_campaign_bidding_strategy_history', True)) }}
 
 with base as (
 

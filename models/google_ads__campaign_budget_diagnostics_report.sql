@@ -1,4 +1,7 @@
-{{ config(enabled=var('ad_reporting__google_ads_enabled', True)) }}
+{{ config(enabled=var('ad_reporting__google_ads_enabled', True) and var('google_ads__using_campaign_budget_history', True)) }}
+
+{% set using_campaign_bidding_strategy_history = var('google_ads__using_campaign_bidding_strategy_history', True) %}
+{% set using_campaign_criterion_history = var('google_ads__using_campaign_criterion_history', True) %}
 
 with campaign_report as (
     select *
@@ -11,18 +14,23 @@ campaign_budget as (
     where is_most_recent_record = True
 ),
 
+{% if using_campaign_bidding_strategy_history %}
 campaign_bidding_strategy as (
     select *
     from {{ ref('stg_google_ads__campaign_bidding_strategy_history') }}
     where is_most_recent_record = True
 ),
+{% endif %}
 
+{% if using_campaign_criterion_history %}
 campaign_criterion as (
     select *
     from {{ ref('stg_google_ads__campaign_criterion_history') }}
     where is_most_recent_record = True
 ),
+{% endif %}
 
+{% if using_campaign_criterion_history %}
 -- Raw targeting counts by campaign
 campaign_targeting_counts as (
     select
@@ -55,6 +63,7 @@ campaign_targeting_analysis as (
 
     from campaign_targeting_counts
 ),
+{% endif %}
 
 
 
@@ -80,17 +89,20 @@ campaign_diagnostics_base as (
         campaign_budget.has_recommended_budget,
         coalesce(campaign_budget.recommended_daily_budget, 0) as recommended_daily_budget,
 
+        {% if using_campaign_bidding_strategy_history %}
         -- Bidding strategy information
         campaign_bidding_strategy.bidding_strategy_type,
         coalesce(campaign_bidding_strategy.target_cpa, 0) as target_cpa,
         campaign_bidding_strategy.target_roas,
         campaign_bidding_strategy.enhanced_cpc,
+        {% endif %}
 
         -- Performance metrics
         impressions,
         spend,
         campaign_report.clicks,
 
+        {% if using_campaign_criterion_history %}
         -- Targeting constraint information
         coalesce(campaign_targeting_analysis.total_criteria_count, 0) as total_targeting_criteria,
         coalesce(campaign_targeting_analysis.location_targets_count, 0) as location_targeting_count,
@@ -98,6 +110,7 @@ campaign_diagnostics_base as (
         coalesce(campaign_targeting_analysis.location_targeting_breadth, 'normal') as location_targeting_breadth,
         coalesce(campaign_targeting_analysis.is_device_targeting, false) as is_device_targeting,
         coalesce(campaign_targeting_analysis.is_audience_targeting, false) as is_audience_targeting,
+        {% endif %}
 
         -- Click-through rate (shows ad relevance and quality)
         campaign_report.ctr_percent,
@@ -108,12 +121,16 @@ campaign_diagnostics_base as (
     left join campaign_budget
         on campaign_report.campaign_id = campaign_budget.campaign_id
         and campaign_report.source_relation = campaign_budget.source_relation
+    {% if using_campaign_bidding_strategy_history %}
     left join campaign_bidding_strategy
         on campaign_report.campaign_id = campaign_bidding_strategy.campaign_id
         and campaign_report.source_relation = campaign_bidding_strategy.source_relation
+    {% endif %}
+    {% if using_campaign_criterion_history %}
     left join campaign_targeting_analysis
         on campaign_report.campaign_id = campaign_targeting_analysis.campaign_id
         and campaign_report.source_relation = campaign_targeting_analysis.source_relation
+    {% endif %}
 ),
 
 -- Apply business logic for diagnostics
@@ -126,6 +143,7 @@ campaign_diagnostics_logic as (
             when budget_utilization_percent >= {{ var('google_ads__budget_constrained_threshold', 95) }}
                 and daily_budget > 0
                 then 'budget constrained'
+            {% if using_campaign_criterion_history %}
             when budget_utilization_percent >= {{ var('google_ads__budget_constrained_threshold', 95) }} * 0.75
                 and location_targeting_breadth = 'limited'
                 and daily_budget > 0
@@ -139,13 +157,16 @@ campaign_diagnostics_logic as (
                 and ctr_percent < 1.0
                 and not is_audience_targeting
                 then 'quality/relevance + targeting constrained'
+            {% endif %}
             when spend > 0
                 and impressions > 0
                 and ctr_percent < 1.0
                 then 'quality/relevance constrained'
+            {% if using_campaign_criterion_history %}
             when spend = 0
                 and total_targeting_criteria = 0
                 then 'no spend + no targeting'
+            {% endif %}
             when spend = 0
                 then 'no spend'
             when budget_status != 'enabled'

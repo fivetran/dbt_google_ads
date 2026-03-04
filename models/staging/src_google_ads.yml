@@ -325,6 +325,8 @@ sources:
       - name: campaign_bid_modifier_history
         description: Each record represents a historical version of a campaign bid modifier in Google Ads.
         identifier: "{{ var('google_ads_campaign_bid_modifier_history_identifier', 'campaign_bid_modifier_history') }}"
+        config:
+          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_campaign_bid_modifier_history', true) }}"
         columns:
           - name: campaign_id
             description: "{{ doc('campaign_id') }}"
@@ -344,6 +346,8 @@ sources:
       - name: campaign_budget_history
         description: Each record represents a historical version of a campaign budget in Google Ads.
         identifier: "{{ var('google_ads_campaign_budget_history_identifier', 'campaign_budget_history') }}"
+        config:
+          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_campaign_budget_history', true) }}"
         columns:
           - name: id
             description: Unique identifier of the budget.
@@ -379,6 +383,8 @@ sources:
       - name: campaign_criterion_history
         description: Each record represents a historical version of a campaign criterion in Google Ads.
         identifier: "{{ var('google_ads_campaign_criterion_history_identifier', 'campaign_criterion_history') }}"
+        config:
+          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_campaign_criterion_history', true) }}"
         columns:
           - name: id
             description: Unique identifier of the campaign criterion.
@@ -454,6 +460,8 @@ sources:
       - name: campaign_bidding_strategy_history
         description: Each record represents a historical version of a campaign bidding strategy in Google Ads.
         identifier: "{{ var('google_ads_campaign_bidding_strategy_history_identifier', 'campaign_bidding_strategy_history') }}"
+        config:
+          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_campaign_bidding_strategy_history', true) }}"
         columns:
           - name: campaign_id
             description: "{{ doc('campaign_id') }}"
