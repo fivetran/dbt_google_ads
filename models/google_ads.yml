@@ -374,10 +374,10 @@ models:
         description: Average cost per click.
       - name: performance_observation
         description: Performance observation that drives the recommendation (High CPC, Low CTR, High spend, etc.).
-      - name: recommended_action
-        description: Recommended action for bid modifier optimization (Add modifiers, Review adjustments, Monitor performance, Monitor).
-      - name: priority
-        description: Priority level for focusing on most critical issues first (high, medium, low).
+      - name: inferred_action
+        description: Inferred action for bid modifier optimization based on dbt package logic (Add modifiers, Review adjustments, Monitor performance, Monitor).
+      - name: inferred_priority
+        description: Inferred priority level for focusing on most critical issues first (high, medium, low).
 
   - name: google_ads__campaign_budget_diagnostics_report
     description: Each record in this table represents a campaign's budget constraints and performance diagnostics.
@@ -465,7 +465,7 @@ models:
         description: Potential monthly budget increase opportunity.
       - name: performance_observation
         description: Performance observation that drives the budget recommendation (budget constrained, placement constrained, etc.).
-      - name: recommended_action
-        description: Recommended action for budget optimization (increase budget, optimize targeting/bids, improve relevance, etc.).
-      - name: priority
-        description: Priority level for focusing on most critical budget issues first (high, medium, low).
+      - name: inferred_action
+        description: Inferred action for budget optimization based on dbt package logic (increase budget, optimize targeting/bids, improve relevance, etc.).
+      - name: inferred_priority
+        description: Inferred priority level for focusing on most critical budget issues first (high, medium, low).

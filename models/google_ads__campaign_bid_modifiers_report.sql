@@ -99,8 +99,9 @@ recommendation_logic as (
         {% endif %}
 
         case
+            when bid_modifiers.bid_modifier = 0 then 'disabled'
             when bid_modifiers.bid_modifier > 1 then 'positive adjustment'
-            when bid_modifiers.bid_modifier < 1 then 'negative adjustment'
+            when bid_modifiers.bid_modifier < 1 and bid_modifiers.bid_modifier > 0 then 'negative adjustment'
             when bid_modifiers.bid_modifier = 1 then 'no adjustment'
             else 'no modifier set'
         end as modifier_direction,
@@ -116,7 +117,7 @@ recommendation_logic as (
         recent_campaign_performance.avg_ctr_percent,
         recent_campaign_performance.avg_cpc,
 
-        -- Performance observation that drives the recommendation
+        -- Inferred performance observation that drives the recommendation
         case
             when recent_campaign_performance.avg_cpc > {{ var('google_ads__high_cpc_threshold', 3.0) }}
                 and bid_modifiers.bid_modifier is null
@@ -132,9 +133,11 @@ recommendation_logic as (
                 and bid_modifiers.bid_modifier is null
                 then 'manual bidding'
             {% endif %}
+            when bid_modifiers.bid_modifier = 0
+                then 'disabled modifier'
             when bid_modifiers.bid_modifier > 1.5  -- 1.0 + 50%
                 then 'high positive modifier'
-            when bid_modifiers.bid_modifier < 0.7  -- 1.0 - 30%
+            when bid_modifiers.bid_modifier < 0.7 and bid_modifiers.bid_modifier > 0  -- 1.0 - 30% (but not disabled)
                 then 'significant negative modifier'
             else 'normal performance'
         end as performance_observation
@@ -165,21 +168,21 @@ recommendation_logic as (
 final as (
     select
         *,
-        -- recommended action based on the performance observation
+        -- inferred action based on the performance observation
         case
             when performance_observation in ('high cpc', 'high spend', 'manual bidding') then 'add modifiers'
-            when performance_observation in ('low ctr', 'significant negative modifier') then 'review adjustments'
+            when performance_observation in ('low ctr', 'significant negative modifier', 'disabled modifier') then 'review adjustments'
             when performance_observation = 'high positive modifier' then 'monitor performance'
             else 'monitor'
-        end as recommended_action,
+        end as inferred_action,
 
-        -- priority level for focusing on most critical issues first
+        -- inferred priority level for focusing on most critical issues first
         case
             when performance_observation in ('high cpc', 'high spend') then 'high'
-            when performance_observation in ('significant negative modifier', 'low ctr') then 'medium'
+            when performance_observation in ('significant negative modifier', 'low ctr', 'disabled modifier') then 'medium'
             when performance_observation in ('manual bidding', 'high positive modifier') then 'medium'
             else 'low'
-        end as priority
+        end as inferred_priority
     from recommendation_logic
 )
 

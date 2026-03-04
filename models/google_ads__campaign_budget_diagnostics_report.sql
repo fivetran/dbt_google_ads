@@ -138,7 +138,7 @@ campaign_diagnostics_logic as (
     select
         *,
 
-        -- Performance observation that drives the recommendation
+        -- Inferred performance observation that drives the recommendation
         case
             when budget_utilization_percent >= {{ var('google_ads__budget_constrained_threshold', 95) }}
                 and daily_budget > 0
@@ -183,7 +183,7 @@ campaign_diagnostics_logic as (
 final as (
     select
         *,
-        -- Recommended action based on the performance observation
+        -- Inferred action based on the performance observation
         case
             when performance_observation in ('budget constrained', 'budget + targeting constrained') then 'increase budget'
             when performance_observation = 'targeting constrained' then 'expand targeting'
@@ -191,15 +191,15 @@ final as (
             when performance_observation in ('no spend + no targeting', 'no spend') then 'diagnose setup'
             when performance_observation in ('budget disabled', 'campaign disabled') then 'enable campaign'
             else 'monitor'
-        end as recommended_action,
+        end as inferred_action,
 
-        -- Priority level for focusing on most critical issues first
+        -- Inferred priority level for focusing on most critical issues first
         case
             when performance_observation in ('budget constrained', 'campaign disabled', 'budget disabled') then 'high'
             when performance_observation in ('budget + targeting constrained', 'no spend + no targeting', 'no spend') then 'high'
             when performance_observation in ('targeting constrained', 'quality/relevance constrained', 'quality/relevance + targeting constrained') then 'medium'
             else 'low'
-        end as priority
+        end as inferred_priority
     from campaign_diagnostics_logic
 )
 
