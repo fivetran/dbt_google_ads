@@ -43,9 +43,7 @@ final as (
         coalesce(impressions, 0) as impressions,
         coalesce(conversions, 0) as conversions,
         coalesce(conversions_value, 0) as conversions_value,
-        coalesce(view_through_conversions, 0) as view_through_conversions,
-        coalesce(top_impression_percentage, 0) as top_impression_percentage,
-        coalesce(absolute_top_impression_percentage, 0) as absolute_top_impression_percentage
+        coalesce(view_through_conversions, 0) as view_through_conversions
 
         {{ google_ads_fill_pass_through_columns(pass_through_fields=var('google_ads__search_term_keyword_stats_passthrough_metrics')) }}
 

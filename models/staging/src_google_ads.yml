@@ -301,14 +301,10 @@ sources:
             description: '{{ doc("ad_group_id") }}'
           - name: view_through_conversions
             description: '{{ doc("view_through_conversions") }}'
-          - name: absolute_top_impression_percentage
-            description: '{{ doc("absolute_top_impression_percentage") }}'
           - name: clicks
             description: '{{ doc("clicks") }}'
           - name: keyword_ad_group_criterion
             description: '{{ doc("keyword_ad_group_criterion") }}'
-          - name: top_impression_percentage
-            description: '{{ doc("top_impression_percentage") }}'
           - name: status
             description: '{{ doc("search_term_status") }}'
           - name: info_text
