@@ -1,3 +1,24 @@
+# dbt_google_ads v1.4.0
+
+[PR #94](https://github.com/fivetran/dbt_google_ads/pull/94) includes the following updates:
+
+## Schema/Data Change
+**7 total changes • 1 possible breaking change**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ---------- | ----------- | -------- | -------- | ----- |
+| `google_ads__campaign_report` | New Column | | `ctr_percent` | Click-through rate percentage for ad relevance analysis |
+| `google_ads__campaign_bid_modifiers_report` | New Model | | | Analyzes bid modifier effectiveness at campaign-criterion level with performance-based recommendations |
+| `google_ads__campaign_budget_diagnostics_report` | New Model | | | Diagnoses daily campaign budget utilization and performance constraints with prioritized optimization recommendations |
+| `stg_google_ads__campaign_bid_modifier_history`<br>`stg_google_ads__campaign_bid_modifier_history_tmp` | New Staging Models | | | Historical bid modifier configurations and adjustments at campaign-criterion level |
+| `stg_google_ads__campaign_bidding_strategy_history`<br>`stg_google_ads__campaign_bidding_strategy_history_tmp` | New Staging Models | | | Historical bidding strategy configurations including target CPA and ROAS settings |
+| `stg_google_ads__campaign_budget_history`<br>`stg_google_ads__campaign_budget_history_tmp` | New Staging Models | | | Historical campaign budget configurations including daily and lifetime budget settings |
+| `stg_google_ads__campaign_criterion_history`<br>`stg_google_ads__campaign_criterion_history_tmp` | New Staging Models | | | Historical campaign-level targeting criteria including location, device, and audience settings |
+
+## Under the Hood
+- `int_google_ads__campaigns_accounts` - Ephemeral intermediate model providing shared campaign and account dimensional data.
+  - Refactors existing reports (`ad_group_report`, `ad_report`, `keyword_report`, `search_term_report`, `url_report`) to use shared `int_google_ads__campaigns_accounts` intermediate model.
+
 # dbt_google_ads v1.3.0
 
 [PR #94](https://github.com/fivetran/dbt_google_ads/pull/94) includes the following updates:
