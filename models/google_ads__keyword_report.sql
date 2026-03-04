@@ -6,18 +6,10 @@ with stats as (
     from {{ ref('stg_google_ads__keyword_stats') }}
 ), 
 
-accounts as (
+campaigns_accounts as (
 
     select *
-    from {{ ref('stg_google_ads__account_history') }}
-    where is_most_recent_record = True
-),
-
-campaigns as (
-
-    select *
-    from {{ ref('stg_google_ads__campaign_history') }}
-    where is_most_recent_record = True
+    from {{ ref('int_google_ads__campaigns_accounts') }}
 ), 
 
 ad_groups as (
@@ -39,10 +31,10 @@ fields as (
     select
         stats.source_relation,
         stats.date_day,
-        accounts.account_name,
+        campaigns_accounts.account_name,
         stats.account_id,
-        accounts.currency_code,
-        campaigns.campaign_name,
+        campaigns_accounts.currency_code,
+        campaigns_accounts.campaign_name,
         stats.campaign_id,
         ad_groups.ad_group_name,
         stats.ad_group_id,
@@ -67,12 +59,9 @@ fields as (
     left join ad_groups
         on stats.ad_group_id = ad_groups.ad_group_id
         and stats.source_relation = ad_groups.source_relation
-    left join campaigns
-        on stats.campaign_id = campaigns.campaign_id
-        and stats.source_relation = campaigns.source_relation
-    left join accounts
-        on stats.account_id = accounts.account_id
-        and stats.source_relation = accounts.source_relation
+    left join campaigns_accounts
+        on stats.campaign_id = campaigns_accounts.campaign_id
+        and stats.source_relation = campaigns_accounts.source_relation
     {{ dbt_utils.group_by(14) }}
 )
 
