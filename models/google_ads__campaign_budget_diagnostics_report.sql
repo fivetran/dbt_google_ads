@@ -87,7 +87,12 @@ campaign_diagnostics_base as (
         campaign_budget.budget_type,
         budget_status,
         campaign_budget.has_recommended_budget,
-        coalesce(campaign_budget.recommended_daily_budget, 0) as recommended_daily_budget,
+        -- Use Google's recommendation when available, otherwise fall back to current budget
+        case
+            when campaign_budget.recommended_daily_budget > 0
+            then campaign_budget.recommended_daily_budget
+            else coalesce(daily_budget, 0)
+        end as recommended_daily_budget,
 
         {% if using_campaign_bidding_strategy_history %}
         -- Bidding strategy information
@@ -137,6 +142,9 @@ campaign_diagnostics_base as (
 campaign_diagnostics_logic as (
     select
         *,
+        
+        -- Budget increase opportunity (simple difference since recommended_daily_budget falls back to current when no recommendation)
+        recommended_daily_budget - daily_budget as budget_increase_opportunity,
 
         -- Inferred performance observation that drives the recommendation
         case

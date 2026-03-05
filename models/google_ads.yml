@@ -420,7 +420,9 @@ models:
       - name: has_recommended_budget
         description: Boolean indicating if Google has a recommended budget for this campaign.
       - name: recommended_daily_budget
-        description: Google's recommended daily budget amount.
+        description: Google's recommended daily budget when available, otherwise falls back to current daily budget for consistency.
+      - name: budget_increase_opportunity
+        description: Dollar amount by which Google recommends increasing the daily budget (0 when Google has no recommendation).
       - name: bidding_strategy_type
         description: The type of bidding strategy (MANUAL_CPC, TARGET_CPA, etc.).
       - name: target_cpa
