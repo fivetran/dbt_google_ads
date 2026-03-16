@@ -1,6 +1,6 @@
 # dbt_google_ads v1.4.0
 
-[PR #94](https://github.com/fivetran/dbt_google_ads/pull/94) includes the following updates:
+[PR #95](https://github.com/fivetran/dbt_google_ads/pull/95) includes the following updates:
 
 ## Schema/Data Change
 **7 total changes • 1 possible breaking change**
