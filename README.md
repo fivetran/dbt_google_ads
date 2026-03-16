@@ -159,13 +159,41 @@ The new diagnostic reports (`google_ads__campaign_bid_modifiers_report` and `goo
 
 ```yml
 vars:
-    # Budget diagnostics thresholds
-    google_ads__budget_constrained_threshold: 95.0        # Budget utilization % for budget constraints (moderate calculated as 75% of this)
-    google_ads__limited_location_threshold: 5.0           # Location count below which targeting is considered limited (broad calculated as 10x this)
+    # Campaign budget diagnostics thresholds - all metrics in one organized variable
+    google_ads__campaign_budget_diagnostics_thresholds:
+      budget:
+        low: 75.0                                         # Budget utilization % for moderate constraints
+        high: 95.0                                        # Budget utilization % for high constraints
+      ctr:
+        low: 1.5                                          # Click-through rate % indicating poor ad relevance
+        high: 3.0                                         # Click-through rate % indicating strong performance
+      cpc:
+        low: 1.0                                          # Cost per click (dollars) for moderate CPC concerns
+        high: 3.0                                         # Cost per click (dollars) for expensive CPC optimization
+      spend:
+        low: 200.0                                        # Daily spend (dollars) for moderate analysis
+        high: 500.0                                       # Daily spend (dollars) for high-spend focus
+      location_targeting:
+        low: 5.0                                          # Location count below which targeting is limited
+        high: 50.0                                        # Location count above which targeting is broad
+      bid_modifier:
+        low: 0.7                                          # Bid modifier suggesting decrease bids
+        high: 1.5                                         # Bid modifier suggesting increase bids
 
-    # Bid modifier thresholds
-    google_ads__high_cpc_threshold: 3.0                   # Cost per click threshold for bid modifier recommendations
-    google_ads__high_spend_threshold: 500.0               # Daily spend threshold for bid modifier analysis
+    # Campaign bid modifiers thresholds - all metrics in one organized variable
+    google_ads__campaign_bid_modifiers_thresholds:
+      cpc:
+        low: 1.0                                          # Cost per click (dollars) for moderate CPC analysis
+        high: 3.0                                         # Cost per click (dollars) requiring bid modifier attention
+      ctr:
+        low: 1.5                                          # Click-through rate % indicating underperformance
+        high: 3.0                                         # Click-through rate % indicating high performance
+      spend:
+        low: 200.0                                        # Daily spend (dollars) for moderate analysis
+        high: 500.0                                       # Daily spend (dollars) requiring bid modifier focus
+      bid_modifier:
+        low: 0.7                                          # Bid modifier below which adjustments are significant
+        high: 1.5                                         # Bid modifier above which adjustments are aggressive
 ```
 
 > **Note:** Other thresholds are calculated automatically - CTR threshold (1.5%), bid modifier bounds (1.5 high, 0.7 low), and budget/location derived values use percentage-based calculations for consistent scaling.

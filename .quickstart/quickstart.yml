@@ -70,26 +70,44 @@ supported_vars:
     description: "Additional `SEARCH_TERM_KEYWORD_STATS` report columns to include in `google_ads__search_term_report`"
     display_name: "Additional Search Term Keyword Stats Metrics"
 
-  google_ads__high_cpc_threshold:
-    type: float
-    value: 3.0
-    description: "Cost Per Click threshold (in dollars) above which campaigns should consider bid modifiers for optimization. Low CTR (1.5%) and bid modifier thresholds (1.5 high, 0.7 low) are calculated."
-    display_name: "High Cost Per Click Threshold"
+  google_ads__campaign_budget_diagnostics_thresholds:
+    type: dictionary
+    value:
+      budget:
+        low: 75.0
+        high: 95.0
+      ctr:
+        low: 1.5
+        high: 3.0
+      cpc:
+        low: 1.0
+        high: 3.0
+      spend:
+        low: 200.0
+        high: 500.0
+      location_targeting:
+        low: 5.0
+        high: 50.0
+      bid_modifier:
+        low: 0.7
+        high: 1.5
+    description: "All diagnostic thresholds for campaign budget analysis. Each metric has low/high thresholds for categorizing performance and identifying optimization opportunities."
+    display_name: "Campaign Budget Diagnostics Thresholds"
 
-  google_ads__high_spend_threshold:
-    type: float
-    value: 500.0
-    description: "Daily spend threshold above which campaigns should consider bid modifiers for cost optimization. Low CTR (1.5%) and bid modifier thresholds (1.5 high, 0.7 low) are calculated."
-    display_name: "High Spend Threshold"
-
-  google_ads__limited_location_threshold:
-    type: float
-    value: 5.0
-    description: "Location targeting count below which to flag as limited targeting. Broad threshold is calculated as 10x this value (order of magnitude)."
-    display_name: "Limited Location Targeting Threshold"
-
-  google_ads__budget_constrained_threshold:
-    type: float
-    value: 95.0
-    description: "Budget utilization percentage above which campaigns are considered budget constrained. Moderate threshold is calculated as 75% of this value."
-    display_name: "Budget Constrained Threshold"
+  google_ads__campaign_bid_modifiers_thresholds:
+    type: dictionary
+    value:
+      cpc:
+        low: 1.0
+        high: 3.0
+      ctr:
+        low: 1.5
+        high: 3.0
+      spend:
+        low: 200.0
+        high: 500.0
+      bid_modifier:
+        low: 0.7
+        high: 1.5
+    description: "All diagnostic thresholds for campaign bid modifier analysis. Each metric has low/high thresholds for identifying optimization opportunities and bid adjustment recommendations."
+    display_name: "Campaign Bid Modifiers Thresholds"

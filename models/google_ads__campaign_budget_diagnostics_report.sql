@@ -3,6 +3,16 @@
 {% set using_campaign_bidding_strategy_history = var('google_ads__using_campaign_bidding_strategy_history', True) %}
 {% set using_campaign_criterion_history = var('google_ads__using_campaign_criterion_history', True) %}
 
+-- Initialize consolidated threshold variable with defaults
+{% set thresholds = var('google_ads__campaign_budget_diagnostics_thresholds', {
+    'budget': {'low': 75.0, 'high': 95.0},
+    'ctr': {'low': 1.5, 'high': 3.0},
+    'cpc': {'low': 1.0, 'high': 3.0},
+    'spend': {'low': 200.0, 'high': 500.0},
+    'location_targeting': {'low': 5.0, 'high': 50.0},
+    'bid_modifier': {'low': 0.7, 'high': 1.5}
+}) %}
+
 with campaign_report as (
     select *
     from {{ ref('google_ads__campaign_report') }}
@@ -53,8 +63,8 @@ campaign_targeting_analysis as (
         *,
         -- Targeting constraint flags
         case
-            when location_targets_count < {{ var('google_ads__limited_location_threshold', 5) }} then 'limited'
-            when location_targets_count > {{ var('google_ads__limited_location_threshold', 5) }} * 10 then 'broad'
+            when location_targets_count < {{ thresholds['location_targeting']['low'] }} then 'limited'
+            when location_targets_count > {{ thresholds['location_targeting']['high'] }} then 'broad'
             else 'normal'
         end as location_targeting_breadth,
 
@@ -148,11 +158,11 @@ campaign_diagnostics_logic as (
 
         -- Inferred performance observation that drives the recommendation
         case
-            when budget_utilization_percent >= {{ var('google_ads__budget_constrained_threshold', 95) }}
+            when budget_utilization_percent >= {{ thresholds['budget']['high'] }}
                 and daily_budget > 0
                 then 'budget constrained'
             {% if using_campaign_criterion_history %}
-            when budget_utilization_percent >= {{ var('google_ads__budget_constrained_threshold', 95) }} * 0.75
+            when budget_utilization_percent >= {{ thresholds['budget']['low'] }}
                 and location_targeting_breadth = 'limited'
                 and daily_budget > 0
                 then 'budget + targeting constrained'
@@ -162,14 +172,23 @@ campaign_diagnostics_logic as (
                 then 'targeting constrained'
             when spend > 0
                 and impressions > 0
-                and ctr_percent < 1.0
+                and ctr_percent < {{ thresholds['ctr']['low'] }}
                 and not is_audience_targeting
                 then 'quality/relevance + targeting constrained'
             {% endif %}
             when spend > 0
                 and impressions > 0
-                and ctr_percent < 1.0
+                and ctr_percent < {{ thresholds['ctr']['low'] }}
                 then 'quality/relevance constrained'
+            when spend > {{ thresholds['spend']['high'] }}
+                and impressions > 0
+                and ctr_percent >= {{ thresholds['ctr']['high'] }}
+                then 'high spend + good performance'
+            when spend >= {{ thresholds['spend']['low'] }}
+                and spend <= {{ thresholds['spend']['high'] }}
+                and ctr_percent >= {{ thresholds['ctr']['low'] }}
+                and ctr_percent < {{ thresholds['ctr']['high'] }}
+                then 'moderate spend + normal performance'
             {% if using_campaign_criterion_history %}
             when spend = 0
                 and total_targeting_criteria = 0
@@ -182,7 +201,7 @@ campaign_diagnostics_logic as (
             when campaign_status != 'enabled'
                 then 'campaign disabled'
             else 'normal'
-        end as performance_observation
+        end as _fivetran_performance_observation
 
     from campaign_diagnostics_base
 ),
@@ -193,19 +212,23 @@ final as (
         *,
         -- Inferred action based on the performance observation
         case
-            when performance_observation in ('budget constrained', 'budget + targeting constrained') then 'increase budget'
-            when performance_observation = 'targeting constrained' then 'expand targeting'
-            when performance_observation in ('quality/relevance constrained', 'quality/relevance + targeting constrained') then 'improve relevance'
-            when performance_observation in ('no spend + no targeting', 'no spend') then 'diagnose setup'
-            when performance_observation in ('budget disabled', 'campaign disabled') then 'enable campaign'
+            when _fivetran_performance_observation in ('budget constrained', 'budget + targeting constrained') then 'increase budget'
+            when _fivetran_performance_observation = 'targeting constrained' then 'expand targeting'
+            when _fivetran_performance_observation in ('quality/relevance constrained', 'quality/relevance + targeting constrained') then 'improve relevance'
+            when _fivetran_performance_observation in ('no spend + no targeting', 'no spend') then 'diagnose setup'
+            when _fivetran_performance_observation in ('budget disabled', 'campaign disabled') then 'enable campaign'
+            when _fivetran_performance_observation = 'high spend + good performance' then 'maintain and scale'
+            when _fivetran_performance_observation = 'moderate spend + normal performance' then 'optimize gradually'
             else 'monitor'
         end as inferred_action,
 
         -- Inferred priority level for focusing on most critical issues first
         case
-            when performance_observation in ('budget constrained', 'campaign disabled', 'budget disabled') then 'high'
-            when performance_observation in ('budget + targeting constrained', 'no spend + no targeting', 'no spend') then 'high'
-            when performance_observation in ('targeting constrained', 'quality/relevance constrained', 'quality/relevance + targeting constrained') then 'medium'
+            when _fivetran_performance_observation in ('budget constrained', 'campaign disabled', 'budget disabled') then 'high'
+            when _fivetran_performance_observation in ('budget + targeting constrained', 'no spend + no targeting', 'no spend') then 'high'
+            when _fivetran_performance_observation in ('targeting constrained', 'quality/relevance constrained', 'quality/relevance + targeting constrained') then 'medium'
+            when _fivetran_performance_observation = 'high spend + good performance' then 'low'
+            when _fivetran_performance_observation = 'moderate spend + normal performance' then 'low'
             else 'low'
         end as inferred_priority
     from campaign_diagnostics_logic

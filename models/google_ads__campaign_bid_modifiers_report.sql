@@ -3,6 +3,14 @@
 {% set using_campaign_bidding_strategy_history = var('google_ads__using_campaign_bidding_strategy_history', True) %}
 {% set using_campaign_criterion_history = var('google_ads__using_campaign_criterion_history', True) %}
 
+-- Initialize consolidated threshold variable with defaults
+{% set thresholds = var('google_ads__campaign_bid_modifiers_thresholds', {
+    'cpc': {'low': 1.0, 'high': 3.0},
+    'ctr': {'low': 1.5, 'high': 3.0},
+    'spend': {'low': 200.0, 'high': 500.0},
+    'bid_modifier': {'low': 0.7, 'high': 1.5}
+}) %}
+
 with bid_modifiers as (
     select *
     from {{ ref('stg_google_ads__campaign_bid_modifier_history') }}
@@ -119,13 +127,13 @@ recommendation_logic as (
 
         -- Inferred performance observation that drives the recommendation
         case
-            when recent_campaign_performance.avg_cpc > {{ var('google_ads__high_cpc_threshold', 3.0) }}
+            when recent_campaign_performance.avg_cpc > {{ thresholds['cpc']['high'] }}
                 and bid_modifiers.bid_modifier is null
                 then 'high cpc'
-            when recent_campaign_performance.avg_ctr_percent < 1.5
+            when recent_campaign_performance.avg_ctr_percent < {{ thresholds['ctr']['low'] }}
                 and bid_modifiers.bid_modifier > 1
                 then 'low ctr'
-            when recent_campaign_performance.total_spend > {{ var('google_ads__high_spend_threshold', 500.0) }}
+            when recent_campaign_performance.total_spend > {{ thresholds['spend']['high'] }}
                 and bid_modifiers.bid_modifier is null
                 then 'high spend'
             {% if var('google_ads__using_campaign_bidding_strategy_history', True) %}
@@ -135,10 +143,17 @@ recommendation_logic as (
             {% endif %}
             when bid_modifiers.bid_modifier = 0
                 then 'disabled modifier'
-            when bid_modifiers.bid_modifier > 1.5  -- 1.0 + 50%
+            when bid_modifiers.bid_modifier > {{ thresholds['bid_modifier']['high'] }}
                 then 'high positive modifier'
-            when bid_modifiers.bid_modifier < 0.7 and bid_modifiers.bid_modifier > 0  -- 1.0 - 30% (but not disabled)
+            when bid_modifiers.bid_modifier < {{ thresholds['bid_modifier']['low'] }} and bid_modifiers.bid_modifier > 0
                 then 'significant negative modifier'
+            when recent_campaign_performance.avg_ctr_percent >= {{ thresholds['ctr']['high'] }}
+                and recent_campaign_performance.avg_cpc <= {{ thresholds['cpc']['low'] }}
+                then 'high performance'
+            when recent_campaign_performance.total_spend >= {{ thresholds['spend']['low'] }}
+                and recent_campaign_performance.total_spend <= {{ thresholds['spend']['high'] }}
+                and recent_campaign_performance.avg_ctr_percent >= {{ thresholds['ctr']['low'] }}
+                then 'moderate performance'
             else 'normal performance'
         end as performance_observation
 
@@ -173,6 +188,8 @@ final as (
             when performance_observation in ('high cpc', 'high spend', 'manual bidding') then 'add modifiers'
             when performance_observation in ('low ctr', 'significant negative modifier', 'disabled modifier') then 'review adjustments'
             when performance_observation = 'high positive modifier' then 'monitor performance'
+            when performance_observation = 'high performance' then 'scale successful modifiers'
+            when performance_observation = 'moderate performance' then 'optimize gradually'
             else 'monitor'
         end as inferred_action,
 
@@ -181,6 +198,8 @@ final as (
             when performance_observation in ('high cpc', 'high spend') then 'high'
             when performance_observation in ('significant negative modifier', 'low ctr', 'disabled modifier') then 'medium'
             when performance_observation in ('manual bidding', 'high positive modifier') then 'medium'
+            when performance_observation = 'high performance' then 'low'
+            when performance_observation = 'moderate performance' then 'low'
             else 'low'
         end as inferred_priority
     from recommendation_logic
