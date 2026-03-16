@@ -66,8 +66,8 @@ recommendation_logic as (
         campaigns_accounts.campaign_name,
         campaigns_accounts.advertising_channel_type,
         campaigns_accounts.advertising_channel_subtype,
-        campaigns_accounts.campaign_status,
-        campaigns_accounts.serving_status,
+        upper(campaigns_accounts.campaign_status) as campaign_status,
+        upper(campaigns_accounts.serving_status) as serving_status,
 
         {% if var('google_ads__using_campaign_bidding_strategy_history', True) %}
         -- Bidding strategy information
@@ -121,20 +121,32 @@ recommendation_logic as (
         end as modifier_change,
 
         -- Performance metrics to evaluate bid modifier effectiveness
-        recent_campaign_performance.total_spend,
-        recent_campaign_performance.avg_ctr,
-        recent_campaign_performance.avg_cpc,
+        coalesce(recent_campaign_performance.total_spend, 0) as total_spend,
+        coalesce(recent_campaign_performance.avg_ctr, 0) as avg_ctr,
+        coalesce(recent_campaign_performance.avg_cpc, 0) as avg_cpc,
 
         -- Inferred performance observation that drives the recommendation
         case
+            when campaign_status in ('REMOVED', 'PAUSED')
+                then 'campaign disabled'
+            when serving_status = 'ENDED'
+                then 'campaign ended'
+            when serving_status != 'SERVING'
+                then 'not serving'
             when recent_campaign_performance.avg_cpc > {{ thresholds['cpc']['high'] }}
                 and bid_modifiers.bid_modifier is null
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
                 then 'high cpc'
             when recent_campaign_performance.avg_ctr < {{ thresholds['ctr']['low'] }}
                 and bid_modifiers.bid_modifier > 1
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
                 then 'low ctr'
             when recent_campaign_performance.total_spend > {{ thresholds['spend']['high'] }}
                 and bid_modifiers.bid_modifier is null
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
                 then 'high spend'
             {% if var('google_ads__using_campaign_bidding_strategy_history', True) %}
             when lower(bidding_strategy.bidding_strategy_type) in ('manual_cpc', 'enhanced_cpc')
@@ -191,6 +203,9 @@ final as (
         *,
         -- inferred action based on the performance observation
         case
+            when _fivetran_observation = 'campaign disabled' then 'enable campaign'
+            when _fivetran_observation = 'campaign ended' then 'review or restart campaign'
+            when _fivetran_observation = 'not serving' then 'resolve serving issues'
             when _fivetran_observation in ('high cpc', 'high spend', 'manual bidding') then 'add modifiers'
             when _fivetran_observation in ('low ctr', 'significant negative modifier', 'disabled modifier') then 'review adjustments'
             when _fivetran_observation = 'high positive modifier' then 'monitor performance'
@@ -203,8 +218,11 @@ final as (
 
         -- inferred priority level for focusing on most critical issues first
         case
+            when _fivetran_observation = 'campaign disabled' then 'high'
+            when _fivetran_observation = 'not serving' then 'high'
             when _fivetran_observation in ('high cpc', 'high spend') then 'high'
             when _fivetran_observation = 'high spend + poor performance' then 'high'
+            when _fivetran_observation = 'campaign ended' then 'medium'
             when _fivetran_observation in ('significant negative modifier', 'low ctr', 'disabled modifier') then 'medium'
             when _fivetran_observation in ('manual bidding', 'high positive modifier') then 'medium'
             when _fivetran_observation = 'high performance' then 'low'

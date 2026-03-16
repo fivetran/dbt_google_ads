@@ -88,14 +88,14 @@ campaign_diagnostics_base as (
         campaign_report.account_id,
         campaign_report.advertising_channel_type,
         campaign_report.advertising_channel_subtype,
-        campaign_report.status as campaign_status,
-        campaign_report.serving_status,
+        upper(campaign_report.status) as campaign_status,
+        upper(campaign_report.serving_status) as serving_status,
 
         -- Budget information
         coalesce(daily_budget, 0) as daily_budget,
         coalesce(campaign_budget.total_budget, 0) as total_budget,
         campaign_budget.budget_type,
-        budget_status,
+        upper(campaign_budget.budget_status) as budget_status,
         campaign_budget.has_recommended_budget,
         -- Use Google's recommendation when available, otherwise fall back to current budget
         case
@@ -158,43 +158,79 @@ campaign_diagnostics_logic as (
 
         -- Inferred performance observation that drives the recommendation
         case
+            when campaign_status in ('REMOVED', 'PAUSED')
+                then 'campaign disabled'
+            when serving_status = 'ENDED'
+                then 'campaign ended'
+            when serving_status != 'SERVING'
+                then 'not serving'
             when budget_utilization >= {{ thresholds['budget']['high'] }}
                 and daily_budget > 0
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
                 then 'budget constrained'
             {% if using_campaign_criterion_history %}
             when budget_utilization >= {{ thresholds['budget']['low'] }}
                 and location_targeting_breadth = 'limited'
                 and daily_budget > 0
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
                 then 'budget + targeting constrained'
             when spend > 0
                 and location_targeting_breadth = 'limited'
                 and not is_audience_targeting
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
                 then 'targeting constrained'
             when spend > 0
                 and impressions > 0
                 and ctr < {{ thresholds['ctr']['low'] }}
                 and not is_audience_targeting
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
                 then 'quality/relevance + targeting constrained'
             {% endif %}
             when spend > 0
                 and impressions > 0
                 and ctr < {{ thresholds['ctr']['low'] }}
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
                 then 'quality/relevance constrained'
             when spend > {{ thresholds['spend']['high'] }}
                 and impressions > 0
                 and ctr >= {{ thresholds['ctr']['high'] }}
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
                 then 'high spend + good performance'
             when spend > {{ thresholds['spend']['high'] }}
                 and impressions > 0
                 and ctr < {{ thresholds['ctr']['low'] }}
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
                 then 'high spend + poor performance'
             when spend >= {{ thresholds['spend']['low'] }}
                 and spend <= {{ thresholds['spend']['high'] }}
                 and ctr >= {{ thresholds['ctr']['low'] }}
                 and ctr < {{ thresholds['ctr']['high'] }}
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
                 then 'moderate spend + normal performance'
             when spend < {{ thresholds['spend']['low'] }}
                 and spend > 0
+                and budget_utilization < {{ thresholds['budget']['low'] }}
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
+                then 'low spend + low budget utilization'
+            when spend < {{ thresholds['spend']['low'] }}
+                and spend > 0
+                and budget_utilization >= {{ thresholds['budget']['low'] }}
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
+                then 'low spend + budget constrained'
+            when spend < {{ thresholds['spend']['low'] }}
+                and spend > 0
+                and campaign_status = 'ENABLED'
+                and serving_status = 'SERVING'
                 then 'low spend'
             {% if using_campaign_criterion_history %}
             when spend = 0
@@ -203,9 +239,9 @@ campaign_diagnostics_logic as (
             {% endif %}
             when spend = 0
                 then 'no spend'
-            when budget_status != 'enabled'
+            when budget_status != 'ENABLED'
                 then 'budget disabled'
-            when campaign_status != 'enabled'
+            when campaign_status != 'ENABLED'
                 then 'campaign disabled'
             else 'normal'
         end as _fivetran_observation
@@ -219,6 +255,9 @@ final as (
         *,
         -- Inferred action based on the performance observation
         case
+            when _fivetran_observation = 'campaign disabled' then 'enable campaign'
+            when _fivetran_observation = 'campaign ended' then 'review or restart campaign'
+            when _fivetran_observation = 'not serving' then 'resolve serving issues'
             when _fivetran_observation in ('budget constrained', 'budget + targeting constrained') then 'increase budget'
             when _fivetran_observation = 'targeting constrained' then 'expand targeting'
             when _fivetran_observation in ('quality/relevance constrained', 'quality/relevance + targeting constrained') then 'improve relevance'
@@ -227,18 +266,25 @@ final as (
             when _fivetran_observation = 'high spend + good performance' then 'maintain and scale'
             when _fivetran_observation = 'high spend + poor performance' then 'improve efficiency'
             when _fivetran_observation = 'moderate spend + normal performance' then 'optimize gradually'
+            when _fivetran_observation = 'low spend + low budget utilization' then 'diagnose targeting and bidding'
+            when _fivetran_observation = 'low spend + budget constrained' then 'increase budget'
             when _fivetran_observation = 'low spend' then 'consider increasing budget'
             else 'monitor'
         end as _fivetran_recommendation,
 
         -- Inferred priority level for focusing on most critical issues first
         case
-            when _fivetran_observation in ('budget constrained', 'campaign disabled', 'budget disabled') then 'high'
+            when _fivetran_observation = 'campaign disabled' then 'high'
+            when _fivetran_observation = 'not serving' then 'high'
+            when _fivetran_observation in ('budget constrained', 'budget disabled') then 'high'
+            when _fivetran_observation = 'campaign ended' then 'medium'
             when _fivetran_observation in ('budget + targeting constrained', 'no spend + no targeting', 'no spend') then 'high'
             when _fivetran_observation = 'high spend + poor performance' then 'high'
             when _fivetran_observation in ('targeting constrained', 'quality/relevance constrained', 'quality/relevance + targeting constrained') then 'medium'
             when _fivetran_observation = 'high spend + good performance' then 'low'
             when _fivetran_observation = 'moderate spend + normal performance' then 'low'
+            when _fivetran_observation = 'low spend + low budget utilization' then 'medium'
+            when _fivetran_observation = 'low spend + budget constrained' then 'medium'
             when _fivetran_observation = 'low spend' then 'low'
             else 'low'
         end as _fivetran_priority
