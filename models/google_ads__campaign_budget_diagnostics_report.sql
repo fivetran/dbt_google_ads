@@ -5,8 +5,8 @@
 
 -- Initialize consolidated threshold variable with defaults
 {% set thresholds = var('google_ads__campaign_budget_diagnostics_thresholds', {
-    'budget': {'low': 75.0, 'high': 95.0},
-    'ctr': {'low': 1.5, 'high': 3.0},
+    'budget': {'low': 0.75, 'high': 0.95},
+    'ctr': {'low': 0.015, 'high': 0.03},
     'cpc': {'low': 1.0, 'high': 3.0},
     'spend': {'low': 100.0, 'high': 500.0},
     'location_targeting': {'low': 5.0, 'high': 50.0},
@@ -128,9 +128,9 @@ campaign_diagnostics_base as (
         {% endif %}
 
         -- Click-through rate (shows ad relevance and quality)
-        campaign_report.ctr_percent,
+        campaign_report.ctr,
         -- Budget usage (shows if budget constraints are limiting performance)
-        {{ dbt_utils.safe_divide('campaign_report.spend', 'campaign_budget.daily_budget') }} * 100 as budget_utilization_percent
+        {{ dbt_utils.safe_divide('campaign_report.spend', 'campaign_budget.daily_budget') }} as budget_utilization
 
     from campaign_report
     left join campaign_budget
@@ -158,11 +158,11 @@ campaign_diagnostics_logic as (
 
         -- Inferred performance observation that drives the recommendation
         case
-            when budget_utilization_percent >= {{ thresholds['budget']['high'] }}
+            when budget_utilization >= {{ thresholds['budget']['high'] }}
                 and daily_budget > 0
                 then 'budget constrained'
             {% if using_campaign_criterion_history %}
-            when budget_utilization_percent >= {{ thresholds['budget']['low'] }}
+            when budget_utilization >= {{ thresholds['budget']['low'] }}
                 and location_targeting_breadth = 'limited'
                 and daily_budget > 0
                 then 'budget + targeting constrained'
@@ -172,26 +172,26 @@ campaign_diagnostics_logic as (
                 then 'targeting constrained'
             when spend > 0
                 and impressions > 0
-                and ctr_percent < {{ thresholds['ctr']['low'] }}
+                and ctr < {{ thresholds['ctr']['low'] }}
                 and not is_audience_targeting
                 then 'quality/relevance + targeting constrained'
             {% endif %}
             when spend > 0
                 and impressions > 0
-                and ctr_percent < {{ thresholds['ctr']['low'] }}
+                and ctr < {{ thresholds['ctr']['low'] }}
                 then 'quality/relevance constrained'
             when spend > {{ thresholds['spend']['high'] }}
                 and impressions > 0
-                and ctr_percent >= {{ thresholds['ctr']['high'] }}
+                and ctr >= {{ thresholds['ctr']['high'] }}
                 then 'high spend + good performance'
             when spend > {{ thresholds['spend']['high'] }}
                 and impressions > 0
-                and ctr_percent < {{ thresholds['ctr']['low'] }}
+                and ctr < {{ thresholds['ctr']['low'] }}
                 then 'high spend + poor performance'
             when spend >= {{ thresholds['spend']['low'] }}
                 and spend <= {{ thresholds['spend']['high'] }}
-                and ctr_percent >= {{ thresholds['ctr']['low'] }}
-                and ctr_percent < {{ thresholds['ctr']['high'] }}
+                and ctr >= {{ thresholds['ctr']['low'] }}
+                and ctr < {{ thresholds['ctr']['high'] }}
                 then 'moderate spend + normal performance'
             when spend < {{ thresholds['spend']['low'] }}
                 and spend > 0

@@ -6,7 +6,7 @@
 -- Initialize consolidated threshold variable with defaults
 {% set thresholds = var('google_ads__campaign_bid_modifiers_thresholds', {
     'cpc': {'low': 1.0, 'high': 3.0},
-    'ctr': {'low': 1.5, 'high': 3.0},
+    'ctr': {'low': 0.015, 'high': 0.03},
     'spend': {'low': 100.0, 'high': 500.0},
     'bid_modifier': {'low': 0.7, 'high': 1.5}
 }) %}
@@ -48,7 +48,7 @@ recent_campaign_performance as (
         sum(impressions) as total_impressions,
 
         -- CTR = Click-Through Rate (shows if bid adjustments improve engagement)
-        {{ dbt_utils.safe_divide('sum(clicks)', 'sum(impressions)') }} * 100 as avg_ctr_percent,
+        {{ dbt_utils.safe_divide('sum(clicks)', 'sum(impressions)') }} as avg_ctr,
         -- CPC = Cost Per Click (shows actual cost impact of bid modifications)
         {{ dbt_utils.safe_divide('sum(spend)', 'sum(clicks)') }} as avg_cpc
     from {{ ref('stg_google_ads__campaign_stats') }}
@@ -114,15 +114,15 @@ recommendation_logic as (
             else 'no modifier set'
         end as modifier_direction,
 
-        -- Bid modifier percentage
+        -- Bid modifier change (decimal)
         case
-            when bid_modifiers.bid_modifier is not null then (bid_modifiers.bid_modifier - 1) * 100
+            when bid_modifiers.bid_modifier is not null then (bid_modifiers.bid_modifier - 1)
             else 0
-        end as modifier_percentage,
+        end as modifier_change,
 
         -- Performance metrics to evaluate bid modifier effectiveness
         recent_campaign_performance.total_spend,
-        recent_campaign_performance.avg_ctr_percent,
+        recent_campaign_performance.avg_ctr,
         recent_campaign_performance.avg_cpc,
 
         -- Inferred performance observation that drives the recommendation
@@ -130,7 +130,7 @@ recommendation_logic as (
             when recent_campaign_performance.avg_cpc > {{ thresholds['cpc']['high'] }}
                 and bid_modifiers.bid_modifier is null
                 then 'high cpc'
-            when recent_campaign_performance.avg_ctr_percent < {{ thresholds['ctr']['low'] }}
+            when recent_campaign_performance.avg_ctr < {{ thresholds['ctr']['low'] }}
                 and bid_modifiers.bid_modifier > 1
                 then 'low ctr'
             when recent_campaign_performance.total_spend > {{ thresholds['spend']['high'] }}
@@ -147,15 +147,15 @@ recommendation_logic as (
                 then 'high positive modifier'
             when bid_modifiers.bid_modifier < {{ thresholds['bid_modifier']['low'] }} and bid_modifiers.bid_modifier > 0
                 then 'significant negative modifier'
-            when recent_campaign_performance.avg_ctr_percent >= {{ thresholds['ctr']['high'] }}
+            when recent_campaign_performance.avg_ctr >= {{ thresholds['ctr']['high'] }}
                 and recent_campaign_performance.avg_cpc <= {{ thresholds['cpc']['low'] }}
                 then 'high performance'
             when recent_campaign_performance.total_spend > {{ thresholds['spend']['high'] }}
-                and recent_campaign_performance.avg_ctr_percent < {{ thresholds['ctr']['low'] }}
+                and recent_campaign_performance.avg_ctr < {{ thresholds['ctr']['low'] }}
                 then 'high spend + poor performance'
             when recent_campaign_performance.total_spend >= {{ thresholds['spend']['low'] }}
                 and recent_campaign_performance.total_spend <= {{ thresholds['spend']['high'] }}
-                and recent_campaign_performance.avg_ctr_percent >= {{ thresholds['ctr']['low'] }}
+                and recent_campaign_performance.avg_ctr >= {{ thresholds['ctr']['low'] }}
                 then 'moderate performance'
             when recent_campaign_performance.total_spend < {{ thresholds['spend']['low'] }}
                 and recent_campaign_performance.total_spend > 0

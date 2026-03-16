@@ -162,11 +162,11 @@ vars:
     # Campaign budget diagnostics thresholds - all metrics in one organized variable
     google_ads__campaign_budget_diagnostics_thresholds:
       budget:
-        low: 75.0 # Budget utilization % for moderate constraints
-        high: 95.0 # Budget utilization % for high constraints
+        low: 0.75 # Budget utilization (decimal) for moderate constraints (75%)
+        high: 0.95 # Budget utilization (decimal) for high constraints (95%)
       ctr:
-        low: 1.5 # Click-through rate % indicating poor ad relevance
-        high: 3.0 # Click-through rate % indicating strong performance
+        low: 0.015 # Click-through rate (decimal) indicating poor ad relevance (1.5%)
+        high: 0.03 # Click-through rate (decimal) indicating strong performance (3.0%)
       cpc:
         low: 1.0 # Cost per click (dollars) for moderate CPC concerns
         high: 3.0 # Cost per click (dollars) for expensive CPC optimization
@@ -186,8 +186,8 @@ vars:
         low: 1.0 # Cost per click (dollars) for moderate CPC analysis
         high: 3.0 # Cost per click (dollars) requiring bid modifier attention
       ctr:
-        low: 1.5 # Click-through rate % indicating underperformance
-        high: 3.0 # Click-through rate % indicating high performance
+        low: 0.015 # Click-through rate (decimal) indicating underperformance (1.5%)
+        high: 0.03 # Click-through rate (decimal) indicating high performance (3.0%)
       spend:
         low: 100.0 # Daily spend below which campaigns are "low spend" (minimal attention)
         high: 500.0 # Daily spend above which campaigns are "high spend" (high priority focus)
