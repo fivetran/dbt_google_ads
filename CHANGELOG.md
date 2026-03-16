@@ -19,7 +19,7 @@
 - **New configurable threshold variables** - Introduces customizable threshold variables for diagnostic report optimization logic. See [Configure diagnostic report thresholds](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#configure-diagnostic-report-thresholds) in the README for configuration examples.
   - `google_ads__campaign_budget_diagnostics_thresholds` - Configure budget, CTR, CPC, spend, location targeting, and bid modifier thresholds for budget diagnostics
   - `google_ads__campaign_bid_modifiers_thresholds` - Configure CPC, CTR, spend, and bid modifier thresholds for bid modifier analysis
-  - **Note**: These variables are currently available for core dbt users only. Quickstart users who want to customize these thresholds should submit a feature request.
+  - **Note**: These variables are currently available for core dbt users only. Quickstart users who want to customize these thresholds should submit a [feature request](https://support.fivetran.com/hc/en-us/community/topics/360001909373-Feature-Requests).
 
 ## Under the Hood
 - `int_google_ads__campaigns_accounts` - Ephemeral intermediate model providing shared campaign and account dimensional data.
