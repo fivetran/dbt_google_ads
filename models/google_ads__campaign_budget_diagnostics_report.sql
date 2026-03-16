@@ -8,7 +8,7 @@
     'budget': {'low': 75.0, 'high': 95.0},
     'ctr': {'low': 1.5, 'high': 3.0},
     'cpc': {'low': 1.0, 'high': 3.0},
-    'spend': {'low': 200.0, 'high': 500.0},
+    'spend': {'low': 100.0, 'high': 500.0},
     'location_targeting': {'low': 5.0, 'high': 50.0},
     'bid_modifier': {'low': 0.7, 'high': 1.5}
 }) %}
@@ -184,11 +184,18 @@ campaign_diagnostics_logic as (
                 and impressions > 0
                 and ctr_percent >= {{ thresholds['ctr']['high'] }}
                 then 'high spend + good performance'
+            when spend > {{ thresholds['spend']['high'] }}
+                and impressions > 0
+                and ctr_percent < {{ thresholds['ctr']['low'] }}
+                then 'high spend + poor performance'
             when spend >= {{ thresholds['spend']['low'] }}
                 and spend <= {{ thresholds['spend']['high'] }}
                 and ctr_percent >= {{ thresholds['ctr']['low'] }}
                 and ctr_percent < {{ thresholds['ctr']['high'] }}
                 then 'moderate spend + normal performance'
+            when spend < {{ thresholds['spend']['low'] }}
+                and spend > 0
+                then 'low spend'
             {% if using_campaign_criterion_history %}
             when spend = 0
                 and total_targeting_criteria = 0
@@ -218,7 +225,9 @@ final as (
             when _fivetran_observation in ('no spend + no targeting', 'no spend') then 'diagnose setup'
             when _fivetran_observation in ('budget disabled', 'campaign disabled') then 'enable campaign'
             when _fivetran_observation = 'high spend + good performance' then 'maintain and scale'
+            when _fivetran_observation = 'high spend + poor performance' then 'improve efficiency'
             when _fivetran_observation = 'moderate spend + normal performance' then 'optimize gradually'
+            when _fivetran_observation = 'low spend' then 'consider increasing budget'
             else 'monitor'
         end as _fivetran_recommendation,
 
@@ -226,9 +235,11 @@ final as (
         case
             when _fivetran_observation in ('budget constrained', 'campaign disabled', 'budget disabled') then 'high'
             when _fivetran_observation in ('budget + targeting constrained', 'no spend + no targeting', 'no spend') then 'high'
+            when _fivetran_observation = 'high spend + poor performance' then 'high'
             when _fivetran_observation in ('targeting constrained', 'quality/relevance constrained', 'quality/relevance + targeting constrained') then 'medium'
             when _fivetran_observation = 'high spend + good performance' then 'low'
             when _fivetran_observation = 'moderate spend + normal performance' then 'low'
+            when _fivetran_observation = 'low spend' then 'low'
             else 'low'
         end as _fivetran_priority
     from campaign_diagnostics_logic

@@ -7,7 +7,7 @@
 {% set thresholds = var('google_ads__campaign_bid_modifiers_thresholds', {
     'cpc': {'low': 1.0, 'high': 3.0},
     'ctr': {'low': 1.5, 'high': 3.0},
-    'spend': {'low': 200.0, 'high': 500.0},
+    'spend': {'low': 100.0, 'high': 500.0},
     'bid_modifier': {'low': 0.7, 'high': 1.5}
 }) %}
 
@@ -150,10 +150,16 @@ recommendation_logic as (
             when recent_campaign_performance.avg_ctr_percent >= {{ thresholds['ctr']['high'] }}
                 and recent_campaign_performance.avg_cpc <= {{ thresholds['cpc']['low'] }}
                 then 'high performance'
+            when recent_campaign_performance.total_spend > {{ thresholds['spend']['high'] }}
+                and recent_campaign_performance.avg_ctr_percent < {{ thresholds['ctr']['low'] }}
+                then 'high spend + poor performance'
             when recent_campaign_performance.total_spend >= {{ thresholds['spend']['low'] }}
                 and recent_campaign_performance.total_spend <= {{ thresholds['spend']['high'] }}
                 and recent_campaign_performance.avg_ctr_percent >= {{ thresholds['ctr']['low'] }}
                 then 'moderate performance'
+            when recent_campaign_performance.total_spend < {{ thresholds['spend']['low'] }}
+                and recent_campaign_performance.total_spend > 0
+                then 'low spend'
             else 'normal performance'
         end as _fivetran_observation
 
@@ -189,17 +195,21 @@ final as (
             when _fivetran_observation in ('low ctr', 'significant negative modifier', 'disabled modifier') then 'review adjustments'
             when _fivetran_observation = 'high positive modifier' then 'monitor performance'
             when _fivetran_observation = 'high performance' then 'scale successful modifiers'
+            when _fivetran_observation = 'high spend + poor performance' then 'optimize bid modifiers'
             when _fivetran_observation = 'moderate performance' then 'optimize gradually'
+            when _fivetran_observation = 'low spend' then 'consider increasing budget'
             else 'monitor'
         end as _fivetran_recommendation,
 
         -- inferred priority level for focusing on most critical issues first
         case
             when _fivetran_observation in ('high cpc', 'high spend') then 'high'
+            when _fivetran_observation = 'high spend + poor performance' then 'high'
             when _fivetran_observation in ('significant negative modifier', 'low ctr', 'disabled modifier') then 'medium'
             when _fivetran_observation in ('manual bidding', 'high positive modifier') then 'medium'
             when _fivetran_observation = 'high performance' then 'low'
             when _fivetran_observation = 'moderate performance' then 'low'
+            when _fivetran_observation = 'low spend' then 'low'
             else 'low'
         end as _fivetran_priority
     from recommendation_logic

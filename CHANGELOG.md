@@ -15,6 +15,12 @@
 | `stg_google_ads__campaign_budget_history`<br>`stg_google_ads__campaign_budget_history_tmp` | New Staging Models | | | Historical campaign budget configurations including daily and lifetime budget settings |
 | `stg_google_ads__campaign_criterion_history`<br>`stg_google_ads__campaign_criterion_history_tmp` | New Staging Models | | | Historical campaign-level targeting criteria including location, device, and audience settings |
 
+## Feature Updates
+- **New configurable threshold variables** - Introduces customizable threshold variables for diagnostic report optimization logic. See [Configure diagnostic report thresholds](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#configure-diagnostic-report-thresholds) in the README for configuration examples.
+  - `google_ads__campaign_budget_diagnostics_thresholds` - Configure budget, CTR, CPC, spend, location targeting, and bid modifier thresholds for budget diagnostics
+  - `google_ads__campaign_bid_modifiers_thresholds` - Configure CPC, CTR, spend, and bid modifier thresholds for bid modifier analysis
+  - **Note**: These variables are currently available for core dbt users only. Quickstart users who want to customize these thresholds should submit a feature request.
+
 ## Under the Hood
 - `int_google_ads__campaigns_accounts` - Ephemeral intermediate model providing shared campaign and account dimensional data.
   - Refactors existing reports (`ad_group_report`, `ad_report`, `keyword_report`, `search_term_report`, `url_report`) to use shared `int_google_ads__campaigns_accounts` intermediate model.
