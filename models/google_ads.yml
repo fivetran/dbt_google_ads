@@ -372,11 +372,11 @@ models:
         description: Average click-through rate percentage.
       - name: avg_cpc
         description: Average cost per click.
-      - name: performance_observation
+      - name: _fivetran_observation
         description: Performance observation that drives the recommendation (High CPC, Low CTR, High spend, etc.).
-      - name: inferred_action
+      - name: _fivetran_recommendation
         description: Inferred action for bid modifier optimization based on dbt package logic (Add modifiers, Review adjustments, Monitor performance, Monitor).
-      - name: inferred_priority
+      - name: _fivetran_priority
         description: Inferred priority level for focusing on most critical issues first (high, medium, low).
 
   - name: google_ads__campaign_budget_diagnostics_report
@@ -465,9 +465,9 @@ models:
         description: Daily budget efficiency percentage.
       - name: monthly_budget_opportunity
         description: Potential monthly budget increase opportunity.
-      - name: performance_observation
+      - name: _fivetran_observation
         description: Performance observation that drives the budget recommendation (budget constrained, placement constrained, etc.).
-      - name: inferred_action
+      - name: _fivetran_recommendation
         description: Inferred action for budget optimization based on dbt package logic (increase budget, optimize targeting/bids, improve relevance, etc.).
-      - name: inferred_priority
+      - name: _fivetran_priority
         description: Inferred priority level for focusing on most critical budget issues first (high, medium, low).

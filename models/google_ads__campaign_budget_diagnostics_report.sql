@@ -201,7 +201,7 @@ campaign_diagnostics_logic as (
             when campaign_status != 'enabled'
                 then 'campaign disabled'
             else 'normal'
-        end as _fivetran_performance_observation
+        end as _fivetran_observation
 
     from campaign_diagnostics_base
 ),
@@ -212,25 +212,25 @@ final as (
         *,
         -- Inferred action based on the performance observation
         case
-            when _fivetran_performance_observation in ('budget constrained', 'budget + targeting constrained') then 'increase budget'
-            when _fivetran_performance_observation = 'targeting constrained' then 'expand targeting'
-            when _fivetran_performance_observation in ('quality/relevance constrained', 'quality/relevance + targeting constrained') then 'improve relevance'
-            when _fivetran_performance_observation in ('no spend + no targeting', 'no spend') then 'diagnose setup'
-            when _fivetran_performance_observation in ('budget disabled', 'campaign disabled') then 'enable campaign'
-            when _fivetran_performance_observation = 'high spend + good performance' then 'maintain and scale'
-            when _fivetran_performance_observation = 'moderate spend + normal performance' then 'optimize gradually'
+            when _fivetran_observation in ('budget constrained', 'budget + targeting constrained') then 'increase budget'
+            when _fivetran_observation = 'targeting constrained' then 'expand targeting'
+            when _fivetran_observation in ('quality/relevance constrained', 'quality/relevance + targeting constrained') then 'improve relevance'
+            when _fivetran_observation in ('no spend + no targeting', 'no spend') then 'diagnose setup'
+            when _fivetran_observation in ('budget disabled', 'campaign disabled') then 'enable campaign'
+            when _fivetran_observation = 'high spend + good performance' then 'maintain and scale'
+            when _fivetran_observation = 'moderate spend + normal performance' then 'optimize gradually'
             else 'monitor'
-        end as inferred_action,
+        end as _fivetran_recommendation,
 
         -- Inferred priority level for focusing on most critical issues first
         case
-            when _fivetran_performance_observation in ('budget constrained', 'campaign disabled', 'budget disabled') then 'high'
-            when _fivetran_performance_observation in ('budget + targeting constrained', 'no spend + no targeting', 'no spend') then 'high'
-            when _fivetran_performance_observation in ('targeting constrained', 'quality/relevance constrained', 'quality/relevance + targeting constrained') then 'medium'
-            when _fivetran_performance_observation = 'high spend + good performance' then 'low'
-            when _fivetran_performance_observation = 'moderate spend + normal performance' then 'low'
+            when _fivetran_observation in ('budget constrained', 'campaign disabled', 'budget disabled') then 'high'
+            when _fivetran_observation in ('budget + targeting constrained', 'no spend + no targeting', 'no spend') then 'high'
+            when _fivetran_observation in ('targeting constrained', 'quality/relevance constrained', 'quality/relevance + targeting constrained') then 'medium'
+            when _fivetran_observation = 'high spend + good performance' then 'low'
+            when _fivetran_observation = 'moderate spend + normal performance' then 'low'
             else 'low'
-        end as inferred_priority
+        end as _fivetran_priority
     from campaign_diagnostics_logic
 )
 

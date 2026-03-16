@@ -155,7 +155,7 @@ recommendation_logic as (
                 and recent_campaign_performance.avg_ctr_percent >= {{ thresholds['ctr']['low'] }}
                 then 'moderate performance'
             else 'normal performance'
-        end as performance_observation
+        end as _fivetran_observation
 
     from campaigns_accounts
     left join bid_modifiers
@@ -185,23 +185,23 @@ final as (
         *,
         -- inferred action based on the performance observation
         case
-            when performance_observation in ('high cpc', 'high spend', 'manual bidding') then 'add modifiers'
-            when performance_observation in ('low ctr', 'significant negative modifier', 'disabled modifier') then 'review adjustments'
-            when performance_observation = 'high positive modifier' then 'monitor performance'
-            when performance_observation = 'high performance' then 'scale successful modifiers'
-            when performance_observation = 'moderate performance' then 'optimize gradually'
+            when _fivetran_observation in ('high cpc', 'high spend', 'manual bidding') then 'add modifiers'
+            when _fivetran_observation in ('low ctr', 'significant negative modifier', 'disabled modifier') then 'review adjustments'
+            when _fivetran_observation = 'high positive modifier' then 'monitor performance'
+            when _fivetran_observation = 'high performance' then 'scale successful modifiers'
+            when _fivetran_observation = 'moderate performance' then 'optimize gradually'
             else 'monitor'
-        end as inferred_action,
+        end as _fivetran_recommendation,
 
         -- inferred priority level for focusing on most critical issues first
         case
-            when performance_observation in ('high cpc', 'high spend') then 'high'
-            when performance_observation in ('significant negative modifier', 'low ctr', 'disabled modifier') then 'medium'
-            when performance_observation in ('manual bidding', 'high positive modifier') then 'medium'
-            when performance_observation = 'high performance' then 'low'
-            when performance_observation = 'moderate performance' then 'low'
+            when _fivetran_observation in ('high cpc', 'high spend') then 'high'
+            when _fivetran_observation in ('significant negative modifier', 'low ctr', 'disabled modifier') then 'medium'
+            when _fivetran_observation in ('manual bidding', 'high positive modifier') then 'medium'
+            when _fivetran_observation = 'high performance' then 'low'
+            when _fivetran_observation = 'moderate performance' then 'low'
             else 'low'
-        end as inferred_priority
+        end as _fivetran_priority
     from recommendation_logic
 )
 
