@@ -173,7 +173,7 @@ recommendation_logic as (
                 and recent_campaign_performance.total_spend > 0
                 then 'low spend'
             else 'normal performance'
-        end as _fivetran_observation
+        end as calculated_observation
 
     from campaigns_accounts
     left join bid_modifiers
@@ -203,33 +203,33 @@ final as (
         *,
         -- inferred action based on the performance observation
         case
-            when _fivetran_observation = 'campaign disabled' then 'enable campaign'
-            when _fivetran_observation = 'campaign ended' then 'review or restart campaign'
-            when _fivetran_observation = 'not serving' then 'resolve serving issues'
-            when _fivetran_observation in ('high cpc', 'high spend', 'manual bidding') then 'add modifiers'
-            when _fivetran_observation in ('low ctr', 'significant negative modifier', 'disabled modifier') then 'review adjustments'
-            when _fivetran_observation = 'high positive modifier' then 'monitor performance'
-            when _fivetran_observation = 'high performance' then 'scale successful modifiers'
-            when _fivetran_observation = 'high spend + poor performance' then 'optimize bid modifiers'
-            when _fivetran_observation = 'moderate performance' then 'optimize gradually'
-            when _fivetran_observation = 'low spend' then 'consider increasing budget'
+            when calculated_observation = 'campaign disabled' then 'enable campaign'
+            when calculated_observation = 'campaign ended' then 'review or restart campaign'
+            when calculated_observation = 'not serving' then 'resolve serving issues'
+            when calculated_observation in ('high cpc', 'high spend', 'manual bidding') then 'add modifiers'
+            when calculated_observation in ('low ctr', 'significant negative modifier', 'disabled modifier') then 'review adjustments'
+            when calculated_observation = 'high positive modifier' then 'monitor performance'
+            when calculated_observation = 'high performance' then 'scale successful modifiers'
+            when calculated_observation = 'high spend + poor performance' then 'optimize bid modifiers'
+            when calculated_observation = 'moderate performance' then 'optimize gradually'
+            when calculated_observation = 'low spend' then 'consider increasing budget'
             else 'monitor'
-        end as _fivetran_recommendation,
+        end as calculated_recommendation,
 
         -- inferred priority level for focusing on most critical issues first
         case
-            when _fivetran_observation = 'campaign disabled' then 'high'
-            when _fivetran_observation = 'not serving' then 'high'
-            when _fivetran_observation in ('high cpc', 'high spend') then 'high'
-            when _fivetran_observation = 'high spend + poor performance' then 'high'
-            when _fivetran_observation = 'campaign ended' then 'medium'
-            when _fivetran_observation in ('significant negative modifier', 'low ctr', 'disabled modifier') then 'medium'
-            when _fivetran_observation in ('manual bidding', 'high positive modifier') then 'medium'
-            when _fivetran_observation = 'high performance' then 'low'
-            when _fivetran_observation = 'moderate performance' then 'low'
-            when _fivetran_observation = 'low spend' then 'low'
+            when calculated_observation = 'campaign disabled' then 'high'
+            when calculated_observation = 'not serving' then 'high'
+            when calculated_observation in ('high cpc', 'high spend') then 'high'
+            when calculated_observation = 'high spend + poor performance' then 'high'
+            when calculated_observation = 'campaign ended' then 'medium'
+            when calculated_observation in ('significant negative modifier', 'low ctr', 'disabled modifier') then 'medium'
+            when calculated_observation in ('manual bidding', 'high positive modifier') then 'medium'
+            when calculated_observation = 'high performance' then 'low'
+            when calculated_observation = 'moderate performance' then 'low'
+            when calculated_observation = 'low spend' then 'low'
             else 'low'
-        end as _fivetran_priority
+        end as calculated_priority
     from recommendation_logic
 )
 
