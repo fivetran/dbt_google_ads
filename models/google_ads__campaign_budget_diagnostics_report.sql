@@ -298,6 +298,6 @@ final as (
 )
 
 select
-    {{ dbt_utils.generate_surrogate_key(['source_relation', 'account_id', 'campaign_id', 'date_day']) }} as budget_diagnostics_report_key,
-    *
+    *,
+    {{ dbt_utils.generate_surrogate_key(['source_relation', 'account_id', 'campaign_id', 'date_day']) }} as budget_diagnostics_report_key
 from final
