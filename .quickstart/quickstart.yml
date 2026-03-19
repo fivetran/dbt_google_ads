@@ -69,3 +69,51 @@ supported_vars:
     type: dictionary
     description: "Additional `SEARCH_TERM_KEYWORD_STATS` report columns to include in `google_ads__search_term_report`"
     display_name: "Additional Search Term Keyword Stats Metrics"
+
+  google_ads__spend_high_low_thresholds:
+    type: list
+    description: "Threshold values in your local currency for spend to determine bid and budget recommendations. Provide only two values: low and high. For example, if you provide [100.0, 500.0], campaigns with spend under $100 will be categorized as 'low spend', campaigns with spend between $100 and $500 will be categorized as 'moderate performance', and campaigns with spend over $500 will be categorized as 'high spend'"
+    display_name: "Spend Thresholds"
+    value:
+      - 100.0
+      - 500.0
+
+  google_ads__cpc_high_low_thresholds:
+    type: list
+    description: "Threshold values for cost-per-click (CPC) in your local currency to determine bid recommendations. Provide only two values: low and high. For example, if you provide [1.0, 3.0], campaigns with CPC under $1.00 will be considered 'low CPC' and those over $3.00 will be considered 'high CPC'"
+    display_name: "CPC Thresholds"
+    value:
+      - 1.0
+      - 3.0
+
+  google_ads__ctr_high_low_thresholds:
+    type: list
+    description: "Threshold values for click-through rate (CTR) as decimals to determine performance recommendations. Provide only two values: low and high. For example, if you provide [0.015, 0.03], campaigns with CTR under 1.5% will be considered 'low CTR' and those over 3% will be considered 'high CTR'"
+    display_name: "CTR Thresholds"
+    value:
+      - 0.015
+      - 0.03
+
+  google_ads__bid_modifier_high_low_thresholds:
+    type: list
+    description: "Threshold values for bid modifiers as decimals to determine adjustment recommendations. Provide only two values: low and high. For example, if you provide [0.7, 1.5], bid modifiers under 0.7 will be considered 'significant negative adjustment' and those over 1.5 will be considered 'high positive adjustment'"
+    display_name: "Bid Modifier Thresholds"
+    value:
+      - 0.7
+      - 1.5
+
+  google_ads__budget_high_low_thresholds:
+    type: list
+    description: "Threshold values for budget utilization as decimals to determine budget constraint recommendations. Provide only two values: low and high. For example, if you provide [0.75, 0.95], campaigns using less than 75% of budget will be considered 'low utilization' and those using over 95% will be considered 'budget constrained'"
+    display_name: "Budget Utilization Thresholds"
+    value:
+      - 0.75
+      - 0.95
+
+  google_ads__location_targeting_high_low_thresholds:
+    type: list
+    description: "Threshold values for number of location targets to determine targeting breadth recommendations. Provide only two values: low and high. For example, if you provide [5.0, 50.0], campaigns with fewer than 5 location targets will be considered 'limited targeting' and those with over 50 will be considered 'broad targeting'"
+    display_name: "Location Targeting Thresholds"
+    value:
+      - 5.0
+      - 50.0

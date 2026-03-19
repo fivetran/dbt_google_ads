@@ -336,6 +336,8 @@ models:
         description: General status of the campaign.
       - name: serving_status
         description: Status of the ads and how they are currently being served.
+      - name: is_campaign_live
+        description: Boolean indicating if the campaign is both enabled and actively serving (campaign_status = 'ENABLED' and serving_status = 'SERVING').
       - name: bidding_strategy_type
         description: The type of bidding strategy (MANUAL_CPC, TARGET_CPA, etc.).
       - name: target_cpa
@@ -361,19 +363,19 @@ models:
       - name: interaction_event_types
         description: The event types for the interaction.
       - name: modifier_type
-        description: The type of modifier (device, location, age_range, gender, etc.).
+        description: The type of modifier (device, location, age_range, gender, income_range, parental_status, audience, keyword, topic, placement, or other).
       - name: modifier_direction
         description: Direction of the modifier (positive adjustment, negative adjustment, no adjustment, no modifier set).
-      - name: modifier_percentage
-        description: The bid modifier percentage change.
+      - name: modifier_change
+        description: The bid modifier change as a decimal (bid_modifier - 1).
       - name: total_spend
         description: Total spend in the last 30 days.
-      - name: avg_ctr_percent
-        description: Average click-through rate percentage.
+      - name: avg_ctr
+        description: Average click-through rate as a decimal.
       - name: avg_cpc
         description: Average cost per click.
       - name: calculated_observation
-        description: Performance observation that drives the recommendation (High CPC, Low CTR, High spend, etc.).
+        description: Performance observation that drives the recommendation. Possible values include campaign disabled, campaign ended, not serving, high cpc, low ctr, high spend, manual bidding, disabled modifier, high positive modifier, significant negative modifier, high performance, high spend + poor performance, moderate performance, low spend, and normal performance.
       - name: calculated_recommendation
         description: Inferred action for bid modifier optimization based on dbt package logic (Add modifiers, Review adjustments, Monitor performance, Monitor).
       - name: calculated_priority
@@ -409,6 +411,8 @@ models:
         description: General status of the campaign.
       - name: serving_status
         description: Status of the ads and how they are currently being served.
+      - name: is_campaign_live
+        description: Boolean indicating if the campaign is both enabled and actively serving (campaign_status = 'ENABLED' and serving_status = 'SERVING').
       - name: daily_budget
         description: The daily budget amount for the campaign.
       - name: total_budget
@@ -421,8 +425,6 @@ models:
         description: Boolean indicating if Google has a recommended budget for this campaign.
       - name: recommended_daily_budget
         description: Google's recommended daily budget when available, otherwise falls back to current daily budget for consistency.
-      - name: budget_increase_opportunity
-        description: Dollar amount by which Google recommends increasing the daily budget (0 when Google has no recommendation).
       - name: bidding_strategy_type
         description: The type of bidding strategy (MANUAL_CPC, TARGET_CPA, etc.).
       - name: target_cpa
@@ -435,10 +437,12 @@ models:
         description: "{{ doc('impressions') }}"
       - name: spend
         description: "{{ doc('cost') }}"
-      - name: ctr_percent
-        description: Click-through rate percentage.
-      - name: budget_utilization_percent
-        description: Percentage of daily budget utilized.
+      - name: clicks
+        description: "{{ doc('clicks') }}"
+      - name: ctr
+        description: Click-through rate as a decimal.
+      - name: budget_utilization
+        description: Decimal representing budget utilization (spend / daily_budget).
       - name: total_targeting_criteria
         description: Total number of targeting criteria set for the campaign.
       - name: location_targeting_count
@@ -446,27 +450,15 @@ models:
       - name: audience_targeting_count
         description: Number of audience targeting criteria.
       - name: location_targeting_breadth
-        description: Assessment of location targeting breadth - 'limited' (< 5 locations), 'broad' (> 50 locations), or 'normal'.
-      - name: device_targeting_assessment
-        description: Assessment of device targeting constraints.
-      - name: audience_targeting_assessment
-        description: Assessment of audience targeting constraints.
-      - name: avg_top_impression_share
-        description: Average top impression share percentage.
-      - name: avg_absolute_top_impression_share
-        description: Average absolute top impression share percentage.
-      - name: constraint_status
-        description: The type of constraint affecting campaign performance.
-      - name: constraint_severity
-        description: The severity level of the constraint (high, medium, low, minimal).
-      - name: recommendation
-        description: Automated recommendation for improving performance.
-      - name: daily_budget_efficiency_percent
-        description: Daily budget efficiency percentage.
-      - name: monthly_budget_opportunity
-        description: Potential monthly budget increase opportunity.
+        description: Assessment of location targeting breadth - 'limited' (fewer than the low threshold, default 5), 'broad' (more than the high threshold, default 50), or 'normal'. Thresholds are configurable via google_ads__location_targeting_high_low_thresholds variable.
+      - name: is_device_targeting
+        description: Boolean indicating if device targeting criteria are set.
+      - name: is_audience_targeting
+        description: Boolean indicating if audience targeting criteria are set.
+      - name: budget_increase_opportunity
+        description: Dollar amount by which Google recommends increasing the daily budget (0 when Google has no recommendation).
       - name: calculated_observation
-        description: Performance observation that drives the budget recommendation (budget constrained, placement constrained, etc.).
+        description: Performance observation that drives the budget recommendation. Possible values include campaign disabled, campaign ended, not serving, budget constrained, budget + targeting constrained, targeting constrained, quality/relevance + targeting constrained, quality/relevance constrained, high spend + good performance, high spend + poor performance, moderate spend + normal performance, low spend + low budget utilization, low spend + budget constrained, low spend, no spend + no targeting, no spend, budget disabled, and normal.
       - name: calculated_recommendation
         description: Inferred action for budget optimization based on dbt package logic (increase budget, optimize targeting/bids, improve relevance, etc.).
       - name: calculated_priority

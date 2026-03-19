@@ -3,15 +3,27 @@
 {% set using_campaign_bidding_strategy_history = var('google_ads__using_campaign_bidding_strategy_history', True) %}
 {% set using_campaign_criterion_history = var('google_ads__using_campaign_criterion_history', True) %}
 
--- Initialize consolidated threshold variable with defaults
-{% set thresholds = var('google_ads__campaign_budget_diagnostics_thresholds', {
-    'budget': {'low': 0.75, 'high': 0.95},
-    'ctr': {'low': 0.015, 'high': 0.03},
-    'cpc': {'low': 1.0, 'high': 3.0},
-    'spend': {'low': 100.0, 'high': 500.0},
-    'location_targeting': {'low': 5.0, 'high': 50.0},
-    'bid_modifier': {'low': 0.7, 'high': 1.5}
-}) %}
+-- Initialize threshold variables with defaults
+{% set budget_thresholds = var('google_ads__budget_high_low_thresholds', [0.75, 0.95]) %}
+{% set ctr_thresholds = var('google_ads__ctr_high_low_thresholds', [0.015, 0.03]) %}
+{% set cpc_thresholds = var('google_ads__cpc_high_low_thresholds', [1.0, 3.0]) %}
+{% set spend_thresholds = var('google_ads__spend_high_low_thresholds', [100.0, 500.0]) %}
+{% set location_targeting_thresholds = var('google_ads__location_targeting_high_low_thresholds', [5.0, 50.0]) %}
+{% set bid_modifier_thresholds = var('google_ads__bid_modifier_high_low_thresholds', [0.7, 1.5]) %}
+
+-- Calculate high/low values (users could input in any order, convert to floats)
+{% set budget_low = (budget_thresholds | map('float') | list) | min %}
+{% set budget_high = (budget_thresholds | map('float') | list) | max %}
+{% set ctr_low = (ctr_thresholds | map('float') | list) | min %}
+{% set ctr_high = (ctr_thresholds | map('float') | list) | max %}
+{% set cpc_low = (cpc_thresholds | map('float') | list) | min %}
+{% set cpc_high = (cpc_thresholds | map('float') | list) | max %}
+{% set spend_low = (spend_thresholds | map('float') | list) | min %}
+{% set spend_high = (spend_thresholds | map('float') | list) | max %}
+{% set location_targeting_low = (location_targeting_thresholds | map('float') | list) | min %}
+{% set location_targeting_high = (location_targeting_thresholds | map('float') | list) | max %}
+{% set bid_modifier_low = (bid_modifier_thresholds | map('float') | list) | min %}
+{% set bid_modifier_high = (bid_modifier_thresholds | map('float') | list) | max %}
 
 with campaign_report as (
     select *
@@ -63,8 +75,8 @@ campaign_targeting_analysis as (
         *,
         -- Targeting constraint flags
         case
-            when location_targets_count < {{ thresholds['location_targeting']['low'] }} then 'limited'
-            when location_targets_count > {{ thresholds['location_targeting']['high'] }} then 'broad'
+            when location_targets_count < {{ location_targeting_low }} then 'limited'
+            when location_targets_count > {{ location_targeting_high }} then 'broad'
             else 'normal'
         end as location_targeting_breadth,
 
@@ -92,7 +104,7 @@ campaign_diagnostics_base as (
         upper(campaign_report.serving_status) as serving_status,
 
         -- Budget information
-        coalesce(daily_budget, 0) as daily_budget,
+        coalesce(campaign_budget.daily_budget, 0) as daily_budget,
         coalesce(campaign_budget.total_budget, 0) as total_budget,
         campaign_budget.budget_type,
         upper(campaign_budget.budget_status) as budget_status,
@@ -101,7 +113,7 @@ campaign_diagnostics_base as (
         case
             when campaign_budget.recommended_daily_budget > 0
             then campaign_budget.recommended_daily_budget
-            else coalesce(daily_budget, 0)
+            else coalesce(campaign_budget.daily_budget, 0)
         end as recommended_daily_budget,
 
         {% if using_campaign_bidding_strategy_history %}
@@ -113,8 +125,8 @@ campaign_diagnostics_base as (
         {% endif %}
 
         -- Performance metrics
-        impressions,
-        spend,
+        campaign_report.impressions,
+        campaign_report.spend,
         campaign_report.clicks,
 
         {% if using_campaign_criterion_history %}
@@ -130,7 +142,12 @@ campaign_diagnostics_base as (
         -- Click-through rate (shows ad relevance and quality)
         campaign_report.ctr,
         -- Budget usage (shows if budget constraints are limiting performance)
-        {{ dbt_utils.safe_divide('campaign_report.spend', 'campaign_budget.daily_budget') }} as budget_utilization
+        {{ dbt_utils.safe_divide('campaign_report.spend', 'campaign_budget.daily_budget') }} as budget_utilization,
+        -- Helper field for live campaigns
+        case
+            when campaign_status = 'ENABLED' and serving_status = 'SERVING' then true
+            else false
+        end as is_campaign_live
 
     from campaign_report
     left join campaign_budget
@@ -164,73 +181,62 @@ campaign_diagnostics_logic as (
                 then 'campaign ended'
             when serving_status != 'SERVING'
                 then 'not serving'
-            when budget_utilization >= {{ thresholds['budget']['high'] }}
+            when budget_utilization >= {{ budget_high }}
                 and daily_budget > 0
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and is_campaign_live
                 then 'budget constrained'
             {% if using_campaign_criterion_history %}
-            when budget_utilization >= {{ thresholds['budget']['low'] }}
+            when budget_utilization >= {{ budget_low }} -- ">= budget_low" translates to moderate budget utlization
                 and location_targeting_breadth = 'limited'
                 and daily_budget > 0
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and is_campaign_live
                 then 'budget + targeting constrained'
             when spend > 0
                 and location_targeting_breadth = 'limited'
                 and not is_audience_targeting
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and is_campaign_live
                 then 'targeting constrained'
             when spend > 0
                 and impressions > 0
-                and ctr < {{ thresholds['ctr']['low'] }}
+                and ctr < {{ ctr_low }}
                 and not is_audience_targeting
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and is_campaign_live
                 then 'quality/relevance + targeting constrained'
             {% endif %}
             when spend > 0
                 and impressions > 0
-                and ctr < {{ thresholds['ctr']['low'] }}
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and ctr < {{ ctr_low }}
+                and is_campaign_live
                 then 'quality/relevance constrained'
-            when spend > {{ thresholds['spend']['high'] }}
+            when spend > {{ spend_high }}
                 and impressions > 0
-                and ctr >= {{ thresholds['ctr']['high'] }}
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and ctr >= {{ ctr_high }}
+                and is_campaign_live
                 then 'high spend + good performance'
-            when spend > {{ thresholds['spend']['high'] }}
+            when spend > {{ spend_high }}
                 and impressions > 0
-                and ctr < {{ thresholds['ctr']['low'] }}
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and ctr < {{ ctr_low }}
+                and is_campaign_live
                 then 'high spend + poor performance'
-            when spend >= {{ thresholds['spend']['low'] }}
-                and spend <= {{ thresholds['spend']['high'] }}
-                and ctr >= {{ thresholds['ctr']['low'] }}
-                and ctr < {{ thresholds['ctr']['high'] }}
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+            when spend >= {{ spend_low }}
+                and spend <= {{ spend_high }}
+                and ctr >= {{ ctr_low }}
+                and ctr < {{ ctr_high }}
+                and is_campaign_live
                 then 'moderate spend + normal performance'
-            when spend < {{ thresholds['spend']['low'] }}
+            when spend < {{ spend_low }}
                 and spend > 0
-                and budget_utilization < {{ thresholds['budget']['low'] }}
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and budget_utilization < {{ budget_low }}
+                and is_campaign_live
                 then 'low spend + low budget utilization'
-            when spend < {{ thresholds['spend']['low'] }}
+            when spend < {{ spend_low }}
                 and spend > 0
-                and budget_utilization >= {{ thresholds['budget']['low'] }}
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and budget_utilization >= {{ budget_low }}
+                and is_campaign_live
                 then 'low spend + budget constrained'
-            when spend < {{ thresholds['spend']['low'] }}
+            when spend < {{ spend_low }}
                 and spend > 0
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and is_campaign_live
                 then 'low spend'
             {% if using_campaign_criterion_history %}
             when spend = 0

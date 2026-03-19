@@ -3,13 +3,21 @@
 {% set using_campaign_bidding_strategy_history = var('google_ads__using_campaign_bidding_strategy_history', True) %}
 {% set using_campaign_criterion_history = var('google_ads__using_campaign_criterion_history', True) %}
 
--- Initialize consolidated threshold variable with defaults
-{% set thresholds = var('google_ads__campaign_bid_modifiers_thresholds', {
-    'cpc': {'low': 1.0, 'high': 3.0},
-    'ctr': {'low': 0.015, 'high': 0.03},
-    'spend': {'low': 100.0, 'high': 500.0},
-    'bid_modifier': {'low': 0.7, 'high': 1.5}
-}) %}
+-- Initialize threshold variables with defaults
+{% set cpc_thresholds = var('google_ads__cpc_high_low_thresholds', [1.0, 3.0]) %}
+{% set ctr_thresholds = var('google_ads__ctr_high_low_thresholds', [0.015, 0.03]) %}
+{% set spend_thresholds = var('google_ads__spend_high_low_thresholds', [100.0, 500.0]) %}
+{% set bid_modifier_thresholds = var('google_ads__bid_modifier_high_low_thresholds', [0.7, 1.5]) %}
+
+-- Calculate high/low values (users could input in any order, convert to floats)
+{% set cpc_low = (cpc_thresholds | map('float') | list) | min %}
+{% set cpc_high = (cpc_thresholds | map('float') | list) | max %}
+{% set ctr_low = (ctr_thresholds | map('float') | list) | min %}
+{% set ctr_high = (ctr_thresholds | map('float') | list) | max %}
+{% set spend_low = (spend_thresholds | map('float') | list) | min %}
+{% set spend_high = (spend_thresholds | map('float') | list) | max %}
+{% set bid_modifier_low = (bid_modifier_thresholds | map('float') | list) | min %}
+{% set bid_modifier_high = (bid_modifier_thresholds | map('float') | list) | max %}
 
 with bid_modifiers as (
     select *
@@ -125,6 +133,12 @@ recommendation_logic as (
         coalesce(recent_campaign_performance.avg_ctr, 0) as avg_ctr,
         coalesce(recent_campaign_performance.avg_cpc, 0) as avg_cpc,
 
+        -- Helper field for live campaigns
+        case
+            when campaign_status = 'ENABLED' and serving_status = 'SERVING' then true
+            else false
+        end as is_campaign_live,
+
         -- Inferred performance observation that drives the recommendation
         case
             when campaign_status in ('REMOVED', 'PAUSED')
@@ -133,20 +147,17 @@ recommendation_logic as (
                 then 'campaign ended'
             when serving_status != 'SERVING'
                 then 'not serving'
-            when recent_campaign_performance.avg_cpc > {{ thresholds['cpc']['high'] }}
+            when recent_campaign_performance.avg_cpc > {{ cpc_high }}
                 and bid_modifiers.bid_modifier is null
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and is_campaign_live
                 then 'high cpc'
-            when recent_campaign_performance.avg_ctr < {{ thresholds['ctr']['low'] }}
+            when recent_campaign_performance.avg_ctr < {{ ctr_low }}
                 and bid_modifiers.bid_modifier > 1
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and is_campaign_live
                 then 'low ctr'
-            when recent_campaign_performance.total_spend > {{ thresholds['spend']['high'] }}
+            when recent_campaign_performance.total_spend > {{ spend_high }}
                 and bid_modifiers.bid_modifier is null
-                and campaign_status = 'ENABLED'
-                and serving_status = 'SERVING'
+                and is_campaign_live
                 then 'high spend'
             {% if var('google_ads__using_campaign_bidding_strategy_history', True) %}
             when lower(bidding_strategy.bidding_strategy_type) in ('manual_cpc', 'enhanced_cpc')
@@ -155,21 +166,21 @@ recommendation_logic as (
             {% endif %}
             when bid_modifiers.bid_modifier = 0
                 then 'disabled modifier'
-            when bid_modifiers.bid_modifier > {{ thresholds['bid_modifier']['high'] }}
+            when bid_modifiers.bid_modifier > {{ bid_modifier_high }}
                 then 'high positive modifier'
-            when bid_modifiers.bid_modifier < {{ thresholds['bid_modifier']['low'] }} and bid_modifiers.bid_modifier > 0
+            when bid_modifiers.bid_modifier < {{ bid_modifier_low }} and bid_modifiers.bid_modifier > 0
                 then 'significant negative modifier'
-            when recent_campaign_performance.avg_ctr >= {{ thresholds['ctr']['high'] }}
-                and recent_campaign_performance.avg_cpc <= {{ thresholds['cpc']['low'] }}
+            when recent_campaign_performance.avg_ctr >= {{ ctr_high }}
+                and recent_campaign_performance.avg_cpc <= {{ cpc_low }}
                 then 'high performance'
-            when recent_campaign_performance.total_spend > {{ thresholds['spend']['high'] }}
-                and recent_campaign_performance.avg_ctr < {{ thresholds['ctr']['low'] }}
+            when recent_campaign_performance.total_spend > {{ spend_high }}
+                and recent_campaign_performance.avg_ctr < {{ ctr_low }}
                 then 'high spend + poor performance'
-            when recent_campaign_performance.total_spend >= {{ thresholds['spend']['low'] }}
-                and recent_campaign_performance.total_spend <= {{ thresholds['spend']['high'] }}
-                and recent_campaign_performance.avg_ctr >= {{ thresholds['ctr']['low'] }}
+            when recent_campaign_performance.total_spend >= {{ spend_low }}
+                and recent_campaign_performance.total_spend <= {{ spend_high }}
+                and recent_campaign_performance.avg_ctr >= {{ ctr_low }}
                 then 'moderate performance'
-            when recent_campaign_performance.total_spend < {{ thresholds['spend']['low'] }}
+            when recent_campaign_performance.total_spend < {{ spend_low }}
                 and recent_campaign_performance.total_spend > 0
                 then 'low spend'
             else 'normal performance'
