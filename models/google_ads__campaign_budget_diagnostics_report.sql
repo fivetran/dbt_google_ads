@@ -145,7 +145,7 @@ campaign_base as (
         {{ dbt_utils.safe_divide('campaign_report.spend', 'campaign_budget.daily_budget') }} as budget_utilization,
         -- Helper field for live campaigns
         case
-            when upper(campaign_report.campaign_status) = 'ENABLED' and upper(campaign_report.serving_status) = 'SERVING' then true
+            when upper(campaign_report.status) = 'ENABLED' and upper(campaign_report.serving_status) = 'SERVING' then true
             else false
         end as is_campaign_live
 
