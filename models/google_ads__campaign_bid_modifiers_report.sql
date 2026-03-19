@@ -4,20 +4,20 @@
 {% set using_campaign_criterion_history = var('google_ads__using_campaign_criterion_history', True) %}
 
 -- Initialize threshold variables with defaults
-{% set cpc_thresholds = var('google_ads__cpc_high_low_thresholds', [1.0, 3.0]) %}
-{% set ctr_thresholds = var('google_ads__ctr_high_low_thresholds', [0.015, 0.03]) %}
-{% set spend_thresholds = var('google_ads__spend_high_low_thresholds', [100.0, 500.0]) %}
-{% set bid_modifier_thresholds = var('google_ads__bid_modifier_high_low_thresholds', [0.7, 1.5]) %}
+{% set cpc_thresholds = var('google_ads__cpc_high_low_thresholds', [1.0, 3.0]) | map('float') | list %}
+{% set ctr_thresholds = var('google_ads__ctr_high_low_thresholds', [0.015, 0.03]) | map('float') | list %}
+{% set spend_thresholds = var('google_ads__spend_high_low_thresholds', [100.0, 500.0]) | map('float') | list %}
+{% set bid_modifier_thresholds = var('google_ads__bid_modifier_high_low_thresholds', [0.7, 1.5]) | map('float') | list %}
 
 -- Calculate high/low values (users could input in any order, convert to floats)
-{% set cpc_low = (cpc_thresholds | map('float') | list) | min %}
-{% set cpc_high = (cpc_thresholds | map('float') | list) | max %}
-{% set ctr_low = (ctr_thresholds | map('float') | list) | min %}
-{% set ctr_high = (ctr_thresholds | map('float') | list) | max %}
-{% set spend_low = (spend_thresholds | map('float') | list) | min %}
-{% set spend_high = (spend_thresholds | map('float') | list) | max %}
-{% set bid_modifier_low = (bid_modifier_thresholds | map('float') | list) | min %}
-{% set bid_modifier_high = (bid_modifier_thresholds | map('float') | list) | max %}
+{% set cpc_low = cpc_thresholds | min %}
+{% set cpc_high = cpc_thresholds | max %}
+{% set ctr_low = ctr_thresholds | min %}
+{% set ctr_high = ctr_thresholds | max %}
+{% set spend_low = spend_thresholds | min %}
+{% set spend_high = spend_thresholds | max %}
+{% set bid_modifier_low = bid_modifier_thresholds | min %}
+{% set bid_modifier_high = bid_modifier_thresholds | max %}
 
 with bid_modifiers as (
     select *
