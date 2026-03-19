@@ -64,8 +64,8 @@ recent_campaign_performance as (
     group by 1, 2
 ),
 
--- Determine recommendation reason based on performance thresholds and current bid settings
-recommendation_logic as (
+-- Base data gathering with joins and basic field calculations
+campaign_base as (
     select
         campaigns_accounts.source_relation,
         campaigns_accounts.account_name,
@@ -74,8 +74,14 @@ recommendation_logic as (
         campaigns_accounts.campaign_name,
         campaigns_accounts.advertising_channel_type,
         campaigns_accounts.advertising_channel_subtype,
-        upper(campaigns_accounts.campaign_status) as campaign_status,
-        upper(campaigns_accounts.serving_status) as serving_status,
+        campaigns_accounts.campaign_status,
+        campaigns_accounts.serving_status,
+
+        -- Helper field for live campaigns
+        case
+            when upper(campaigns_accounts.campaign_status) = 'ENABLED' and upper(campaigns_accounts.serving_status) = 'SERVING' then true
+            else false
+        end as is_campaign_live,
 
         {% if var('google_ads__using_campaign_bidding_strategy_history', True) %}
         -- Bidding strategy information
@@ -131,60 +137,7 @@ recommendation_logic as (
         -- Performance metrics to evaluate bid modifier effectiveness
         coalesce(recent_campaign_performance.total_spend, 0) as total_spend,
         coalesce(recent_campaign_performance.avg_ctr, 0) as avg_ctr,
-        coalesce(recent_campaign_performance.avg_cpc, 0) as avg_cpc,
-
-        -- Helper field for live campaigns
-        case
-            when campaign_status = 'ENABLED' and serving_status = 'SERVING' then true
-            else false
-        end as is_campaign_live,
-
-        -- Inferred performance observation that drives the recommendation
-        case
-            when campaign_status in ('REMOVED', 'PAUSED')
-                then 'campaign disabled'
-            when serving_status = 'ENDED'
-                then 'campaign ended'
-            when serving_status != 'SERVING'
-                then 'not serving'
-            when recent_campaign_performance.avg_cpc > {{ cpc_high }}
-                and bid_modifiers.bid_modifier is null
-                and is_campaign_live
-                then 'high cpc'
-            when recent_campaign_performance.avg_ctr < {{ ctr_low }}
-                and bid_modifiers.bid_modifier > 1
-                and is_campaign_live
-                then 'low ctr'
-            when recent_campaign_performance.total_spend > {{ spend_high }}
-                and bid_modifiers.bid_modifier is null
-                and is_campaign_live
-                then 'high spend'
-            {% if var('google_ads__using_campaign_bidding_strategy_history', True) %}
-            when lower(bidding_strategy.bidding_strategy_type) in ('manual_cpc', 'enhanced_cpc')
-                and bid_modifiers.bid_modifier is null
-                then 'manual bidding'
-            {% endif %}
-            when bid_modifiers.bid_modifier = 0
-                then 'disabled modifier'
-            when bid_modifiers.bid_modifier > {{ bid_modifier_high }}
-                then 'high positive modifier'
-            when bid_modifiers.bid_modifier < {{ bid_modifier_low }} and bid_modifiers.bid_modifier > 0
-                then 'significant negative modifier'
-            when recent_campaign_performance.avg_ctr >= {{ ctr_high }}
-                and recent_campaign_performance.avg_cpc <= {{ cpc_low }}
-                then 'high performance'
-            when recent_campaign_performance.total_spend > {{ spend_high }}
-                and recent_campaign_performance.avg_ctr < {{ ctr_low }}
-                then 'high spend + poor performance'
-            when recent_campaign_performance.total_spend >= {{ spend_low }}
-                and recent_campaign_performance.total_spend <= {{ spend_high }}
-                and recent_campaign_performance.avg_ctr >= {{ ctr_low }}
-                then 'moderate performance'
-            when recent_campaign_performance.total_spend < {{ spend_low }}
-                and recent_campaign_performance.total_spend > 0
-                then 'low spend'
-            else 'normal performance'
-        end as calculated_observation
+        coalesce(recent_campaign_performance.avg_cpc, 0) as avg_cpc
 
     from campaigns_accounts
     left join bid_modifiers
@@ -206,6 +159,60 @@ recommendation_logic as (
         and campaigns_accounts.campaign_id = campaign_criterion.campaign_id
         and campaigns_accounts.source_relation = campaign_criterion.source_relation
     {% endif %}
+),
+
+-- Determine recommendation reason based on performance thresholds and current bid settings
+recommendation_logic as (
+    select
+        *,
+        -- Inferred performance observation that drives the recommendation
+        case
+            when campaign_status in ('REMOVED', 'PAUSED')
+                then 'campaign disabled'
+            when serving_status = 'ENDED'
+                then 'campaign ended'
+            when serving_status != 'SERVING'
+                then 'not serving'
+            when avg_cpc > {{ cpc_high }}
+                and bid_modifier is null
+                and is_campaign_live
+                then 'high cpc'
+            when avg_ctr < {{ ctr_low }}
+                and bid_modifier > 1
+                and is_campaign_live
+                then 'low ctr'
+            when total_spend > {{ spend_high }}
+                and bid_modifier is null
+                and is_campaign_live
+                then 'high spend'
+            {% if var('google_ads__using_campaign_bidding_strategy_history', True) %}
+            when lower(bidding_strategy_type) in ('manual_cpc', 'enhanced_cpc')
+                and bid_modifier is null
+                then 'manual bidding'
+            {% endif %}
+            when bid_modifier = 0
+                then 'disabled modifier'
+            when bid_modifier > {{ bid_modifier_high }}
+                then 'high positive modifier'
+            when bid_modifier < {{ bid_modifier_low }} and bid_modifier > 0
+                then 'significant negative modifier'
+            when avg_ctr >= {{ ctr_high }}
+                and avg_cpc <= {{ cpc_low }}
+                then 'high performance'
+            when total_spend > {{ spend_high }}
+                and avg_ctr < {{ ctr_low }}
+                then 'high spend + poor performance'
+            when total_spend >= {{ spend_low }}
+                and total_spend <= {{ spend_high }}
+                and avg_ctr >= {{ ctr_low }}
+                then 'moderate performance'
+            when total_spend < {{ spend_low }}
+                and total_spend > 0
+                then 'low spend'
+            else 'normal performance'
+        end as calculated_observation
+
+    from campaign_base
 ),
 
 -- derive action from reason to avoid duplicating threshold logic

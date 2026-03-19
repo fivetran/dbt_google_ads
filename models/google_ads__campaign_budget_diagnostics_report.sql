@@ -89,8 +89,8 @@ campaign_targeting_analysis as (
 
 
 
--- Join all data together and calculate metrics
-campaign_diagnostics_base as (
+-- Base data gathering with joins and basic field calculations
+campaign_base as (
     select
         campaign_report.source_relation,
         campaign_report.date_day,
@@ -100,14 +100,14 @@ campaign_diagnostics_base as (
         campaign_report.account_id,
         campaign_report.advertising_channel_type,
         campaign_report.advertising_channel_subtype,
-        upper(campaign_report.status) as campaign_status,
-        upper(campaign_report.serving_status) as serving_status,
+        campaign_report.status,
+        campaign_report.serving_status,
 
         -- Budget information
         coalesce(campaign_budget.daily_budget, 0) as daily_budget,
         coalesce(campaign_budget.total_budget, 0) as total_budget,
         campaign_budget.budget_type,
-        upper(campaign_budget.budget_status) as budget_status,
+        campaign_budget.budget_status,
         campaign_budget.has_recommended_budget,
         -- Use Google's recommendation when available, otherwise fall back to current budget
         case
@@ -145,7 +145,7 @@ campaign_diagnostics_base as (
         {{ dbt_utils.safe_divide('campaign_report.spend', 'campaign_budget.daily_budget') }} as budget_utilization,
         -- Helper field for live campaigns
         case
-            when campaign_status = 'ENABLED' and serving_status = 'SERVING' then true
+            when upper(campaign_report.status) = 'ENABLED' and upper(campaign_report.serving_status) = 'SERVING' then true
             else false
         end as is_campaign_live
 
@@ -166,7 +166,7 @@ campaign_diagnostics_base as (
 ),
 
 -- Apply business logic for diagnostics
-campaign_diagnostics_logic as (
+recommendation_logic as (
     select
         *,
         
@@ -252,7 +252,7 @@ campaign_diagnostics_logic as (
             else 'normal'
         end as calculated_observation
 
-    from campaign_diagnostics_base
+    from campaign_base
 ),
 
 -- Derive action and priority from observation
@@ -294,7 +294,7 @@ final as (
             when calculated_observation = 'low spend' then 'low'
             else 'low'
         end as calculated_priority
-    from campaign_diagnostics_logic
+    from recommendation_logic
 )
 
 select
