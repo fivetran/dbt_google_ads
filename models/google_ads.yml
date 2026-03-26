@@ -215,8 +215,8 @@ models:
         description: "{{ doc('conversions_value') }}"
       - name: view_through_conversions
         description: "{{ doc('view_through_conversions') }}"
-      - name: ctr_percent
-        description: Click-through rate as a percentage, calculated as (clicks / impressions) * 100. Shows ad relevance and engagement.
+      - name: ctr
+        description: Click-through rate as a decimal, calculated as clicks / impressions. Shows ad relevance and engagement.
 
   - name: google_ads__keyword_report
     description: Each record in this table represents the daily performance at the ad group level for keywords.
@@ -375,11 +375,11 @@ models:
       - name: avg_cpc
         description: Average cost per click.
       - name: calculated_observation
-        description: Performance observation that drives the recommendation. Possible values include campaign disabled, campaign ended, not serving, high cpc, low ctr, high spend, manual bidding, disabled modifier, high positive modifier, significant negative modifier, high performance, high spend + poor performance, moderate performance, low spend, and normal performance.
+        description: Performance observation that drives the recommendation based on configurable thresholds from `google_ads__campaign_bid_modifiers_thresholds` variable (CPC, CTR, spend, and bid modifier thresholds). Possible values include campaign disabled, campaign ended, not serving, high cpc, low ctr, high spend, manual bidding, disabled modifier, high positive modifier, significant negative modifier, high performance, high spend + poor performance, moderate performance, low spend, and normal performance.
       - name: calculated_recommendation
-        description: Inferred action for bid modifier optimization based on dbt package logic (Add modifiers, Review adjustments, Monitor performance, Monitor).
+        description: Inferred action for bid modifier optimization based on dbt package logic and thresholds from `google_ads__campaign_bid_modifiers_thresholds` variable (Add modifiers, Review adjustments, Monitor performance, Monitor).
       - name: calculated_priority
-        description: Inferred priority level for focusing on most critical issues first (high, medium, low).
+        description: Inferred priority level for focusing on most critical issues first (high, medium, low), derived from performance thresholds in `google_ads__campaign_bid_modifiers_thresholds` variable.
 
   - name: google_ads__campaign_budget_diagnostics_report
     description: Each record in this table represents a campaign's budget constraints and performance diagnostics.
@@ -458,8 +458,8 @@ models:
       - name: budget_increase_opportunity
         description: Dollar amount by which Google recommends increasing the daily budget (0 when Google has no recommendation).
       - name: calculated_observation
-        description: Performance observation that drives the budget recommendation. Possible values include campaign disabled, campaign ended, not serving, budget constrained, budget + targeting constrained, targeting constrained, quality/relevance + targeting constrained, quality/relevance constrained, high spend + good performance, high spend + poor performance, moderate spend + normal performance, low spend + low budget utilization, low spend + budget constrained, low spend, no spend + no targeting, no spend, budget disabled, and normal.
+        description: Performance observation that drives the budget recommendation based on configurable thresholds from `google_ads__campaign_budget_diagnostics_thresholds` variable (budget utilization, CTR, CPC, spend, location targeting, and bid modifier thresholds). Possible values include campaign disabled, campaign ended, not serving, budget constrained, budget + targeting constrained, targeting constrained, quality/relevance + targeting constrained, quality/relevance constrained, high spend + good performance, high spend + poor performance, moderate spend + normal performance, low spend + low budget utilization, low spend + budget constrained, low spend, no spend + no targeting, no spend, budget disabled, and normal.
       - name: calculated_recommendation
-        description: Inferred action for budget optimization based on dbt package logic (increase budget, optimize targeting/bids, improve relevance, etc.).
+        description: Inferred action for budget optimization based on dbt package logic and thresholds from `google_ads__campaign_budget_diagnostics_thresholds` variable (increase budget, optimize targeting/bids, improve relevance, etc.).
       - name: calculated_priority
-        description: Inferred priority level for focusing on most critical budget issues first (high, medium, low).
+        description: Inferred priority level for focusing on most critical budget issues first (high, medium, low), derived from performance thresholds in `google_ads__campaign_budget_diagnostics_thresholds` variable.

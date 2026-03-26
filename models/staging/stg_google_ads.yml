@@ -393,7 +393,7 @@ models:
       - name: budget_id
         description: Unique identifier of the budget.
       - name: daily_budget
-        description: The daily budget amount in dollars.
+        description: The daily budget amount in dollars, converted from amount_micros.
       - name: delivery_method
         description: The delivery method for the budget (STANDARD or ACCELERATED).
       - name: explicitly_shared
@@ -407,9 +407,9 @@ models:
       - name: period
         description: The budget period (DAILY, etc.).
       - name: recommended_daily_budget
-        description: Google's recommended daily budget amount in dollars.
+        description: Google's recommended daily budget amount in dollars, converted from recommended_budget_amount_micros.
       - name: total_budget
-        description: The total budget amount in dollars for lifetime budgets.
+        description: The total budget amount in dollars for lifetime budgets, converted from total_amount_micros.
       - name: budget_type
         description: The type of budget (DAILY, LIFETIME, etc.).
       - name: budget_status
@@ -489,7 +489,7 @@ models:
       - name: bidding_status
         description: The status of the bidding strategy.
       - name: target_cpa
-        description: Target cost per acquisition in dollars.
+        description: Target cost per acquisition in dollars, converted from target_cpa_micros.
       - name: target_cpm
         description: Target cost per mille.
       - name: target_roas

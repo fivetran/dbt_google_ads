@@ -3,11 +3,12 @@
 [PR #95](https://github.com/fivetran/dbt_google_ads/pull/95) includes the following updates:
 
 ## Schema/Data Change
-**7 total changes • 1 possible breaking change**
+**8 total changes • 2 possible breaking change**
 
 | Data Model(s) | Change type | Old | New | Notes |
 | ---------- | ----------- | -------- | -------- | ----- |
-| `google_ads__campaign_report` | New Column | | `ctr_percent` | Click-through rate percentage for ad relevance analysis |
+| `google_ads__campaign_report` | New Columns | | `ctr` | Click-through rate for ad relevance analysis<br>Current serving status of the campaign<br><br>**Possible breaking change**: New column may affect downstream use |
+| `google_ads__campaign_report` | New Column | | `serving_status` | Current serving status of the campaign<br><br>**Possible breaking change**: New column may affect downstream use |
 | `google_ads__campaign_bid_modifiers_report` | New Model | | | Analyzes bid modifier effectiveness at campaign-criterion level with performance-based recommendations |
 | `google_ads__campaign_budget_diagnostics_report` | New Model | | | Diagnoses daily campaign budget utilization and performance constraints with prioritized optimization recommendations |
 | `stg_google_ads__campaign_bid_modifier_history`<br>`stg_google_ads__campaign_bid_modifier_history_tmp` | New Staging Models | | | Historical bid modifier configurations and adjustments at campaign-criterion level |
@@ -23,6 +24,7 @@
 ## Under the Hood
 - `int_google_ads__campaigns_accounts` - Ephemeral intermediate model providing shared campaign and account dimensional data.
   - Refactors existing reports (`ad_group_report`, `ad_report`, `keyword_report`, `search_term_report`, `url_report`) to use shared `int_google_ads__campaigns_accounts` intermediate model.
+- Adds the `get_threshold_high_lows` macro that processes diagnostic threshold configurations for use in budget and bid recommendations.
 
 # dbt_google_ads v1.2.0
 

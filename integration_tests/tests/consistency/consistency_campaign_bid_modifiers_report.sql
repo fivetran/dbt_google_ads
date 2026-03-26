@@ -11,7 +11,7 @@ with prod as (
         count(case when bid_modifier < 1 then 1 end) as negative_modifiers,
         avg(bid_modifier) as avg_bid_modifier,
         sum(total_spend) as total_spend,
-        avg(avg_ctr_percent) as avg_ctr
+        avg(avg_ctr) as avg_ctr
     from {{ target.schema }}_google_ads_prod.google_ads__campaign_bid_modifiers_report
     group by 1
 ),
@@ -24,7 +24,7 @@ dev as (
         count(case when bid_modifier < 1 then 1 end) as negative_modifiers,
         avg(bid_modifier) as avg_bid_modifier,
         sum(total_spend) as total_spend,
-        avg(avg_ctr_percent) as avg_ctr
+        avg(avg_ctr) as avg_ctr
     from {{ target.schema }}_google_ads_dev.google_ads__campaign_bid_modifiers_report
     group by 1
 ),
