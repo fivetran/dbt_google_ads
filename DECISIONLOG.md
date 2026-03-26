@@ -26,6 +26,6 @@ The `google_ads__campaign_budget_diagnostics_report` and `google_ads__campaign_b
 
 These recommendations reflect common Google Ads optimization practices but may not align with every organization's specific business goals, vertical requirements, or campaign strategies. The thresholds and logic are generalized rather than universal rules.
 
-**Customization**: The underlying thresholds are configurable through array-based variables (see [Configure diagnostic report thresholds](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#configure-diagnostic-report-thresholds)), allowing users to adjust the logic to better fit their business context. Users can also ignore these columns entirely and create their own custom logic based on the underlying performance metrics.
+**Customization**: The underlying thresholds are configurable through array-based variables (see [Configure diagnostic report thresholds](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#configure-diagnostic-report-thresholds)), allowing users to adjust the logic to better fit their business context.
 
 **Alternative approach**: If the opinionated recommendations don't fit your needs, consider using the raw performance metrics (spend, CTR, CPC, budget utilization, etc.) to build custom diagnostic logic that aligns with your specific optimization strategies and business objectives.

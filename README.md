@@ -76,7 +76,7 @@ Include the following google_ads package version in your `packages.yml` file _if
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: "1.4.0-a1" # we recommend using ranges to capture non-breaking changes automatically
+    version: "1.3.0-a1" # we recommend using ranges to capture non-breaking changes automatically
 ```
 > All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/google_ads_source` in your `packages.yml` since this package has been deprecated.
 
@@ -155,7 +155,7 @@ vars:
 ```
 
 #### Configure diagnostic report thresholds
-The diagnostic reports (`google_ads__campaign_bid_modifiers_report` and `google_ads__campaign_budget_diagnostics_report`) use configurable thresholds to identify optimization opportunities. You can customize these thresholds for your use case in your `dbt_project.yml`:
+The diagnostic reports (`google_ads__campaign_bid_modifiers_report` and `google_ads__campaign_budget_diagnostics_report`) use configurable thresholds to identify optimization opportunities persisted as the `calculated_*` fields. You can customize these thresholds for your use case in your `dbt_project.yml`:
 
 ```yml
 vars:
