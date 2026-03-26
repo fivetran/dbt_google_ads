@@ -64,8 +64,8 @@ campaign_targeting_analysis as (
         *,
         -- Targeting constraint flags
         case
-            when location_targets_count < {{ diagnostic_thresholds.location_targeting.low }} then 'limited'
-            when location_targets_count > {{ diagnostic_thresholds.location_targeting.high }} then 'broad'
+            when location_targets_count < {{ diagnostic_thresholds['location_targeting']['low'] }} then 'limited'
+            when location_targets_count > {{ diagnostic_thresholds['location_targeting']['high'] }} then 'broad'
             else 'normal'
         end as location_targeting_breadth,
 
@@ -170,12 +170,12 @@ recommendation_logic as (
                 then 'campaign ended'
             when serving_status != 'SERVING'
                 then 'not serving'
-            when budget_utilization >= {{ diagnostic_thresholds.budget.high }}
+            when budget_utilization >= {{ diagnostic_thresholds['budget']['high'] }}
                 and daily_budget > 0
                 and is_campaign_live
                 then 'budget constrained'
             {% if using_campaign_criterion_history %}
-            when budget_utilization >= {{ diagnostic_thresholds.budget.low }} -- ">= budget.low" translates to moderate budget utilization
+            when budget_utilization >= {{ diagnostic_thresholds['budget']['low'] }} -- ">= budget.low" translates to moderate budget utilization
                 and location_targeting_breadth = 'limited'
                 and daily_budget > 0
                 and is_campaign_live
@@ -187,43 +187,43 @@ recommendation_logic as (
                 then 'targeting constrained'
             when spend > 0
                 and impressions > 0
-                and ctr < {{ diagnostic_thresholds.ctr.low }}
+                and ctr < {{ diagnostic_thresholds['ctr']['low'] }}
                 and not is_audience_targeting
                 and is_campaign_live
                 then 'quality/relevance + targeting constrained'
             {% endif %}
             when spend > 0
                 and impressions > 0
-                and ctr < {{ diagnostic_thresholds.ctr.low }}
+                and ctr < {{ diagnostic_thresholds['ctr']['low'] }}
                 and is_campaign_live
                 then 'quality/relevance constrained'
-            when spend > {{ diagnostic_thresholds.spend.high }}
+            when spend > {{ diagnostic_thresholds['spend']['high'] }}
                 and impressions > 0
-                and ctr >= {{ diagnostic_thresholds.ctr.high }}
+                and ctr >= {{ diagnostic_thresholds['ctr']['high'] }}
                 and is_campaign_live
                 then 'high spend + good performance'
-            when spend > {{ diagnostic_thresholds.spend.high }}
+            when spend > {{ diagnostic_thresholds['spend']['high'] }}
                 and impressions > 0
-                and ctr < {{ diagnostic_thresholds.ctr.low }}
+                and ctr < {{ diagnostic_thresholds['ctr']['low'] }}
                 and is_campaign_live
                 then 'high spend + poor performance'
-            when spend >= {{ diagnostic_thresholds.spend.low }}
-                and spend <= {{ diagnostic_thresholds.spend.high }}
-                and ctr >= {{ diagnostic_thresholds.ctr.low }}
-                and ctr < {{ diagnostic_thresholds.ctr.high }}
+            when spend >= {{ diagnostic_thresholds['spend']['low'] }}
+                and spend <= {{ diagnostic_thresholds['spend']['high'] }}
+                and ctr >= {{ diagnostic_thresholds['ctr']['low'] }}
+                and ctr < {{ diagnostic_thresholds['ctr']['high'] }}
                 and is_campaign_live
                 then 'moderate spend + normal performance'
-            when spend < {{ diagnostic_thresholds.spend.low }}
+            when spend < {{ diagnostic_thresholds['spend']['low'] }}
                 and spend > 0
-                and budget_utilization < {{ diagnostic_thresholds.budget.low }}
+                and budget_utilization < {{ diagnostic_thresholds['budget']['low'] }}
                 and is_campaign_live
                 then 'low spend + low budget utilization'
-            when spend < {{ diagnostic_thresholds.spend.low }}
+            when spend < {{ diagnostic_thresholds['spend']['low'] }}
                 and spend > 0
-                and budget_utilization >= {{ diagnostic_thresholds.budget.low }}
+                and budget_utilization >= {{ diagnostic_thresholds['budget']['low'] }}
                 and is_campaign_live
                 then 'low spend + budget constrained'
-            when spend < {{ diagnostic_thresholds.spend.low }}
+            when spend < {{ diagnostic_thresholds['spend']['low'] }}
                 and spend > 0
                 and is_campaign_live
                 then 'low spend'

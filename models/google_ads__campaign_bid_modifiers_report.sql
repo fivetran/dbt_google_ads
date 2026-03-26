@@ -166,15 +166,15 @@ recommendation_logic as (
                 then 'campaign ended'
             when serving_status != 'SERVING'
                 then 'not serving'
-            when avg_cpc > {{ diagnostic_thresholds.cpc.high }}
+            when avg_cpc > {{ diagnostic_thresholds['cpc']['high'] }}
                 and bid_modifier is null
                 and is_campaign_live
                 then 'high cpc'
-            when avg_ctr < {{ diagnostic_thresholds.ctr.low }}
+            when avg_ctr < {{ diagnostic_thresholds['ctr']['low'] }}
                 and bid_modifier > 1
                 and is_campaign_live
                 then 'low ctr'
-            when total_spend > {{ diagnostic_thresholds.spend.high }}
+            when total_spend > {{ diagnostic_thresholds['spend']['high'] }}
                 and bid_modifier is null
                 and is_campaign_live
                 then 'high spend'
@@ -185,21 +185,21 @@ recommendation_logic as (
             {% endif %}
             when bid_modifier = 0
                 then 'disabled modifier'
-            when bid_modifier > {{ diagnostic_thresholds.bid_modifier.high }}
+            when bid_modifier > {{ diagnostic_thresholds['bid_modifier']['high'] }}
                 then 'high positive modifier'
-            when bid_modifier < {{ diagnostic_thresholds.bid_modifier.low }} and bid_modifier > 0
+            when bid_modifier < {{ diagnostic_thresholds['bid_modifier']['low'] }} and bid_modifier > 0
                 then 'significant negative modifier'
-            when avg_ctr >= {{ diagnostic_thresholds.ctr.high }}
-                and avg_cpc <= {{ diagnostic_thresholds.cpc.low }}
+            when avg_ctr >= {{ diagnostic_thresholds['ctr']['high'] }}
+                and avg_cpc <= {{ diagnostic_thresholds['cpc']['low'] }}
                 then 'high performance'
-            when total_spend > {{ diagnostic_thresholds.spend.high }}
-                and avg_ctr < {{ diagnostic_thresholds.ctr.low }}
+            when total_spend > {{ diagnostic_thresholds['spend']['high'] }}
+                and avg_ctr < {{ diagnostic_thresholds['ctr']['low'] }}
                 then 'high spend + poor performance'
-            when total_spend >= {{ diagnostic_thresholds.spend.low }}
-                and total_spend <= {{ diagnostic_thresholds.spend.high }}
-                and avg_ctr >= {{ diagnostic_thresholds.ctr.low }}
+            when total_spend >= {{ diagnostic_thresholds['spend']['low'] }}
+                and total_spend <= {{ diagnostic_thresholds['spend']['high'] }}
+                and avg_ctr >= {{ diagnostic_thresholds['ctr']['low'] }}
                 then 'moderate performance'
-            when total_spend < {{ diagnostic_thresholds.spend.low }}
+            when total_spend < {{ diagnostic_thresholds['spend']['low'] }}
                 and total_spend > 0
                 then 'low spend'
             else 'normal performance'
