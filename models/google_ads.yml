@@ -321,7 +321,7 @@ models:
       - name: account_name
         description: "{{ doc('account_descriptive_name') }}"
       - name: account_id
-        description: "{{ doc('account_id') }}"
+        description: "{{ doc('external_customer_id') }}"
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
         tests:
@@ -402,7 +402,7 @@ models:
       - name: account_name
         description: "{{ doc('account_descriptive_name') }}"
       - name: account_id
-        description: "{{ doc('account_id') }}"
+        description: "{{ doc('external_customer_id') }}"
       - name: advertising_channel_type
         description: The type of advertising channel being used by the campaign.
       - name: advertising_channel_subtype
@@ -440,7 +440,7 @@ models:
       - name: clicks
         description: "{{ doc('clicks') }}"
       - name: ctr
-        description: Click-through rate as a decimal.
+        description: "{{ doc('campaign_id') }}"
       - name: budget_utilization
         description: Decimal representing budget utilization (spend / daily_budget).
       - name: total_targeting_criteria

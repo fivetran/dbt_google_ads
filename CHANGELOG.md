@@ -7,7 +7,7 @@
 
 | Data Model(s) | Change type | Old | New | Notes |
 | ---------- | ----------- | -------- | -------- | ----- |
-| `google_ads__campaign_report` | New Columns | | `ctr` | Click-through rate for ad relevance analysis<br>Current serving status of the campaign<br><br>**Possible breaking change**: New column may affect downstream use |
+| `google_ads__campaign_report` | New Columns | | `ctr` | Click-through rate for ad relevance analysis<br><br>**Possible breaking change**: New column may affect downstream use |
 | `google_ads__campaign_report` | New Column | | `serving_status` | Current serving status of the campaign<br><br>**Possible breaking change**: New column may affect downstream use |
 | `google_ads__campaign_bid_modifiers_report` | New Model | | | Analyzes bid modifier effectiveness at campaign-criterion level with performance-based recommendations |
 | `google_ads__campaign_budget_diagnostics_report` | New Model | | | Diagnoses daily campaign budget utilization and performance constraints with prioritized optimization recommendations |
@@ -18,8 +18,12 @@
 
 ## Feature Updates
 - **New configurable threshold variables** - Introduces customizable threshold variables for diagnostic report optimization logic. See [Configure diagnostic report thresholds](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#configure-diagnostic-report-thresholds) in the README for configuration examples.
-  - `google_ads__campaign_budget_diagnostics_thresholds` - Configure budget, CTR, CPC, spend, location targeting, and bid modifier thresholds for budget diagnostics
-  - `google_ads__campaign_bid_modifiers_thresholds` - Configure CPC, CTR, spend, and bid modifier thresholds for bid modifier analysis
+  - `google_ads__cpc_high_low_thresholds` - Cost per click thresholds for optimization analysis
+  - `google_ads__ctr_high_low_thresholds` - Click-through rate thresholds for performance evaluation
+  - `google_ads__spend_high_low_thresholds` - Spend amount thresholds for budget analysis
+  - `google_ads__bid_modifier_high_low_thresholds` - Bid modifier thresholds for adjustment recommendations
+  - `google_ads__budget_high_low_thresholds` - Budget utilization thresholds for constraint analysis
+  - `google_ads__location_targeting_high_low_thresholds` - Location targeting count thresholds for reach analysis
 
 ## Under the Hood
 - `int_google_ads__campaigns_accounts` - Ephemeral intermediate model providing shared campaign and account dimensional data.

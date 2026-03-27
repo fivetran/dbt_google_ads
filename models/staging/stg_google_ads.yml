@@ -439,7 +439,7 @@ models:
       - name: updated_at
         description: "{{ doc('updated_at') }}"
       - name: user_list_id
-        description: "{{ doc('user_list_id') }}"
+        description: The user list ID for audience targeting.
       - name: is_most_recent_record
         description: "{{ doc('is_most_recent_record') }}"
 
