@@ -53,6 +53,9 @@ recent_campaign_performance as (
         -- CPC = Cost Per Click (shows actual cost impact of bid modifications)
         {{ dbt_utils.safe_divide('sum(spend)', 'sum(clicks)') }} as avg_cpc
     from {{ ref('stg_google_ads__campaign_stats') }}
+    -- Rolling 30-day window for recent performance analysis
+    -- Note: This creates non-deterministic results that change daily, which is intentional
+    -- to provide current performance context for bid modifier recommendations
     where date_day >= {{ dbt.dateadd('day', -30, dbt.current_timestamp()) }}
     group by 1, 2
 ),
@@ -202,7 +205,7 @@ recommendation_logic as (
             when total_spend < {{ diagnostic_thresholds['spend']['low'] }}
                 and total_spend > 0
                 then 'low spend'
-            else 'normal performance'
+            else 'no notable observation'
         end as calculated_observation
 
     from campaign_base

@@ -3,7 +3,7 @@
 [PR #95](https://github.com/fivetran/dbt_google_ads/pull/95) includes the following updates:
 
 ## Schema/Data Change
-**8 total changes • 2 possible breaking change**
+**8 total changes • 2 possible breaking changes**
 
 | Data Model(s) | Change type | Old | New | Notes |
 | ---------- | ----------- | -------- | -------- | ----- |
@@ -25,6 +25,7 @@
 - `int_google_ads__campaigns_accounts` - Ephemeral intermediate model providing shared campaign and account dimensional data.
   - Refactors existing reports (`ad_group_report`, `ad_report`, `keyword_report`, `search_term_report`, `url_report`) to use shared `int_google_ads__campaigns_accounts` intermediate model.
 - Adds the `get_threshold_high_lows` macro that processes diagnostic threshold configurations for use in budget and bid recommendations.
+- Removes unused field descriptions (`absolute_top_impression_percentage`) from source documentation as they are not used in downstream reports.
 
 # dbt_google_ads v1.2.0
 

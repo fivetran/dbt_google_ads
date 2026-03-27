@@ -390,22 +390,10 @@ models:
         description: "{{ doc('campaign_id') }}"
         tests:
           - not_null
-      - name: budget_id
-        description: Unique identifier of the budget.
       - name: daily_budget
         description: The daily budget amount in dollars, converted from amount_micros.
-      - name: delivery_method
-        description: The delivery method for the budget (STANDARD or ACCELERATED).
-      - name: explicitly_shared
-        description: Boolean indicating if the budget is explicitly shared across campaigns.
-      - name: budget_name
-        description: The name of the budget.
-      - name: reference_count
-        description: The number of campaigns using this budget.
       - name: has_recommended_budget
         description: Boolean indicating if Google has a recommended budget for this campaign.
-      - name: period
-        description: The budget period (DAILY, etc.).
       - name: recommended_daily_budget
         description: Google's recommended daily budget amount in dollars, converted from recommended_budget_amount_micros.
       - name: total_budget
@@ -430,28 +418,28 @@ models:
           - not_null
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
+      - name: age_range_type
+        description: The age range type for demographic targeting.
       - name: device_type
         description: The device type for targeting (MOBILE, DESKTOP, TABLET).
       - name: geo_target_constant_id
         description: The geographic target constant ID for location targeting.
-      - name: age_range_type
-        description: The age range type for demographic targeting.
       - name: gender_type
         description: The gender type for demographic targeting.
       - name: income_range_type
         description: The income range type for demographic targeting.
-      - name: parental_status_type
-        description: The parental status type for demographic targeting.
-      - name: user_list_id
-        description: The user list ID for audience targeting.
       - name: keyword_text
         description: The keyword text for keyword targeting.
-      - name: topic_constant_id
-        description: The topic constant ID for topic targeting.
+      - name: parental_status_type
+        description: The parental status type for demographic targeting.
       - name: placement_url
         description: The placement URL for placement targeting.
+      - name: topic_constant_id
+        description: The topic constant ID for topic targeting.
       - name: updated_at
         description: "{{ doc('updated_at') }}"
+      - name: user_list_id
+        description: "{{ doc('user_list_id') }}"
       - name: is_most_recent_record
         description: "{{ doc('is_most_recent_record') }}"
 
@@ -466,32 +454,18 @@ models:
           - not_null
       - name: updated_at
         description: "{{ doc('updated_at') }}"
-      - name: cpc_bid_ceiling_micros
-        description: The maximum CPC bid ceiling in micros.
-      - name: cpc_bid_floor_micros
-        description: The minimum CPC bid floor in micros.
       - name: enhanced_cpc
         description: Boolean indicating if enhanced CPC is enabled.
-      - name: enhanced_cpc_enabled
-        description: Boolean indicating if enhanced CPC is enabled (alternative field).
-      - name: location
-        description: The location setting for the bidding strategy.
-      - name: location_fraction_micros
-        description: The location fraction in micros.
       - name: manual_cpa
         description: Manual cost per acquisition setting.
       - name: manual_cpm
         description: Manual cost per mille setting.
       - name: manual_cpv
         description: Manual cost per view setting.
-      - name: bidding_strategy_name
-        description: The name of the bidding strategy.
       - name: bidding_status
         description: The status of the bidding strategy.
       - name: target_cpa
         description: Target cost per acquisition in dollars, converted from target_cpa_micros.
-      - name: target_cpm
-        description: Target cost per mille.
       - name: target_roas
         description: Target return on ad spend.
       - name: bidding_strategy_type

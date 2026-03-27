@@ -30,17 +30,11 @@ final as (
 
     select
         source_relation,
-        id as budget_id,
         updated_at,
         campaign_id,
         amount_micros / 1000000.0 as daily_budget,
-        delivery_method,
-        explicitly_shared,
-        name as budget_name,
-        reference_count,
         status as budget_status,
         has_recommended_budget,
-        period,
         recommended_budget_amount_micros / 1000000.0 as recommended_daily_budget,
         total_amount_micros / 1000000.0 as total_budget,
         type as budget_type,

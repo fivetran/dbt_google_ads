@@ -69,8 +69,8 @@ campaign_targeting_analysis as (
             else 'normal'
         end as location_targeting_breadth,
 
-        device_targets_count > 0 as is_device_targeting,
-        audience_targets_count > 0 as is_audience_targeting
+        (device_targets_count > 0) as is_device_targeting,
+        (audience_targets_count > 0) as is_audience_targeting
 
     from campaign_targeting_counts
 ),
@@ -109,7 +109,7 @@ campaign_base as (
         -- Bidding strategy information
         campaign_bidding_strategy.bidding_strategy_type,
         coalesce(campaign_bidding_strategy.target_cpa, 0) as target_cpa,
-        campaign_bidding_strategy.target_roas,
+        coalesce(campaign_bidding_strategy.target_roas, 0) as target_roas,
         campaign_bidding_strategy.enhanced_cpc,
         {% endif %}
 
@@ -133,10 +133,7 @@ campaign_base as (
         -- Budget usage (shows if budget constraints are limiting performance)
         {{ dbt_utils.safe_divide('campaign_report.spend', 'campaign_budget.daily_budget') }} as budget_utilization,
         -- Helper field for live campaigns
-        case
-            when upper(campaign_report.status) = 'ENABLED' and upper(campaign_report.serving_status) = 'SERVING' then true
-            else false
-        end as is_campaign_live
+        (upper(campaign_report.status) = 'ENABLED' and upper(campaign_report.serving_status) = 'SERVING') as is_campaign_live
 
     from campaign_report
     left join campaign_budget
@@ -238,7 +235,7 @@ recommendation_logic as (
                 then 'budget disabled'
             when campaign_status != 'ENABLED'
                 then 'campaign disabled'
-            else 'normal'
+            else 'no notable observation'
         end as calculated_observation
 
     from campaign_base

@@ -9,9 +9,9 @@ with prod as (
         count(*) as total_rows,
         sum(daily_budget) as total_daily_budget,
         sum(spend) as total_spend,
-        avg(budget_utilization_percent) as avg_budget_utilization,
-        count(case when constraint_status = 'budget constrained' then 1 end) as budget_constrained_count,
-        count(case when constraint_severity = 'high' then 1 end) as high_severity_count,
+        avg(budget_utilization) as avg_budget_utilization,
+        count(case when calculated_observation = 'budget constrained' then 1 end) as budget_constrained_count,
+        count(case when calculated_priority = 'high' then 1 end) as high_severity_count,
         sum(impressions) as total_impressions
     from {{ target.schema }}_google_ads_prod.google_ads__campaign_budget_diagnostics_report
     group by 1
@@ -23,9 +23,9 @@ dev as (
         count(*) as total_rows,
         sum(daily_budget) as total_daily_budget,
         sum(spend) as total_spend,
-        avg(budget_utilization_percent) as avg_budget_utilization,
-        count(case when constraint_status = 'budget constrained' then 1 end) as budget_constrained_count,
-        count(case when constraint_severity = 'high' then 1 end) as high_severity_count,
+        avg(budget_utilization) as avg_budget_utilization,
+        count(case when calculated_observation = 'budget constrained' then 1 end) as budget_constrained_count,
+        count(case when calculated_priority = 'high' then 1 end) as high_severity_count,
         sum(impressions) as total_impressions
     from {{ target.schema }}_google_ads_dev.google_ads__campaign_budget_diagnostics_report
     group by 1

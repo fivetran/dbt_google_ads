@@ -41,7 +41,9 @@ final as (
         prod.avg_bid_modifier as prod_avg_bid_modifier,
         dev.avg_bid_modifier as dev_avg_bid_modifier,
         prod.total_spend as prod_total_spend,
-        dev.total_spend as dev_total_spend
+        dev.total_spend as dev_total_spend,
+        prod.avg_ctr as prod_avg_ctr,
+        dev.avg_ctr as dev_avg_ctr
     from prod
     full outer join dev
         on dev.campaign_id = prod.campaign_id
@@ -55,3 +57,4 @@ where
     or abs(prod_negative_modifiers - dev_negative_modifiers) >= 1
     or abs(coalesce(prod_avg_bid_modifier, 0) - coalesce(dev_avg_bid_modifier, 0)) >= .01
     or abs(coalesce(prod_total_spend, 0) - coalesce(dev_total_spend, 0)) >= .01
+    or abs(coalesce(prod_avg_ctr, 0) - coalesce(dev_avg_ctr, 0)) >= .001

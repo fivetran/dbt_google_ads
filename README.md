@@ -154,6 +154,19 @@ vars:
     google_auto_tagging_enabled: true # False by default
 ```
 
+#### Enable/Disable diagnostic reports
+The diagnostic reports (`google_ads__campaign_bid_modifiers_report` and `google_ads__campaign_budget_diagnostics_report`) require history tables to function properly. By default, these models are enabled if the corresponding history tables are available in your source data. If you want to disable specific diagnostic reports or if certain history tables are not available, you can configure the following variables:
+
+```yml
+vars:
+    google_ads__using_campaign_budget_history: True # True by default
+    google_ads__using_campaign_bidding_strategy_history: True # True by default
+    google_ads__using_campaign_criterion_history: True # True by default
+    google_ads__using_campaign_bid_modifier_history: True # True by default
+```
+
+> **Note**: Each diagnostic report requires only its primary history table to be enabled. The `google_ads__campaign_budget_diagnostics_report` requires `google_ads__using_campaign_budget_history`, while the `google_ads__campaign_bid_modifiers_report` requires `google_ads__using_campaign_bid_modifier_history`. The other history table variables control additional functionality within the reports but are not required for the models to run.
+
 #### Configure diagnostic report thresholds
 The diagnostic reports (`google_ads__campaign_bid_modifiers_report` and `google_ads__campaign_budget_diagnostics_report`) use configurable thresholds to identify optimization opportunities persisted as the `calculated_*` fields. You can customize these thresholds for your use case in your `dbt_project.yml`:
 
@@ -161,6 +174,7 @@ The diagnostic reports (`google_ads__campaign_bid_modifiers_report` and `google_
 vars:
     # Threshold variables - provide exactly two values [low, high] in any order
     # The package automatically determines which is low and which is high
+    # Values shown below are defaults - if any empty list is provided, these defaults will still be used
 
     google_ads__cpc_high_low_thresholds: [1.0, 3.0]
     # Cost per click thresholds in your local currency

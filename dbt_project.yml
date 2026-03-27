@@ -28,6 +28,10 @@ vars:
     keyword_stats: "{{ source('google_ads', 'keyword_stats') }}"
     account_stats: "{{ source('google_ads', 'account_stats') }}"
     search_term_keyword_stats: "{{ source('google_ads', 'search_term_keyword_stats') }}"
+    campaign_bid_modifier_history: "{{ source('google_ads', 'campaign_bid_modifier_history') }}"
+    campaign_bidding_strategy_history: "{{ source('google_ads', 'campaign_bidding_strategy_history') }}"
+    campaign_budget_history: "{{ source('google_ads', 'campaign_budget_history') }}"
+    campaign_criterion_history: "{{ source('google_ads', 'campaign_criterion_history') }}"
   google_auto_tagging_enabled: false
   google_ads__ad_group_stats_passthrough_metrics: []
   google_ads__ad_stats_passthrough_metrics: []
