@@ -31,8 +31,8 @@ These recommendations reflect common Google Ads optimization practices but may n
 **Alternative approach**: If the opinionated recommendations don't fit your needs, consider using the raw performance metrics (spend, CTR, CPC, budget utilization, etc.) to build custom diagnostic logic that aligns with your specific optimization strategies and business objectives. See [Configure diagnostic report thresholds](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#configure-diagnostic-report-thresholds) for configuration examples. Users can also ignore these columns entirely and create their own custom logic based on the underlying performance metrics.
 
 ## Non-Deterministic Rolling Windows in Diagnostic Reports
-The `google_ads__campaign_bid_modifiers_report` uses a rolling 30-day window (`where date_day >= {{ dbt.dateadd('day', -30, dbt.current_timestamp()) }}`) to calculate recent campaign performance metrics for bid modifier recommendations. This creates non-deterministic results that change daily, which is intentional to provide current performance context.
+The `google_ads__campaign_bid_modifiers_report` uses a rolling 30-day window (`where date_day >= {{ dbt.dateadd('day', -30, dbt.current_timestamp()) }}`) to calculate recent campaign performance metrics for bid modifier recommendations.
 
-**Rationale**: The diagnostic reports are designed to support ongoing campaign optimization and monitoring, where having the most recent 30-day performance window is more valuable than historical consistency. The non-deterministic nature ensures recommendations stay current and relevant.
+This introduces non-deterministic results, as outputs change over time. This behavior is intentional. These diagnostic reports are designed to support ongoing campaign optimization and monitoring, where up-to-date performance context is more valuable than historical reproducibility.
 
-**Alternative approaches**: For deterministic results, options include using a configurable analysis date variable, implementing date spine logic for historical rolling windows, or using the maximum date in the data instead of current timestamp. These approaches can be implemented if deterministic reporting becomes a requirement.
+Using a rolling window ensures recommendations remain current and relevant, even though results may differ between runs.
