@@ -3,16 +3,7 @@
 {% set using_campaign_bidding_strategy_history = var('google_ads__using_campaign_bidding_strategy_history', True) %}
 {% set using_campaign_criterion_history = var('google_ads__using_campaign_criterion_history', True) %}
 
--- Initialize all threshold variables with defaults (fallback to defaults if empty arrays provided)
-{% set default_thresholds = {
-    'budget': [0.75, 0.95],
-    'ctr': [0.015, 0.03],
-    'cpc': [1.0, 3.0],
-    'spend': [100.0, 500.0],
-    'location_targeting': [5.0, 50.0],
-    'bid_modifier': [0.7, 1.5]
-} %}
-{% set diagnostic_thresholds = get_threshold_high_lows(default_thresholds) %}
+{% set diagnostic_thresholds = get_threshold_high_lows() %}
 
 with campaign_report as (
     select *
@@ -265,18 +256,21 @@ final as (
 
         -- Inferred priority level for focusing on most critical issues first
         case
-            when calculated_observation = 'campaign disabled' then 'high'
-            when calculated_observation = 'not serving' then 'high'
-            when calculated_observation in ('budget constrained', 'budget disabled') then 'high'
-            when calculated_observation = 'campaign ended' then 'medium'
-            when calculated_observation in ('budget + targeting constrained', 'no spend + no targeting', 'no spend') then 'high'
+            -- High: Campaign/Budget blocking issues
+            when calculated_observation in ('campaign disabled', 'budget disabled', 'not serving') then 'high'
+            when calculated_observation in ('budget constrained', 'budget + targeting constrained') then 'high'
+            when calculated_observation in ('no spend + no targeting', 'no spend') then 'high'
+
+            -- High: Poor performance with high spend
             when calculated_observation = 'high spend + poor performance' then 'high'
+
+            -- Medium: Setup and constraint issues
+            when calculated_observation = 'campaign ended' then 'medium'
             when calculated_observation in ('targeting constrained', 'quality/relevance constrained', 'quality/relevance + targeting constrained') then 'medium'
-            when calculated_observation = 'high spend + good performance' then 'low'
-            when calculated_observation = 'moderate spend + normal performance' then 'low'
-            when calculated_observation = 'low spend + low budget utilization' then 'medium'
-            when calculated_observation = 'low spend + budget constrained' then 'medium'
-            when calculated_observation = 'low spend' then 'low'
+            when calculated_observation in ('low spend + low budget utilization', 'low spend + budget constrained') then 'medium'
+
+            -- Low: Normal operations and good performance
+            when calculated_observation in ('high spend + good performance', 'moderate spend + normal performance', 'low spend') then 'low'
             else 'low'
         end as calculated_priority
     from recommendation_logic

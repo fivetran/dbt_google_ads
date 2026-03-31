@@ -76,7 +76,7 @@ Include the following google_ads package version in your `packages.yml` file _if
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: 1.3.0-a1 # we recommend using ranges to capture non-breaking changes automatically
+    version: [">=1.3.0", "<1.4.0"] # we recommend using ranges to capture non-breaking changes automatically
 ```
 > All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/google_ads_source` in your `packages.yml` since this package has been deprecated.
 
@@ -172,36 +172,30 @@ The diagnostic reports (`google_ads__campaign_bid_modifiers_report` and `google_
 
 ```yml
 vars:
-    # Threshold variables - provide exactly two values [low, high] in any order
-    # The package automatically determines which is low and which is high
-    # Values shown below are defaults - if any empty list is provided, these defaults will still be used
-
-    google_ads__cpc_high_low_thresholds: [1.0, 3.0]
     # Cost per click thresholds in your local currency
-    # Example: campaigns with CPC under $1.00 = low CPC, over $3.00 = high CPC
+    google_ads__cpc_low: 1.0      # Campaigns with CPC under this value = low CPC
+    google_ads__cpc_high: 3.0     # Campaigns with CPC over this value = high CPC
 
-    google_ads__ctr_high_low_thresholds: [0.015, 0.03]
     # Click-through rate thresholds as decimals
-    # Example: CTR under 1.5% = low CTR, over 3% = high CTR
+    google_ads__ctr_low: 0.015    # Campaigns with CTR under 1.5% = low CTR
+    google_ads__ctr_high: 0.03    # Campaigns with CTR over 3% = high CTR
 
-    google_ads__spend_high_low_thresholds: [100.0, 500.0]
-    # Daily spend thresholds in your local currency
-    # Example: spend under $100 = low spend, over $500 = high spend
+    # Spend amount thresholds in your local currency
+    google_ads__spend_low: 100.0  # Campaigns with spend under this value = low spend
+    google_ads__spend_high: 500.0 # Campaigns with spend over this value = high spend
 
-    google_ads__bid_modifier_high_low_thresholds: [0.7, 1.5]
-    # Bid modifier thresholds as decimals
-    # Example: modifier under 0.7 = significant negative, over 1.5 = high positive
+    # Bid modifier thresholds as multipliers
+    google_ads__bid_modifier_low: 0.7   # Modifiers under 0.7 (-30%) = significant negative
+    google_ads__bid_modifier_high: 1.5  # Modifiers over 1.5 (+50%) = high positive
 
-    google_ads__budget_high_low_thresholds: [0.75, 0.95]
-    # Budget utilization thresholds as decimals
-    # Example: utilization under 75% = low utilization, over 95% = budget constrained
+    # Budget utilization thresholds as decimals (percent of daily budget spent)
+    google_ads__budget_low: 0.75   # Budget utilization over 75% = moderate constraint
+    google_ads__budget_high: 0.95  # Budget utilization over 95% = budget constrained
 
-    google_ads__location_targeting_high_low_thresholds: [5.0, 50.0]
     # Location targeting count thresholds
-    # Example: under 5 locations = limited targeting, over 50 = broad targeting
+    google_ads__location_targeting_low: 5.0   # Campaigns targeting under 5 locations = limited reach
+    google_ads__location_targeting_high: 50.0 # Campaigns targeting over 50 locations = broad reach
 ```
-
-> **Note:** You can provide the threshold values in any order (e.g., `[1.0, 3.0]` or `[3.0, 1.0]`). The package automatically determines which value represents the low threshold and which represents the high threshold using min/max logic.
 
 #### Change the build schema
 By default, this package builds the Google Ads staging models (10 views, 10 tables) within a schema titled (`<target_schema>` + `_google_ads_source`) and your Google Ads modeling models (6 tables) within a schema titled (`<target_schema>` + `_google_ads`) in your destination. If this is not where you would like your Google Ads data to be written to, add the following configuration to your root `dbt_project.yml` file:

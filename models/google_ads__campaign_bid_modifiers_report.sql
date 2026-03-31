@@ -3,14 +3,7 @@
 {% set using_campaign_bidding_strategy_history = var('google_ads__using_campaign_bidding_strategy_history', True) %}
 {% set using_campaign_criterion_history = var('google_ads__using_campaign_criterion_history', True) %}
 
--- Initialize all threshold variables with defaults (fallback to defaults if empty arrays provided)
-{% set default_thresholds = {
-    'cpc': [1.0, 3.0],
-    'ctr': [0.015, 0.03],
-    'spend': [100.0, 500.0],
-    'bid_modifier': [0.7, 1.5]
-} %}
-{% set diagnostic_thresholds = get_threshold_high_lows(default_thresholds) %}
+{% set diagnostic_thresholds = get_threshold_high_lows() %}
 
 with bid_modifiers as (
     select *
@@ -232,16 +225,19 @@ final as (
 
         -- inferred priority level for focusing on most critical issues first
         case
-            when calculated_observation = 'campaign disabled' then 'high'
-            when calculated_observation = 'not serving' then 'high'
-            when calculated_observation in ('high cpc', 'high spend') then 'high'
-            when calculated_observation = 'high spend + poor performance' then 'high'
+            -- High: Campaign blocking issues
+            when calculated_observation in ('campaign disabled', 'not serving') then 'high'
+
+            -- High: Cost/spend issues requiring immediate attention
+            when calculated_observation in ('high cpc', 'high spend', 'high spend + poor performance') then 'high'
+
+            -- Medium: Setup and optimization issues
             when calculated_observation = 'campaign ended' then 'medium'
             when calculated_observation in ('significant negative modifier', 'low ctr', 'disabled modifier') then 'medium'
             when calculated_observation in ('manual bidding', 'high positive modifier') then 'medium'
-            when calculated_observation = 'high performance' then 'low'
-            when calculated_observation = 'moderate performance' then 'low'
-            when calculated_observation = 'low spend' then 'low'
+
+            -- Low: Normal operations and good performance
+            when calculated_observation in ('high performance', 'moderate performance', 'low spend') then 'low'
             else 'low'
         end as calculated_priority
     from recommendation_logic

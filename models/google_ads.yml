@@ -375,11 +375,11 @@ models:
       - name: avg_cpc
         description: Average cost per click.
       - name: calculated_observation
-        description: Performance observation that drives the recommendation based on configurable thresholds from `google_ads__cpc_high_low_thresholds`, `google_ads__ctr_high_low_thresholds`, `google_ads__spend_high_low_thresholds`, and `google_ads__bid_modifier_high_low_thresholds` variables. Possible values include campaign disabled, campaign ended, not serving, high cpc, low ctr, high spend, manual bidding, disabled modifier, high positive modifier, significant negative modifier, high performance, high spend + poor performance, moderate performance, low spend, and normal performance.
+        description: Performance observation that drives the recommendation based on configurable thresholds from individual low/high threshold variables like `google_ads__cpc_low`, `google_ads__cpc_high`, `google_ads__ctr_low`, `google_ads__ctr_high`, `google_ads__spend_low`, `google_ads__spend_high`, and `google_ads__bid_modifier_low`, `google_ads__bid_modifier_high`. Possible values include campaign disabled, campaign ended, not serving, high cpc, low ctr, high spend, manual bidding, disabled modifier, high positive modifier, significant negative modifier, high performance, high spend + poor performance, moderate performance, low spend, and normal performance.
       - name: calculated_recommendation
-        description: Inferred action for bid modifier optimization based on dbt package logic and thresholds from `google_ads__cpc_high_low_thresholds`, `google_ads__ctr_high_low_thresholds`, `google_ads__spend_high_low_thresholds`, and `google_ads__bid_modifier_high_low_thresholds` variables (Add modifiers, Review adjustments, Monitor performance, Monitor).
+        description: Inferred action for bid modifier optimization based on dbt package logic and configurable threshold variables (Add modifiers, Review adjustments, Monitor performance, Monitor).
       - name: calculated_priority
-        description: Inferred priority level for focusing on most critical issues first (high, medium, low), derived from performance thresholds in `google_ads__cpc_high_low_thresholds`, `google_ads__ctr_high_low_thresholds`, `google_ads__spend_high_low_thresholds`, and `google_ads__bid_modifier_high_low_thresholds` variables.
+        description: Inferred priority level for focusing on most critical issues first (high, medium, low), derived from configurable performance threshold variables.
 
   - name: google_ads__campaign_budget_diagnostics_report
     description: Each record in this table represents a campaign's budget constraints and performance diagnostics.
@@ -450,7 +450,7 @@ models:
       - name: audience_targeting_count
         description: Number of audience targeting criteria.
       - name: location_targeting_breadth
-        description: Assessment of location targeting breadth - 'limited' (fewer than the low threshold, default 5), 'broad' (more than the high threshold, default 50), or 'normal'. Thresholds are configurable via google_ads__location_targeting_high_low_thresholds variable.
+        description: Assessment of location targeting breadth - 'limited' (fewer than the low threshold), 'broad' (more than the high threshold), or 'normal'. Thresholds are configurable via google_ads__location_targeting_low and google_ads__location_targeting_high variables.
       - name: is_device_targeting
         description: Boolean indicating if device targeting criteria are set.
       - name: is_audience_targeting
@@ -458,8 +458,8 @@ models:
       - name: budget_increase_opportunity
         description: Dollar amount by which Google recommends increasing the daily budget (0 when Google has no recommendation).
       - name: calculated_observation
-        description: Performance observation that drives the budget recommendation based on configurable thresholds from `google_ads__budget_high_low_thresholds`, `google_ads__ctr_high_low_thresholds`, `google_ads__cpc_high_low_thresholds`, `google_ads__spend_high_low_thresholds`, `google_ads__location_targeting_high_low_thresholds`, and `google_ads__bid_modifier_high_low_thresholds` variables. Possible values include campaign disabled, campaign ended, not serving, budget constrained, budget + targeting constrained, targeting constrained, quality/relevance + targeting constrained, quality/relevance constrained, high spend + good performance, high spend + poor performance, moderate spend + normal performance, low spend + low budget utilization, low spend + budget constrained, low spend, no spend + no targeting, no spend, budget disabled, and normal.
+        description: Performance observation that drives the budget recommendation based on configurable thresholds from `google_ads__budget_high_lows`, `google_ads__ctr_high_lows`, `google_ads__cpc_high_lows`, `google_ads__spend_high_lows`, `google_ads__location_targeting_high_lows`, and `google_ads__bid_modifier_high_lows` variables. Possible values include campaign disabled, campaign ended, not serving, budget constrained, budget + targeting constrained, targeting constrained, quality/relevance + targeting constrained, quality/relevance constrained, high spend + good performance, high spend + poor performance, moderate spend + normal performance, low spend + low budget utilization, low spend + budget constrained, low spend, no spend + no targeting, no spend, budget disabled, and normal.
       - name: calculated_recommendation
-        description: Inferred action for budget optimization based on dbt package logic and thresholds from `google_ads__budget_high_low_thresholds`, `google_ads__ctr_high_low_thresholds`, `google_ads__cpc_high_low_thresholds`, `google_ads__spend_high_low_thresholds`, `google_ads__location_targeting_high_low_thresholds`, and `google_ads__bid_modifier_high_low_thresholds` variables (increase budget, optimize targeting/bids, improve relevance, etc.).
+        description: Inferred action for budget optimization based on dbt package logic and configurable threshold variables (increase budget, optimize targeting/bids, improve relevance, etc.).
       - name: calculated_priority
-        description: Inferred priority level for focusing on most critical budget issues first (high, medium, low), derived from performance thresholds in `google_ads__budget_high_low_thresholds`, `google_ads__ctr_high_low_thresholds`, `google_ads__cpc_high_low_thresholds`, `google_ads__spend_high_low_thresholds`, `google_ads__location_targeting_high_low_thresholds`, and `google_ads__bid_modifier_high_low_thresholds` variables.
+        description: Inferred priority level for focusing on most critical budget issues first (high, medium, low), derived from configurable performance threshold variables.

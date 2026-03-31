@@ -1,3 +1,39 @@
+# dbt_google_ads v1.3.0
+
+[PR #95](https://github.com/fivetran/dbt_google_ads/pull/95) includes the following updates:
+
+## Schema/Data Change
+**8 total changes • 2 possible breaking changes**
+
+| Data Model(s) | Change type | Old | New | Notes |
+| ---------- | ----------- | -------- | -------- | ----- |
+| `google_ads__campaign_report` | New Columns | | `ctr` | Click-through rate for ad relevance analysis<br><br>**Possible breaking change**: New column may affect downstream use |
+| `google_ads__campaign_report` | New Column | | `serving_status` | Current serving status of the campaign<br><br>**Possible breaking change**: New column may affect downstream use |
+| `google_ads__campaign_bid_modifiers_report` | New Model | | | Analyzes bid modifier effectiveness at campaign-criterion level with performance-based recommendations |
+| `google_ads__campaign_budget_diagnostics_report` | New Model | | | Diagnoses daily campaign budget utilization and performance constraints with prioritized optimization recommendations |
+| `stg_google_ads__campaign_bid_modifier_history`<br>`stg_google_ads__campaign_bid_modifier_history_tmp` | New Staging Models | | | Historical bid modifier configurations and adjustments at campaign-criterion level |
+| `stg_google_ads__campaign_bidding_strategy_history`<br>`stg_google_ads__campaign_bidding_strategy_history_tmp` | New Staging Models | | | Historical bidding strategy configurations including target CPA and ROAS settings |
+| `stg_google_ads__campaign_budget_history`<br>`stg_google_ads__campaign_budget_history_tmp` | New Staging Models | | | Historical campaign budget configurations including daily and lifetime budget settings |
+| `stg_google_ads__campaign_criterion_history`<br>`stg_google_ads__campaign_criterion_history_tmp` | New Staging Models | | | Historical campaign-level targeting criteria including location, device, and audience settings |
+
+## Feature Updates
+- **New configurable threshold variables** - Introduces customizable threshold variables for diagnostic report optimization logic. See [Configure diagnostic report thresholds](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#configure-diagnostic-report-thresholds) in the README for configuration examples.
+
+| Variable | Description |
+| -------- | ----------- |
+| `google_ads__cpc_low` / `google_ads__cpc_high` | Cost per click thresholds for optimization analysis |
+| `google_ads__ctr_low` / `google_ads__ctr_high` | Click-through rate thresholds for performance evaluation |
+| `google_ads__spend_low` / `google_ads__spend_high` | Spend amount thresholds for budget analysis |
+| `google_ads__bid_modifier_low` / `google_ads__bid_modifier_high` | Bid modifier thresholds for adjustment recommendations |
+| `google_ads__budget_low` / `google_ads__budget_high` | Budget utilization thresholds for constraint analysis |
+| `google_ads__location_targeting_low` / `google_ads__location_targeting_high` | Location targeting count thresholds for reach analysis |
+
+## Under the Hood
+- Adds ephemeral intermediate model `int_google_ads__campaigns_accounts` providing shared campaign and account dimensional data.
+  - Refactors existing reports (`ad_group_report`, `ad_report`, `keyword_report`, `search_term_report`, `url_report`) to use shared `int_google_ads__campaigns_accounts` intermediate model.
+- Adds the `get_high_lows` macro that processes diagnostic threshold configurations for use in budget and bid recommendations.
+- Removes unused field descriptions (`absolute_top_impression_percentage`) from source documentation as they are not used in downstream reports.
+
 # dbt_google_ads v1.3.0-a1
 
 [PR #95](https://github.com/fivetran/dbt_google_ads/pull/95) includes the following updates:
@@ -18,17 +54,17 @@
 
 ## Feature Updates
 - **New configurable threshold variables** - Introduces customizable threshold variables for diagnostic report optimization logic. See [Configure diagnostic report thresholds](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#configure-diagnostic-report-thresholds) in the README for configuration examples.
-  - `google_ads__cpc_high_low_thresholds` - Cost per click thresholds for optimization analysis
-  - `google_ads__ctr_high_low_thresholds` - Click-through rate thresholds for performance evaluation
-  - `google_ads__spend_high_low_thresholds` - Spend amount thresholds for budget analysis
-  - `google_ads__bid_modifier_high_low_thresholds` - Bid modifier thresholds for adjustment recommendations
-  - `google_ads__budget_high_low_thresholds` - Budget utilization thresholds for constraint analysis
-  - `google_ads__location_targeting_high_low_thresholds` - Location targeting count thresholds for reach analysis
+  - `google_ads__cpc_high_lows` - Cost per click thresholds for optimization analysis
+  - `google_ads__ctr_high_lows` - Click-through rate thresholds for performance evaluation
+  - `google_ads__spend_high_lows` - Spend amount thresholds for budget analysis
+  - `google_ads__bid_modifier_high_lows` - Bid modifier thresholds for adjustment recommendations
+  - `google_ads__budget_high_lows` - Budget utilization thresholds for constraint analysis
+  - `google_ads__location_targeting_high_lows` - Location targeting count thresholds for reach analysis
 
 ## Under the Hood
 - `int_google_ads__campaigns_accounts` - Ephemeral intermediate model providing shared campaign and account dimensional data.
   - Refactors existing reports (`ad_group_report`, `ad_report`, `keyword_report`, `search_term_report`, `url_report`) to use shared `int_google_ads__campaigns_accounts` intermediate model.
-- Adds the `get_threshold_high_lows` macro that processes diagnostic threshold configurations for use in budget and bid recommendations.
+- Adds the `get_high_lows` macro that processes diagnostic threshold configurations for use in budget and bid recommendations.
 - Removes unused field descriptions (`absolute_top_impression_percentage`) from source documentation as they are not used in downstream reports.
 
 # dbt_google_ads v1.2.0
