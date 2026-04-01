@@ -6,6 +6,14 @@ dbt_versions: ">=1.3.0 <3.0.0"
 table_variables:
   google_ads__using_search_term_keyword_stats:
     - search_term_keyword_stats
+  google_ads__using_campaign_bid_modifier_history:
+    - campaign_bid_modifier_history
+  google_ads__using_campaign_budget_history:
+    - campaign_budget_history
+  google_ads__using_campaign_criterion_history:
+    - campaign_criterion_history
+  google_ads__using_campaign_bidding_strategy_history:
+    - campaign_bidding_strategy_history
 
 destination_configurations:
   databricks:
@@ -20,7 +28,9 @@ public_models: [
   "google_ads__ad_report",
   "google_ads__ad_group_report",
   "google_ads__account_report",
-  "google_ads__search_term_report"
+  "google_ads__search_term_report",
+  "google_ads__campaign_bid_modifiers_report",
+  "google_ads__campaign_budget_diagnostics_report"
 ]
 
 supported_vars:
@@ -60,3 +70,74 @@ supported_vars:
     description: "Additional `SEARCH_TERM_KEYWORD_STATS` report columns to include in `google_ads__search_term_report`"
     display_name: "Additional Search Term Keyword Stats Metrics"
 
+  google_ads__spend_low:
+    type: float
+    description: "Low threshold for spend in your local currency. Campaigns with spend under this value will be categorized as 'low spend'. REQUIRED: A value must be provided to avoid runtime failures."
+    display_name: "Spend Low Threshold"
+    value: 100.0
+
+  google_ads__spend_high:
+    type: float
+    description: "High threshold for spend in your local currency. Campaigns with spend over this value will be categorized as 'high spend'. REQUIRED: A value must be provided to avoid runtime failures."
+    display_name: "Spend High Threshold"
+    value: 500.0
+
+  google_ads__cpc_low:
+    type: float
+    description: "Low threshold for cost-per-click (CPC) in your local currency. Campaigns with CPC under this value will be considered 'low CPC'. REQUIRED: A value must be provided to avoid runtime failures."
+    display_name: "CPC Low Threshold"
+    value: 1.0
+
+  google_ads__cpc_high:
+    type: float
+    description: "High threshold for cost-per-click (CPC) in your local currency. Campaigns with CPC over this value will be considered 'high CPC'. REQUIRED: A value must be provided to avoid runtime failures."
+    display_name: "CPC High Threshold"
+    value: 3.0
+
+  google_ads__ctr_low:
+    type: float
+    description: "Low threshold for click-through rate (CTR) as decimal. Campaigns with CTR under this value will be considered 'low CTR'. REQUIRED: A value must be provided to avoid runtime failures."
+    display_name: "CTR Low Threshold"
+    value: 0.015
+
+  google_ads__ctr_high:
+    type: float
+    description: "High threshold for click-through rate (CTR) as decimal. Campaigns with CTR over this value will be considered 'high CTR'. REQUIRED: A value must be provided to avoid runtime failures."
+    display_name: "CTR High Threshold"
+    value: 0.03
+
+  google_ads__bid_modifier_low:
+    type: float
+    description: "Low threshold for bid modifiers as decimal. Bid modifiers under this value will be considered 'significant negative adjustment'. REQUIRED: A value must be provided to avoid runtime failures."
+    display_name: "Bid Modifier Low Threshold"
+    value: 0.7
+
+  google_ads__bid_modifier_high:
+    type: float
+    description: "High threshold for bid modifiers as decimal. Bid modifiers over this value will be considered 'high positive adjustment'. REQUIRED: A value must be provided to avoid runtime failures."
+    display_name: "Bid Modifier High Threshold"
+    value: 1.5
+
+  google_ads__budget_low:
+    type: float
+    description: "Low threshold for budget utilization as decimal. Budget utilization above this value indicates moderate constraint. REQUIRED: A value must be provided to avoid runtime failures."
+    display_name: "Budget Utilization Low Threshold"
+    value: 0.75
+
+  google_ads__budget_high:
+    type: float
+    description: "High threshold for budget utilization as decimal. Budget utilization above this value will be considered 'budget constrained'. REQUIRED: A value must be provided to avoid runtime failures."
+    display_name: "Budget Utilization High Threshold"
+    value: 0.95
+
+  google_ads__location_targeting_low:
+    type: float
+    description: "Low threshold for number of location targets. Campaigns with fewer than this many location targets will be considered 'limited targeting'. REQUIRED: A value must be provided to avoid runtime failures."
+    display_name: "Location Targeting Low Threshold"
+    value: 5.0
+
+  google_ads__location_targeting_high:
+    type: float
+    description: "High threshold for number of location targets. Campaigns with more than this many location targets will be considered 'broad targeting'. REQUIRED: A value must be provided to avoid runtime failures."
+    display_name: "Location Targeting High Threshold"
+    value: 50.0

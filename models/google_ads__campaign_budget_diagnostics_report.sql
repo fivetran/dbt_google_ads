@@ -1,0 +1,282 @@
+{{ config(enabled=var('ad_reporting__google_ads_enabled', True) and var('google_ads__using_campaign_budget_history', True)) }}
+
+{% set using_campaign_bidding_strategy_history = var('google_ads__using_campaign_bidding_strategy_history', True) %}
+{% set using_campaign_criterion_history = var('google_ads__using_campaign_criterion_history', True) %}
+
+{% set diagnostic_thresholds = get_threshold_high_lows() %}
+
+with campaign_report as (
+    select *
+    from {{ ref('google_ads__campaign_report') }}
+),
+
+campaign_budget as (
+    select *
+    from {{ ref('stg_google_ads__campaign_budget_history') }}
+    where is_most_recent_record = True
+),
+
+{% if using_campaign_bidding_strategy_history %}
+campaign_bidding_strategy as (
+    select *
+    from {{ ref('stg_google_ads__campaign_bidding_strategy_history') }}
+    where is_most_recent_record = True
+),
+{% endif %}
+
+{% if using_campaign_criterion_history %}
+campaign_criterion as (
+    select *
+    from {{ ref('stg_google_ads__campaign_criterion_history') }}
+    where is_most_recent_record = True
+),
+{% endif %}
+
+{% if using_campaign_criterion_history %}
+-- Raw targeting counts by campaign
+campaign_targeting_counts as (
+    select
+        campaign_id,
+        source_relation,
+        count(*) as total_criteria_count,
+        count(case when geo_target_constant_id is not null then 1 end) as location_targets_count,
+        count(case when device_type is not null then 1 end) as device_targets_count,
+        count(case when age_range_type is not null then 1 end) as age_targets_count,
+        count(case when gender_type is not null then 1 end) as gender_targets_count,
+        count(case when user_list_id is not null then 1 end) as audience_targets_count
+
+    from campaign_criterion
+    group by 1, 2
+),
+
+-- Apply targeting constraint logic
+campaign_targeting_analysis as (
+    select
+        *,
+        -- Targeting constraint flags
+        case
+            when location_targets_count < {{ diagnostic_thresholds['location_targeting']['low'] }} then 'limited'
+            when location_targets_count > {{ diagnostic_thresholds['location_targeting']['high'] }} then 'broad'
+            else 'normal'
+        end as location_targeting_breadth,
+
+        (device_targets_count > 0) as is_device_targeting,
+        (audience_targets_count > 0) as is_audience_targeting
+
+    from campaign_targeting_counts
+),
+{% endif %}
+
+
+
+-- Base data gathering with joins and basic field calculations
+campaign_base as (
+    select
+        campaign_report.source_relation,
+        campaign_report.date_day,
+        campaign_report.campaign_id,
+        campaign_report.campaign_name,
+        campaign_report.account_name,
+        campaign_report.account_id,
+        campaign_report.advertising_channel_type,
+        campaign_report.advertising_channel_subtype,
+        campaign_report.status as campaign_status,
+        campaign_report.serving_status,
+
+        -- Budget information
+        coalesce(campaign_budget.daily_budget, 0) as daily_budget,
+        coalesce(campaign_budget.total_budget, 0) as total_budget,
+        campaign_budget.budget_type,
+        campaign_budget.budget_status,
+        campaign_budget.has_recommended_budget,
+        -- Use Google's recommendation when available, otherwise fall back to current budget
+        case
+            when campaign_budget.recommended_daily_budget > 0
+            then campaign_budget.recommended_daily_budget
+            else coalesce(campaign_budget.daily_budget, 0)
+        end as recommended_daily_budget,
+
+        {% if using_campaign_bidding_strategy_history %}
+        -- Bidding strategy information
+        campaign_bidding_strategy.bidding_strategy_type,
+        coalesce(campaign_bidding_strategy.target_cpa, 0) as target_cpa,
+        coalesce(campaign_bidding_strategy.target_roas, 0) as target_roas,
+        campaign_bidding_strategy.enhanced_cpc,
+        {% endif %}
+
+        -- Performance metrics
+        campaign_report.impressions,
+        campaign_report.spend,
+        campaign_report.clicks,
+
+        {% if using_campaign_criterion_history %}
+        -- Targeting constraint information
+        coalesce(campaign_targeting_analysis.total_criteria_count, 0) as total_targeting_criteria,
+        coalesce(campaign_targeting_analysis.location_targets_count, 0) as location_targeting_count,
+        coalesce(campaign_targeting_analysis.audience_targets_count, 0) as audience_targeting_count,
+        coalesce(campaign_targeting_analysis.location_targeting_breadth, 'normal') as location_targeting_breadth,
+        coalesce(campaign_targeting_analysis.is_device_targeting, false) as is_device_targeting,
+        coalesce(campaign_targeting_analysis.is_audience_targeting, false) as is_audience_targeting,
+        {% endif %}
+
+        -- Click-through rate (shows ad relevance and quality)
+        campaign_report.ctr,
+        -- Budget usage (shows if budget constraints are limiting performance)
+        {{ dbt_utils.safe_divide('campaign_report.spend', 'campaign_budget.daily_budget') }} as budget_utilization,
+        -- Helper field for live campaigns
+        (upper(campaign_report.status) = 'ENABLED' and upper(campaign_report.serving_status) = 'SERVING') as is_campaign_live
+
+    from campaign_report
+    left join campaign_budget
+        on campaign_report.campaign_id = campaign_budget.campaign_id
+        and campaign_report.source_relation = campaign_budget.source_relation
+    {% if using_campaign_bidding_strategy_history %}
+    left join campaign_bidding_strategy
+        on campaign_report.campaign_id = campaign_bidding_strategy.campaign_id
+        and campaign_report.source_relation = campaign_bidding_strategy.source_relation
+    {% endif %}
+    {% if using_campaign_criterion_history %}
+    left join campaign_targeting_analysis
+        on campaign_report.campaign_id = campaign_targeting_analysis.campaign_id
+        and campaign_report.source_relation = campaign_targeting_analysis.source_relation
+    {% endif %}
+),
+
+-- Apply business logic for diagnostics
+recommendation_logic as (
+    select
+        *,
+        
+        -- Budget increase opportunity (simple difference since recommended_daily_budget falls back to current when no recommendation)
+        recommended_daily_budget - daily_budget as budget_increase_opportunity,
+
+        -- Inferred performance observation that drives the recommendation
+        case
+            when campaign_status in ('REMOVED', 'PAUSED')
+                then 'campaign disabled'
+            when serving_status = 'ENDED'
+                then 'campaign ended'
+            when serving_status != 'SERVING'
+                then 'not serving'
+            when budget_utilization >= {{ diagnostic_thresholds['budget']['high'] }}
+                and daily_budget > 0
+                and is_campaign_live
+                then 'budget constrained'
+            {% if using_campaign_criterion_history %}
+            when budget_utilization >= {{ diagnostic_thresholds['budget']['low'] }} -- ">= budget.low" translates to moderate budget utilization
+                and location_targeting_breadth = 'limited'
+                and daily_budget > 0
+                and is_campaign_live
+                then 'budget + targeting constrained'
+            when spend > 0
+                and location_targeting_breadth = 'limited'
+                and not is_audience_targeting
+                and is_campaign_live
+                then 'targeting constrained'
+            when spend > 0
+                and impressions > 0
+                and ctr < {{ diagnostic_thresholds['ctr']['low'] }}
+                and not is_audience_targeting
+                and is_campaign_live
+                then 'quality/relevance + targeting constrained'
+            {% endif %}
+            when spend > 0
+                and impressions > 0
+                and ctr < {{ diagnostic_thresholds['ctr']['low'] }}
+                and is_campaign_live
+                then 'quality/relevance constrained'
+            when spend > {{ diagnostic_thresholds['spend']['high'] }}
+                and impressions > 0
+                and ctr >= {{ diagnostic_thresholds['ctr']['high'] }}
+                and is_campaign_live
+                then 'high spend + good performance'
+            when spend > {{ diagnostic_thresholds['spend']['high'] }}
+                and impressions > 0
+                and ctr < {{ diagnostic_thresholds['ctr']['low'] }}
+                and is_campaign_live
+                then 'high spend + poor performance'
+            when spend >= {{ diagnostic_thresholds['spend']['low'] }}
+                and spend <= {{ diagnostic_thresholds['spend']['high'] }}
+                and ctr >= {{ diagnostic_thresholds['ctr']['low'] }}
+                and ctr < {{ diagnostic_thresholds['ctr']['high'] }}
+                and is_campaign_live
+                then 'moderate spend + normal performance'
+            when spend < {{ diagnostic_thresholds['spend']['low'] }}
+                and spend > 0
+                and budget_utilization < {{ diagnostic_thresholds['budget']['low'] }}
+                and is_campaign_live
+                then 'low spend + low budget utilization'
+            when spend < {{ diagnostic_thresholds['spend']['low'] }}
+                and spend > 0
+                and budget_utilization >= {{ diagnostic_thresholds['budget']['low'] }}
+                and is_campaign_live
+                then 'low spend + budget constrained'
+            when spend < {{ diagnostic_thresholds['spend']['low'] }}
+                and spend > 0
+                and is_campaign_live
+                then 'low spend'
+            {% if using_campaign_criterion_history %}
+            when spend = 0
+                and total_targeting_criteria = 0
+                then 'no spend + no targeting'
+            {% endif %}
+            when spend = 0
+                then 'no spend'
+            when budget_status != 'ENABLED'
+                then 'budget disabled'
+            when campaign_status != 'ENABLED'
+                then 'campaign disabled'
+            else 'no notable observation'
+        end as calculated_observation
+
+    from campaign_base
+),
+
+-- Derive action and priority from observation
+final as (
+    select
+        *,
+        -- Inferred action based on the performance observation
+        case
+            when calculated_observation in ('campaign disabled', 'budget disabled') then 'enable campaign'
+            when calculated_observation = 'campaign ended' then 'review or restart campaign'
+            when calculated_observation = 'not serving' then 'resolve serving issues'
+            when calculated_observation in ('budget constrained', 'budget + targeting constrained') then 'increase budget'
+            when calculated_observation = 'targeting constrained' then 'expand targeting'
+            when calculated_observation in ('quality/relevance constrained', 'quality/relevance + targeting constrained') then 'improve relevance'
+            when calculated_observation in ('no spend + no targeting', 'no spend') then 'diagnose setup'
+            when calculated_observation = 'high spend + good performance' then 'maintain and scale'
+            when calculated_observation = 'high spend + poor performance' then 'improve efficiency'
+            when calculated_observation = 'moderate spend + normal performance' then 'optimize gradually'
+            when calculated_observation = 'low spend + low budget utilization' then 'diagnose targeting and bidding'
+            when calculated_observation = 'low spend + budget constrained' then 'increase budget'
+            when calculated_observation = 'low spend' then 'consider increasing budget'
+            else 'monitor'
+        end as calculated_recommendation,
+
+        -- Inferred priority level for focusing on most critical issues first
+        case
+            -- High: Campaign/Budget blocking issues
+            when calculated_observation in ('campaign disabled', 'budget disabled', 'not serving') then 'high'
+            when calculated_observation in ('budget constrained', 'budget + targeting constrained') then 'high'
+            when calculated_observation in ('no spend + no targeting', 'no spend') then 'high'
+
+            -- High: Poor performance with high spend
+            when calculated_observation = 'high spend + poor performance' then 'high'
+
+            -- Medium: Setup and constraint issues
+            when calculated_observation = 'campaign ended' then 'medium'
+            when calculated_observation in ('targeting constrained', 'quality/relevance constrained', 'quality/relevance + targeting constrained') then 'medium'
+            when calculated_observation in ('low spend + low budget utilization', 'low spend + budget constrained') then 'medium'
+
+            -- Low: Normal operations and good performance
+            when calculated_observation in ('high spend + good performance', 'moderate spend + normal performance', 'low spend') then 'low'
+            else 'low'
+        end as calculated_priority
+    from recommendation_logic
+)
+
+select
+    *,
+    {{ dbt_utils.generate_surrogate_key(['source_relation', 'account_id', 'campaign_id', 'date_day']) }} as budget_diagnostics_report_key
+from final

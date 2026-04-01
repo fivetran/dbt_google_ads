@@ -66,7 +66,7 @@ Keep in mind: An impression is different than a “view” of a video ad. A “v
 {% enddocs %}
 
 {% docs cost %}
-The sum of your cost-per-click (CPC) and cost-per-thousand impressions (CPM) costs during this period.
+The sum of your cost-per-click (CPC) and cost-per-thousand impressions (CPM) costs during this period, converted from cost_micros.
 {% enddocs %}
 
 {% docs date %}

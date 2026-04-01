@@ -20,3 +20,19 @@ This is a reason why we have broken out the ad reporting packages into separate 
 In the `google_ads__search_term_report` model, some keywords may be prepended with plus signs (`+`) or may be wrapped in 2 single quotes (`''keyword''`). The former is a legacy of Broad Match Modifier (BMM), which was [deprecated](https://support.google.com/google-ads/answer/10286719?hl=en) and merged into Phrase Match in July 2021 by Google. The latter likely indicates a phrase match for the keyword, though it may not match the `search_term_match_type` value for the record.
 
 We have opted to leave these qualifiers in the `keyword_text` values, rather than strip them out. Please reach out and create an [issue](https://github.com/fivetran/dbt_google_ads/issues) if you would like cleaned `keyword_text` values for standardization.
+
+## Opinionated Diagnostic Recommendations
+The `google_ads__campaign_budget_diagnostics_report` and `google_ads__campaign_bid_modifiers_report` models include opinionated columns for performance observations, recommendations, and priorities (`calculated_observation`, `calculated_recommendation`, `calculated_priority`). These columns apply business logic based on configurable thresholds to categorize campaign performance and suggest optimization actions.
+
+These recommendations reflect common Google Ads optimization practices but may not align with every organization's specific business goals, vertical requirements, or campaign strategies. The thresholds and logic are generalized rather than universal rules.
+
+**Customization**: The underlying thresholds are configurable through array-based variables (see [Configure diagnostic report thresholds](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#configure-diagnostic-report-thresholds)), allowing users to adjust the logic to better fit their business context.
+
+**Alternative approach**: If the opinionated recommendations don't fit your needs, consider using the raw performance metrics (spend, CTR, CPC, budget utilization, etc.) to build custom diagnostic logic that aligns with your specific optimization strategies and business objectives. See [Configure diagnostic report thresholds](https://github.com/fivetran/dbt_google_ads/blob/main/README.md#configure-diagnostic-report-thresholds) for configuration examples. Users can also ignore these columns entirely and create their own custom logic based on the underlying performance metrics.
+
+## Non-Deterministic Rolling Windows in Diagnostic Reports
+The `google_ads__campaign_bid_modifiers_report` uses a rolling 30-day window (`where date_day >= {{ dbt.dateadd('day', -30, dbt.current_timestamp()) }}`) to calculate recent campaign performance metrics for bid modifier recommendations.
+
+This introduces non-deterministic results, as outputs change over time. This behavior is intentional. These diagnostic reports are designed to support ongoing campaign optimization and monitoring, where up-to-date performance context is more valuable than historical reproducibility.
+
+Using a rolling window ensures recommendations remain current and relevant, even though results may differ between runs.

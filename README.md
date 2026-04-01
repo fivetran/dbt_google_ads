@@ -5,7 +5,7 @@ This dbt package transforms data from Fivetran's Google Ads connector into analy
 
 ## Resources
 
-- Number of materialized models¹: 29
+- Number of materialized models¹: 39
 - Connector documentation
   - [Google Ads connector documentation](https://fivetran.com/docs/connectors/applications/google-ads)
   - [Google Ads ERD](https://fivetran.com/docs/connectors/applications/google-ads#schemainformation)
@@ -40,6 +40,8 @@ By default, this package materializes the following final tables:
 | [`google_ads__keyword_report`](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__keyword_report) | Represents daily performance at the individual keyword level, including `spend`, `clicks`, `impressions`, and `conversions`, enriched with account, campaign, ad group, and criterion context.<br><br>**Example Analytics Questions:**<ul><li>Which keywords are driving the highest quality traffic at the lowest cost?</li><li>Are branded vs. non-branded keywords performing differently?</li><li>Should underperforming keywords be reallocated to different match types?</li></ul> |
 | [`google_ads__search_term_report`](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__search_term_report) | Represents daily performance at the individual search term level, including `spend`, `clicks`, `impressions`, and `conversions`, enriched with account, campaign, and ad group context.<br><br>**Example Analytics Questions:**<ul><li>What new search terms are emerging that I should add as keywords?</li><li>Which irrelevant search terms should be added as negatives to reduce wasted spend?</li><li>Are there seasonal shifts in search terms driving conversions?</li></ul> |
 | [`google_ads__url_report`](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__url_report) | Represents daily performance at the individual URL level, including `spend`, `clicks`, `impressions`, and `conversions`, enriched with ad context. Includes URL breakdowns (`base_url`, `url_host`, `url_path`) and UTM parameters (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`).<br><br>**Example Analytics Questions:**<ul><li>Which landing pages are driving the highest conversion rates?</li><li>Are certain URLs performing better with specific ad creative combinations?</li><li>How much revenue is attributable to specific product landing pages?</li></ul> |
+| [`google_ads__campaign_bid_modifiers_report`](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__campaign_bid_modifiers_report) | Analyzes campaign bid modifiers and their effectiveness at the campaign and modifier level. Provides performance insights and configurable threshold-based recommendations for adding or adjusting bid modifiers based on CPC, CTR, and spend patterns.<br><br>**Example Analytics Questions:**<ul><li>Which campaigns would benefit from device or location bid modifiers?</li><li>Are current bid adjustments improving or hindering performance?</li><li>Which high-spend campaigns lack bid optimization opportunities?</li></ul> |
+| [`google_ads__campaign_budget_diagnostics_report`](https://fivetran.github.io/dbt_google_ads/#!/model/model.google_ads.google_ads__campaign_budget_diagnostics_report) | Diagnoses daily campaign budget utilization and performance constraints over recent periods. Identifies budget-constrained campaigns, targeting limitations, and quality issues with prioritized, configurable threshold-based recommendations for optimization.<br><br>**Example Analytics Questions:**<ul><li>Which campaigns are limited by budget constraints vs targeting scope?</li><li>Are low-performing campaigns suffering from poor relevance or narrow targeting?</li><li>Which budget increases would have the highest impact on performance?</li></ul> |
 
 ¹ Each Quickstart transformation job run materializes these models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
 
@@ -74,7 +76,7 @@ Include the following google_ads package version in your `packages.yml` file _if
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: [">=1.2.0", "<1.3.0"] # we recommend using ranges to capture non-breaking changes automatically
+    version: [">=1.3.0", "<1.4.0"] # we recommend using ranges to capture non-breaking changes automatically
 ```
 > All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/google_ads_source` in your `packages.yml` since this package has been deprecated.
 
@@ -150,6 +152,49 @@ This package assumes you are manually adding UTM tags to your ads. If you are le
 ```yml
 vars:
     google_auto_tagging_enabled: true # False by default
+```
+
+#### Enable/Disable diagnostic reports
+The diagnostic reports (`google_ads__campaign_bid_modifiers_report` and `google_ads__campaign_budget_diagnostics_report`) require history tables to function properly. By default, these models are enabled if the corresponding history tables are available in your source data. If you want to disable specific diagnostic reports or if certain history tables are not available, you can configure the following variables:
+
+```yml
+vars:
+    google_ads__using_campaign_budget_history: True # True by default
+    google_ads__using_campaign_bidding_strategy_history: True # True by default
+    google_ads__using_campaign_criterion_history: True # True by default
+    google_ads__using_campaign_bid_modifier_history: True # True by default
+```
+
+> **Note**: Each diagnostic report requires only its primary history table to be enabled. The `google_ads__campaign_budget_diagnostics_report` requires `google_ads__using_campaign_budget_history`, while the `google_ads__campaign_bid_modifiers_report` requires `google_ads__using_campaign_bid_modifier_history`. The other history table variables control additional functionality within the reports but are not required for the models to run.
+
+#### Configure diagnostic report thresholds
+The diagnostic reports (`google_ads__campaign_bid_modifiers_report` and `google_ads__campaign_budget_diagnostics_report`) use configurable thresholds to identify optimization opportunities persisted as the `calculated_*` fields. You can customize these thresholds for your use case in your `dbt_project.yml`:
+
+```yml
+vars:
+    # Cost per click thresholds in your local currency.
+    google_ads__cpc_low: 1.0      # Campaigns with CPC under this value = low CPC
+    google_ads__cpc_high: 3.0     # Campaigns with CPC over this value = high CPC
+
+    # Click-through rate thresholds as decimals.
+    google_ads__ctr_low: 0.015    # Campaigns with CTR under 1.5% = low CTR
+    google_ads__ctr_high: 0.03    # Campaigns with CTR over 3% = high CTR
+
+    # Spend amount thresholds in your local currency.
+    google_ads__spend_low: 100.0  # Campaigns with spend under this value = low spend
+    google_ads__spend_high: 500.0 # Campaigns with spend over this value = high spend
+
+    # Bid modifier thresholds as multipliers.
+    google_ads__bid_modifier_low: 0.7   # Modifiers under 0.7 (-30%) = significant negative
+    google_ads__bid_modifier_high: 1.5  # Modifiers over 1.5 (+50%) = high positive
+
+    # Budget utilization thresholds as decimals (percent of daily budget spent).
+    google_ads__budget_low: 0.75   # Budget utilization over 75% = moderate constraint
+    google_ads__budget_high: 0.95  # Budget utilization over 95% = budget constrained
+
+    # Location targeting count thresholds.
+    google_ads__location_targeting_low: 5.0   # Campaigns targeting under 5 locations = limited reach
+    google_ads__location_targeting_high: 50.0 # Campaigns targeting over 50 locations = broad reach
 ```
 
 #### Change the build schema
