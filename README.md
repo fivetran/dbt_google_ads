@@ -172,27 +172,27 @@ The diagnostic reports (`google_ads__campaign_bid_modifiers_report` and `google_
 
 ```yml
 vars:
-    # Cost per click thresholds in your local currency
+    # Cost per click thresholds in your local currency.
     google_ads__cpc_low: 1.0      # Campaigns with CPC under this value = low CPC
     google_ads__cpc_high: 3.0     # Campaigns with CPC over this value = high CPC
 
-    # Click-through rate thresholds as decimals
+    # Click-through rate thresholds as decimals.
     google_ads__ctr_low: 0.015    # Campaigns with CTR under 1.5% = low CTR
     google_ads__ctr_high: 0.03    # Campaigns with CTR over 3% = high CTR
 
-    # Spend amount thresholds in your local currency
+    # Spend amount thresholds in your local currency.
     google_ads__spend_low: 100.0  # Campaigns with spend under this value = low spend
     google_ads__spend_high: 500.0 # Campaigns with spend over this value = high spend
 
-    # Bid modifier thresholds as multipliers
+    # Bid modifier thresholds as multipliers.
     google_ads__bid_modifier_low: 0.7   # Modifiers under 0.7 (-30%) = significant negative
     google_ads__bid_modifier_high: 1.5  # Modifiers over 1.5 (+50%) = high positive
 
-    # Budget utilization thresholds as decimals (percent of daily budget spent)
+    # Budget utilization thresholds as decimals (percent of daily budget spent).
     google_ads__budget_low: 0.75   # Budget utilization over 75% = moderate constraint
     google_ads__budget_high: 0.95  # Budget utilization over 95% = budget constrained
 
-    # Location targeting count thresholds
+    # Location targeting count thresholds.
     google_ads__location_targeting_low: 5.0   # Campaigns targeting under 5 locations = limited reach
     google_ads__location_targeting_high: 50.0 # Campaigns targeting over 50 locations = broad reach
 ```

@@ -440,7 +440,7 @@ models:
       - name: clicks
         description: "{{ doc('clicks') }}"
       - name: ctr
-        description: "{{ doc('campaign_id') }}"
+        description: "{{ doc('ctr') }}"
       - name: budget_utilization
         description: Decimal representing budget utilization (spend / daily_budget).
       - name: total_targeting_criteria

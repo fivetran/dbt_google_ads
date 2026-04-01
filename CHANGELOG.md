@@ -31,7 +31,7 @@
 ## Under the Hood
 - Adds ephemeral intermediate model `int_google_ads__campaigns_accounts` providing shared campaign and account dimensional data.
   - Refactors existing reports (`ad_group_report`, `ad_report`, `keyword_report`, `search_term_report`, `url_report`) to use shared `int_google_ads__campaigns_accounts` intermediate model.
-- Adds the `get_high_lows` macro that processes diagnostic threshold configurations for use in budget and bid recommendations.
+- Adds the `get_threshold_high_lows` macro that processes diagnostic threshold configurations for use in budget and bid recommendations.
 - Removes unused field descriptions (`absolute_top_impression_percentage`) from source documentation as they are not used in downstream reports.
 
 # dbt_google_ads v1.3.0-a1
@@ -58,13 +58,13 @@
   - `google_ads__ctr_high_lows` - Click-through rate thresholds for performance evaluation
   - `google_ads__spend_high_lows` - Spend amount thresholds for budget analysis
   - `google_ads__bid_modifier_high_lows` - Bid modifier thresholds for adjustment recommendations
-  - `google_ads__budget_high_lows` - Budget utilization thresholds for constraint analysis
+  - `google_ads__budget_threshold_high_lows` - Budget utilization thresholds for constraint analysis
   - `google_ads__location_targeting_high_lows` - Location targeting count thresholds for reach analysis
 
 ## Under the Hood
 - `int_google_ads__campaigns_accounts` - Ephemeral intermediate model providing shared campaign and account dimensional data.
   - Refactors existing reports (`ad_group_report`, `ad_report`, `keyword_report`, `search_term_report`, `url_report`) to use shared `int_google_ads__campaigns_accounts` intermediate model.
-- Adds the `get_high_lows` macro that processes diagnostic threshold configurations for use in budget and bid recommendations.
+- Adds the `get_threshold_high_lows` macro that processes diagnostic threshold configurations for use in budget and bid recommendations.
 - Removes unused field descriptions (`absolute_top_impression_percentage`) from source documentation as they are not used in downstream reports.
 
 # dbt_google_ads v1.2.0
