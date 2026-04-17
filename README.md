@@ -122,6 +122,14 @@ vars:
 
 > This variable is dynamically set in Fivetran Quickstart.
 
+#### Disable the URL null filter
+By default, the `google_ads_url_report` model filters out records where the final URL is null to focus on meaningful URL performance data. If you want to include records with null URLs in your analysis, you can disable this filter by setting the following variable in your root `dbt_project.yml` file:
+
+```yml
+vars:
+    ad_reporting__url_report__using_null_filter: False # True by default
+```
+
 #### Adding passthrough metrics
 By default, this package will select `clicks`, `impressions`, `cost`, `conversions`, `conversions_value`, and `view_through_conversions` from the source reporting tables to store into the staging models. If you would like to pass through additional metrics to the staging models, add the below configurations to your `dbt_project.yml` file. These variables allow for the pass-through fields to be aliased (`alias`) if desired, but not required. Use the below format for declaring the respective pass-through variables:
 
