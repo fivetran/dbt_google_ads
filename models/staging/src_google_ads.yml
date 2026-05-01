@@ -106,8 +106,12 @@ sources:
             description: The advertising channel subtype that is being used by the campaign.
           - name: start_date
             description: The start date of the campaign.
+          - name: start_date_time
+            description: The start date and time of the campaign as a timestamp.
           - name: end_date
             description: The end date of the campaign.
+          - name: end_date_time
+            description: The end date and time of the campaign as a timestamp.
           - name: serving_status
             description: Status of the ads and how they are currently being served.
           - name: status

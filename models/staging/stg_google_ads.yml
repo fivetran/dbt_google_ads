@@ -143,9 +143,9 @@ models:
       - name: advertising_channel_subtype
         description: The advertising channel subtype that is being used by the campaign.
       - name: start_date
-        description: The start date of the campaign.
+        description: The start date of the campaign. Uses start_date_time when available, falls back to start_date for backward compatibility.
       - name: end_date
-        description: The end date of the campaign.
+        description: The end date of the campaign. Uses end_date_time when available, falls back to end_date for backward compatibility.
       - name: serving_status
         description: Status of the ads and how they are currently being served.
       - name: status
