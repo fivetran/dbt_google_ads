@@ -1,3 +1,9 @@
+# dbt_google_ads v1.3.1
+[PR #98](https://github.com/fivetran/dbt_google_ads/pull/98) includes the following updates:
+
+## Bug Fix
+- Fixes null values in campaign `start_date` and `end_date` fields that occurred after [March 2026 Fivetran Google Ads connector updates](https://fivetran.com/docs/connectors/applications/google-ads/changelog). The model now combines the new `start_date_time` and `end_date_time` timestamp fields with existing date fields to ensure complete data. Note that `start_date` and `end_date` are date strings while `start_date_time` and `end_date_time` are timestamp strings, so you may need to apply your own datatype handling.
+
 # dbt_google_ads v1.3.0
 
 [PR #95](https://github.com/fivetran/dbt_google_ads/pull/95) includes the following updates:
