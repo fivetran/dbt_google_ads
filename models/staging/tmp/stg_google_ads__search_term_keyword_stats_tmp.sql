@@ -1,5 +1,7 @@
 {{ config(enabled=var('ad_reporting__google_ads_enabled', True) and var('google_ads__using_search_term_keyword_stats', True)) }}
 
+{% if var('google_ads_union_schemas', []) | length > 0 or var('google_ads_union_databases', []) | length > 0 %}
+
 {{
     fivetran_utils.union_data(
         table_identifier='search_term_keyword_stats', 
@@ -12,3 +14,15 @@
         union_database_variable='google_ads_union_databases'
     )
 }}
+
+{% else %}
+
+{{
+    fivetran_utils.union_connections(
+        connection_dictionary='google_ads_sources',
+        single_source_name='google_ads',
+        single_table_name='search_term_keyword_stats'
+    )
+}}
+
+{% endif %}

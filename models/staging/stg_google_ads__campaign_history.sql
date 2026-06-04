@@ -18,10 +18,7 @@ fields as (
         }}
         
     
-        {{ fivetran_utils.source_relation(
-            union_schema_variable='google_ads_union_schemas', 
-            union_database_variable='google_ads_union_databases') 
-        }}
+        {{ fivetran_utils.apply_source_relation(package_name='google_ads') }}
 
     from base
 ),
@@ -41,7 +38,7 @@ final as (
         serving_status,
         status,
         tracking_url_template,
-        row_number() over (partition by id {{ google_ads.partition_by_source_relation() }} order by updated_at desc) = 1 as is_most_recent_record
+        row_number() over (partition by id {{ fivetran_utils.partition_by_source_relation(package_name='google_ads') }} order by updated_at desc) = 1 as is_most_recent_record
     from fields
     where coalesce(_fivetran_active, true)
 )

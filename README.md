@@ -76,7 +76,7 @@ Include the following google_ads package version in your `packages.yml` file _if
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: [">=1.3.0", "<1.4.0"] # we recommend using ranges to capture non-breaking changes automatically
+    version: [">=1.4.0", "<1.5.0"] # we recommend using ranges to capture non-breaking changes automatically
 ```
 > All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/google_ads_source` in your `packages.yml` since this package has been deprecated.
 

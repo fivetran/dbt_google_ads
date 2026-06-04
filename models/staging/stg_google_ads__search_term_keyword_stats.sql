@@ -15,10 +15,7 @@ fields as (
                 staging_columns=get_search_term_keyword_stats_columns()
             )
         }}
-        {{ fivetran_utils.source_relation(
-            union_schema_variable='google_ads_union_schemas', 
-            union_database_variable='google_ads_union_databases') 
-        }}
+        {{ fivetran_utils.apply_source_relation(package_name='google_ads') }}
     from base
 ),
 
