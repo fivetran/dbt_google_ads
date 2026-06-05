@@ -38,6 +38,7 @@ models:
 seeds:
   +docs:
     show: false
+  +quote_columns: "{{ target.type == 'redshift' or var('fivetran_using_source_casing', false) }}"
   google_ads_integration_tests:
     account_history_data:
       +column_types:
