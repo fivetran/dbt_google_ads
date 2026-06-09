@@ -76,7 +76,7 @@ Include the following google_ads package version in your `packages.yml` file _if
 ```yaml
 packages:
   - package: fivetran/google_ads
-    version: [">=1.3.0", "<1.4.0"] # we recommend using ranges to capture non-breaking changes automatically
+    version: [">=1.4.0", "<1.5.0"] # we recommend using ranges to capture non-breaking changes automatically
 ```
 > All required sources and staging models are now bundled into this transformation package. Do not include `fivetran/google_ads_source` in your `packages.yml` since this package has been deprecated.
 
@@ -89,27 +89,42 @@ dispatch:
 ```
 
 ### Define database and schema variables
+#### Option A: Single connection
 By default, this package runs using your destination and the `google_ads` schema. If this is not where your Google Ads data is (for example, if your Google Ads schema is named `google_ads_fivetran`), add the following configuration to your root `dbt_project.yml` file:
 
 ```yml
 vars:
     google_ads_database: your_destination_name
-    google_ads_schema: your_schema_name 
+    google_ads_schema: your_schema_name
 ```
 
-### (Optional) Additional configurations
+#### Option B: Union multiple connections
+If you have multiple Google Ads connections in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. For each source table, the package will union all of the data together and pass the unioned table into the transformations. The `source_relation` column in each model indicates the origin of each record.
 
-#### Union multiple connections
-If you have multiple google_ads connections in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from in the `source_relation` column of each model. To use this functionality, you will need to set either the `google_ads_union_schemas` OR `google_ads_union_databases` variables (cannot do both) in your root `dbt_project.yml` file:
+To use this functionality, you will need to set the `google_ads_sources` variable in your root `dbt_project.yml` file:
 
 ```yml
-vars:
-    google_ads_union_schemas: ['google_ads_usa','google_ads_canada'] # use this if the data is in different schemas/datasets of the same database/project
-    google_ads_union_databases: ['google_ads_usa','google_ads_canada'] # use this if the data is in different databases/projects but uses the same schema name
-```
-> NOTE: The native `source.yml` connection set up in the package will not function when the union schema/database feature is utilized. Although the data will be correctly combined, you will not observe the sources linked to the package models in the Directed Acyclic Graph (DAG). This happens because the package includes only one defined `source.yml`.
+# dbt_project.yml
 
-To connect your multiple schema/database sources to the package models, follow the steps outlined in the [Union Data Defined Sources Configuration](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#union_data-source) section of the Fivetran Utils documentation for the union_data macro. This will ensure a proper configuration and correct visualization of connections in the DAG.
+vars:
+  google_ads:
+    google_ads_sources:
+      - database: connection_1_destination_name # Required
+        schema: connection_1_schema_name # Required
+        name: connection_1_source_name # Required only if following the step in the following subsection
+
+      - database: connection_2_destination_name
+        schema: connection_2_schema_name
+        name: connection_2_source_name
+```
+
+> Previous versions of this package employed two separate, mutually exclusive variables for unioning: `google_ads_union_schemas` and `google_ads_union_databases`. While these variables are still supported, `google_ads_sources` is the recommended variable to configure.
+
+#### Optional: Incorporate unioned sources into DAG
+
+If you use [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt#transformationsfordbtcore) and are unioning multiple Google Ads connections, you can define your sources in a property `.yml` file, [using this as a template](https://github.com/fivetran/dbt_google_ads/blob/main/models/staging/src_google_ads.yml). Set the variable `has_defined_sources: true` under the Google Ads namespace in your `dbt_project.yml`. Otherwise, your Google Ads connections won't appear in your DAG. See the `union_connections` macro [documentation](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#optional-union-connections-defined-sources-configuration) for full configuration details.
+
+### (Optional) Additional configurations
 
 #### Disable Search Term Keyword Stats
 This package uses the `search_term_keyword_stats` pre-built report introduced in [April 2025](https://fivetran.com/docs/connectors/applications/google-ads/changelog#april2025), but takes into consideration that not every user may sync or want to use this table. By default, if you do not have the `search_term_keyword_stats` report and are not running the Google Ads package via Fivetran Quickstart, we will create empty staging `search_term_keyword_stats` models so as to not cause downstream transformation failures.
@@ -224,6 +239,14 @@ If an individual source table has a different name than the package expects, add
 ```yml
 vars:
     google_ads_<default_source_table_name>_identifier: your_table_name 
+```
+
+#### Source casing for case-sensitive destinations
+By default, the package applies case-insensitive comparisons when resolving `source_relation` values. If your destination is case-sensitive and you want downstream transformations to respect the exact casing of your source database and schema names, set the following variable:
+
+```yml
+vars:
+    fivetran_using_source_casing: true
 ```
 
 ### (Optional) Orchestrate your models with Fivetran Transformations for dbt Core™
