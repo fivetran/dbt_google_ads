@@ -9,7 +9,7 @@ sources:
 
     config:
       loaded_at_field: _fivetran_synced
-      enabled: "{{ var('ad_reporting__google_ads_enabled', true) }}"
+      enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads_sources', []) == [] }}"
       freshness: 
         warn_after: {count: 48, period: hour}
         error_after: {count: 168, period: hour}
@@ -163,7 +163,7 @@ sources:
           - name: status
             description: The current status of the ad group criterion.
           - name: keyword_match_type
-            description: The match type which dictate how closely the keyword needs to match with the user’s search query so that the ad can be considered for the auction. 
+            description: The match type which dictate how closely the keyword needs to match with the user's search query so that the ad can be considered for the auction. 
           - name: keyword_text
             description: The text used within the keyword criterion that is being matched against.
           - name: _fivetran_active
@@ -279,7 +279,7 @@ sources:
         identifier: '{{ var("google_ads_search_term_keyword_stats_identifier", "search_term_keyword_stats") }}'
         description: Each record represents the daily performance of a search term (including associated tracked keywords) in Google Ads.
         config:
-          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_search_term_keyword_stats', true) }}"
+          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_search_term_keyword_stats', true) and var('google_ads_sources', []) == [] }}"
         columns:
           - name: customer_id
             description: '{{ doc("external_customer_id") }}'
@@ -330,7 +330,7 @@ sources:
         description: Each record represents a historical version of a campaign bid modifier in Google Ads.
         identifier: "{{ var('google_ads_campaign_bid_modifier_history_identifier', 'campaign_bid_modifier_history') }}"
         config:
-          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_campaign_bid_modifier_history', true) }}"
+          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_campaign_bid_modifier_history', true) and var('google_ads_sources', []) == [] }}"
         columns:
           - name: campaign_id
             description: "{{ doc('campaign_id') }}"
@@ -351,7 +351,7 @@ sources:
         description: Each record represents a historical version of a campaign budget in Google Ads.
         identifier: "{{ var('google_ads_campaign_budget_history_identifier', 'campaign_budget_history') }}"
         config:
-          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_campaign_budget_history', true) }}"
+          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_campaign_budget_history', true) and var('google_ads_sources', []) == [] }}"
         columns:
           - name: id
             description: Unique identifier of the budget.
@@ -388,7 +388,7 @@ sources:
         description: Each record represents a historical version of a campaign criterion in Google Ads.
         identifier: "{{ var('google_ads_campaign_criterion_history_identifier', 'campaign_criterion_history') }}"
         config:
-          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_campaign_criterion_history', true) }}"
+          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_campaign_criterion_history', true) and var('google_ads_sources', []) == [] }}"
         columns:
           - name: id
             description: Unique identifier of the campaign criterion.
@@ -465,7 +465,7 @@ sources:
         description: Each record represents a historical version of a campaign bidding strategy in Google Ads.
         identifier: "{{ var('google_ads_campaign_bidding_strategy_history_identifier', 'campaign_bidding_strategy_history') }}"
         config:
-          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_campaign_bidding_strategy_history', true) }}"
+          enabled: "{{ var('ad_reporting__google_ads_enabled', true) and var('google_ads__using_campaign_bidding_strategy_history', true) and var('google_ads_sources', []) == [] }}"
         columns:
           - name: campaign_id
             description: "{{ doc('campaign_id') }}"
