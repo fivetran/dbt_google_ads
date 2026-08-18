@@ -1,3 +1,11 @@
+# dbt_google_ads v1.4.1
+
+[PR #103](https://github.com/fivetran/dbt_google_ads/pull/103) includes the following updates:
+
+## Feature Updates
+- Adds DuckDB as a supported destination.
+
+
 # dbt_google_ads v1.4.0
 
 [PR #101](https://github.com/fivetran/dbt_google_ads/pull/101) includes the following updates:
