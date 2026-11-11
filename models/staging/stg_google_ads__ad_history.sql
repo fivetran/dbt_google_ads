@@ -57,11 +57,11 @@ url_fields as (
         {{ dbt.split_part('final_url', "'?'", 1) }} as base_url,
         {{ dbt_utils.get_url_host('final_url') }} as url_host,
         '/' || {{ dbt_utils.get_url_path('final_url') }} as url_path,
-        {{ google_ads.google_ads_extract_url_parameter('final_url', 'utm_source') }} as utm_source,
-        {{ google_ads.google_ads_extract_url_parameter('final_url', 'utm_medium') }} as utm_medium,
-        {{ google_ads.google_ads_extract_url_parameter('final_url', 'utm_campaign') }} as utm_campaign,
-        {{ google_ads.google_ads_extract_url_parameter('final_url', 'utm_content') }} as utm_content,
-        {{ google_ads.google_ads_extract_url_parameter('final_url', 'utm_term') }} as utm_term
+        {{ dbt_utils.get_url_parameter('final_url', 'utm_source') }} as utm_source,
+        {{ dbt_utils.get_url_parameter('final_url', 'utm_medium') }} as utm_medium,
+        {{ dbt_utils.get_url_parameter('final_url', 'utm_campaign') }} as utm_campaign,
+        {{ dbt_utils.get_url_parameter('final_url', 'utm_content') }} as utm_content,
+        {{ dbt_utils.get_url_parameter('final_url', 'utm_term') }} as utm_term
     from final_urls
 )
 
