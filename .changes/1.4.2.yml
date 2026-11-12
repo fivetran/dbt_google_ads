@@ -1,0 +1,9 @@
+version: 1.4.2
+pr_number: 108
+under_the_hood:
+- description: Adds documentation for two columns the package already outputs. This
+    change is documentation only and does not affect your data.
+  details:
+  - '`ad_name` in the `google_ads__ad_report` and `stg_google_ads__ad_history` models.'
+  - '`final_urls` in the `stg_google_ads__ad_history` model.'
+date: '2026-11-12'

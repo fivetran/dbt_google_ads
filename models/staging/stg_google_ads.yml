@@ -58,6 +58,8 @@ models:
         description: "{{ doc('ad_id') }}"
         tests:
           - not_null
+      - name: ad_name
+        description: "{{ doc('ad_name') }}"
       - name: updated_at
         description: "{{ doc('updated_at') }}"
       - name: display_url
@@ -70,6 +72,8 @@ models:
         description: "{{ doc('is_most_recent_record') }}"
       - name: source_final_urls
         description: The original list of final urls expressed as an array. Please be aware the test used on this field is intended to warn you if you have fields with multiple urls. If you do, the `final_url` field will filter down the urls within the array to just the first. Therefore, this package will only leverage one of possibly many urls within this field array.
+      - name: final_urls
+        description: The list of final urls used by the ad, with the enclosing array brackets removed from the `source_final_urls` field.
       - name: final_url
         description: The first url in the list of the urls within the `final_urls` source field.
       - name: base_url
