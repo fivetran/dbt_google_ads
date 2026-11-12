@@ -30,6 +30,10 @@ The ID of the Campaign.
 The ID of the Ad.
 {% enddocs %}
 
+{% docs ad_name %}
+The name of the Ad.
+{% enddocs %}
+
 {% docs account_id %}
 The ID of the Account.
 {% enddocs %}

@@ -151,6 +151,8 @@ models:
         description: "{{ doc('ad_group_name') }}"
       - name: ad_group_id
         description: "{{ doc('ad_group_id') }}"
+      - name: ad_name
+        description: "{{ doc('ad_name') }}"
       - name: ad_id
         description: The unique identifier of the ad.
         tests:
