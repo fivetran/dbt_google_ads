@@ -3,6 +3,17 @@ version: 2
 models:
   - name: google_ads__url_report
     description: Each record in this table represents the daily performance of URLs at the ad level.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - ad_group_id
+              - ad_id
+          config:
+            # Don't run this test if you allow URLs to have null entries
+            enabled: "{{ var('ad_reporting__url_report__using_null_filter', true) }}"
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -60,6 +71,13 @@ models:
 
   - name: google_ads__account_report
     description: Each record in this table represents the daily performance at the account level.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - account_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -92,6 +110,13 @@ models:
 
   - name: google_ads__ad_group_report
     description: Each record in this table represents the daily performance at the ad group level.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - ad_group_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -132,6 +157,14 @@ models:
 
   - name: google_ads__ad_report
     description: Each record in this table represents the daily performance at the ad level.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - ad_group_id
+              - ad_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -178,6 +211,13 @@ models:
 
   - name: google_ads__campaign_report
     description: Each record in this table represents the daily performance of a campaign at the campaign/advertising_channel/advertising_channel_subtype level.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - campaign_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -220,6 +260,14 @@ models:
 
   - name: google_ads__keyword_report
     description: Each record in this table represents the daily performance at the ad group level for keywords.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - ad_group_id
+              - criterion_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -266,6 +314,16 @@ models:
 
   - name: google_ads__search_term_report
     description: Each record in this table represents the daily performance at the ad group level for search terms matching tracked keywords.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - ad_group_id
+              - criterion_id
+              - search_term
+              - search_term_match_type
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"

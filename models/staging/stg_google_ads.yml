@@ -3,6 +3,13 @@ version: 2
 models:
   - name: stg_google_ads__account_history
     description: Each record represents a version of an account in Google Ads.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - account_id
+              - updated_at
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -25,6 +32,13 @@ models:
 
   - name: stg_google_ads__ad_group_history
     description: Each record represents a version of an ad group in Google Ads.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - ad_group_id
+              - updated_at
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -49,6 +63,14 @@ models:
 
   - name: stg_google_ads__ad_history
     description: Each record represents a version of an ad in Google Ads.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - ad_group_id
+              - ad_id
+              - updated_at
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -91,6 +113,17 @@ models:
         
   - name: stg_google_ads__ad_stats
     description: Each record represents the daily performance of an ad in Google Ads broken down to the ad network, device type, and ad_group_id.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - ad_group_id
+              - ad_id
+              - keyword_ad_group_criterion
+              - ad_network_type
+              - device
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -129,6 +162,13 @@ models:
 
   - name: stg_google_ads__campaign_history
     description: Each record represents a version of a campaign in Google Ads.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - campaign_id
+              - updated_at
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -161,6 +201,14 @@ models:
 
   - name: stg_google_ads__ad_group_criterion_history
     description: Each record represents a historical version of an ad group criterion in Google Ads.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - ad_group_id
+              - criterion_id
+              - updated_at
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -187,6 +235,15 @@ models:
 
   - name: stg_google_ads__ad_group_stats
     description: Each record represents the daily performance of an ad group in Google Ads broken down to the ad network and device type.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - ad_group_id
+              - ad_network_type
+              - device
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -221,6 +278,15 @@ models:
 
   - name: stg_google_ads__campaign_stats
     description: Each record represents the daily performance of a campaign in Google Ads broken down to the ad network and device type.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - campaign_id
+              - ad_network_type
+              - device
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -253,6 +319,13 @@ models:
 
   - name: stg_google_ads__keyword_stats
     description: Each record represents the daily performance of a keyword in Google Ads.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - keyword_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -287,6 +360,15 @@ models:
 
   - name: stg_google_ads__account_stats
     description: Each record represents the daily performance of an account in Google Ads broken down to the ad network and device type.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - account_id
+              - ad_network_type
+              - device
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -317,6 +399,13 @@ models:
 
   - name: stg_google_ads__search_term_keyword_stats
     description: Each record represents the daily performance of a search term (including associated tracked keywords) in Google Ads.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - search_term_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -361,6 +450,14 @@ models:
 
   - name: stg_google_ads__campaign_bid_modifier_history
     description: Each record represents a historical version of a campaign bid modifier in Google Ads.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - campaign_id
+              - criterion_id
+              - updated_at
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -383,6 +480,13 @@ models:
 
   - name: stg_google_ads__campaign_budget_history
     description: Each record represents a historical version of a campaign budget in Google Ads.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - campaign_id
+              - updated_at
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -409,6 +513,14 @@ models:
 
   - name: stg_google_ads__campaign_criterion_history
     description: Each record represents a historical version of a campaign criterion in Google Ads.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - campaign_id
+              - criterion_id
+              - updated_at
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -445,6 +557,13 @@ models:
 
   - name: stg_google_ads__campaign_bidding_strategy_history
     description: Each record represents a historical version of a campaign bidding strategy in Google Ads.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - campaign_id
+              - updated_at
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
