@@ -1,3 +1,12 @@
+# dbt_google_ads v1.4.2
+
+[PR #108](https://github.com/fivetran/dbt_google_ads/pull/108) includes the following updates:
+
+## Under the Hood
+- Adds documentation for two columns the package already outputs. This change is documentation only and does not affect your data.
+  - `ad_name` in the `google_ads__ad_report` and `stg_google_ads__ad_history` models.
+  - `final_urls` in the `stg_google_ads__ad_history` model.
+
 # dbt_google_ads v1.4.1
 
 [PR #103](https://github.com/fivetran/dbt_google_ads/pull/103) includes the following updates:
