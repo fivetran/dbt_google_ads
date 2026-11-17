@@ -3,7 +3,7 @@
 [PR #110](https://github.com/fivetran/dbt_google_ads/pull/110) includes the following updates:
 
 ## Bug Fixes
-- Casts `date_day` to a timestamp in the 30-day filter of the `google_ads__campaign_bid_modifiers_report` model so the comparison no longer mixes date and timestamp types. This resolves a `dbt0407` error raised by dbt Fusion `--static-analysis strict`. Results are unchanged.
+- Casts `date_day` and the `dateadd` result to a timestamp in the 30-day filter of the `google_ads__campaign_bid_modifiers_report` model so the comparison no longer mixes date and timestamp types. This resolves a `dbt0407` error raised by dbt Fusion `--static-analysis strict`. Results are unchanged.
 
 # dbt_google_ads v1.4.1
 
