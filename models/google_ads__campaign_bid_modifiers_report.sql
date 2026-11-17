@@ -49,7 +49,7 @@ recent_campaign_performance as (
     -- Rolling 30-day window for recent performance analysis
     -- Note: This creates non-deterministic results that change daily, which is intentional
     -- to provide current performance context for bid modifier recommendations
-    where date_day >= {{ dbt.dateadd('day', -30, dbt.current_timestamp()) }}
+    where cast(date_day as {{ dbt.type_timestamp() }}) >= cast({{ dbt.dateadd('day', -30, dbt.current_timestamp()) }} as {{ dbt.type_timestamp() }})
     group by 1, 2
 ),
 
