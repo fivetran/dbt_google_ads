@@ -1,3 +1,16 @@
+# dbt_google_ads v1.5.0
+
+[PR #109](https://github.com/fivetran/dbt_google_ads/pull/109) includes the following updates:
+
+## Feature Update
+- Raises the minimum dbt version to 1.10.0.
+- Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_google_ads/issues/new/choose).
+
+## Under the Hood
+- Adds documentation for two columns the package already outputs. This change is documentation only and does not affect your data.
+  - `ad_name` in the `google_ads__ad_report` and `stg_google_ads__ad_history` models.
+  - `final_urls` in the `stg_google_ads__ad_history` model.
+
 # dbt_google_ads v1.4.1
 
 [PR #103](https://github.com/fivetran/dbt_google_ads/pull/103) includes the following updates:
