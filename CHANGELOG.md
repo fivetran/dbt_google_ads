@@ -7,8 +7,7 @@
 - Adds `dbt_utils.unique_combination_of_columns` tests to staging and end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_google_ads/issues/new/choose).
 
 ## Under the Hood
-- Ads `ad_name` documentation to the `google_ads__ad_report` and `stg_google_ads__ad_history` models.
-- Ads `final_urls` documentation to the `stg_google_ads__ad_history` model.
+- Updates yml column documentation to match model output.
 
 # dbt_google_ads v1.4.1
 
