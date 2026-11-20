@@ -15,7 +15,7 @@ models:
         description: "{{ doc('source_relation') }}"
       - name: account_id
         description: "{{ doc('account_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: currency_code
         description: The currency of the spend reported.
@@ -44,7 +44,7 @@ models:
         description: "{{ doc('source_relation') }}"
       - name: ad_group_id
         description: "{{ doc('ad_group_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: updated_at
         description: "{{ doc('updated_at') }}"
@@ -78,7 +78,7 @@ models:
         description: "{{ doc('ad_group_id') }}"
       - name: ad_id
         description: "{{ doc('ad_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: ad_name
         description: "{{ doc('ad_name') }}"
@@ -135,13 +135,13 @@ models:
         description: "{{ doc('external_customer_id') }}"
       - name: date_day
         description: "{{ doc('date') }}"
-        tests:
+        data_tests:
           - not_null
       - name: ad_group_id
         description: "{{ doc('ad_group_id') }}"
       - name: ad_id
         description: "{{ doc('ad_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
@@ -178,7 +178,7 @@ models:
         description: "{{ doc('source_relation') }}"
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: updated_at
         description: "{{ doc('updated_at') }}"
@@ -218,7 +218,7 @@ models:
         description: "{{ doc('source_relation') }}"
       - name: criterion_id
         description: Unique identifier of the ad group criterion.
-        tests:
+        data_tests:
           - not_null
       - name: ad_group_id
         description: "{{ doc('ad_group_id') }}"
@@ -255,11 +255,11 @@ models:
         description: "{{ doc('external_customer_id') }}"
       - name: date_day
         description: "{{ doc('date') }}"
-        tests:
+        data_tests:
           - not_null
       - name: ad_group_id
         description: "{{ doc('ad_group_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
@@ -298,11 +298,11 @@ models:
         description: "{{ doc('external_customer_id') }}"
       - name: date_day
         description: "{{ doc('date') }}"
-        tests:
+        data_tests:
           - not_null
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: ad_network_type
         description: "{{ doc('ad_network_type') }}"
@@ -337,13 +337,13 @@ models:
         description: "{{ doc('external_customer_id') }}"
       - name: date_day
         description: "{{ doc('date') }}"
-        tests:
+        data_tests:
           - not_null
       - name: ad_group_id
         description: "{{ doc('ad_group_id') }}"
       - name: keyword_id
         description: The unique ID of the keyword record.
-        tests:
+        data_tests:
           - not_null
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
@@ -378,11 +378,11 @@ models:
         description: "{{ doc('source_relation') }}"
       - name: account_id
         description: "{{ doc('external_customer_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: date_day
         description: "{{ doc('date') }}"
-        tests:
+        data_tests:
           - not_null
       - name: ad_network_type
         description: "{{ doc('ad_network_type') }}"
@@ -417,11 +417,11 @@ models:
         description: '{{ doc("external_customer_id") }}'
       - name: date_day
         description: '{{ doc("date") }}'
-        tests:
+        data_tests:
           - not_null
       - name: search_term_id
         description: The unique ID of the search term record.
-        tests:
+        data_tests:
           - not_null
       - name: search_term
         description: '{{ doc("search_term") }}'
@@ -467,7 +467,7 @@ models:
         description: "{{ doc('source_relation') }}"
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: criterion_id
         description: Unique identifier of the criterion that the bid modifier is applied to.
@@ -496,7 +496,7 @@ models:
         description: "{{ doc('source_relation') }}"
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: daily_budget
         description: The daily budget amount in dollars, converted from amount_micros.
@@ -530,7 +530,7 @@ models:
         description: "{{ doc('source_relation') }}"
       - name: criterion_id
         description: Unique identifier of the campaign criterion.
-        tests:
+        data_tests:
           - not_null
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
@@ -573,7 +573,7 @@ models:
         description: "{{ doc('source_relation') }}"
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: updated_at
         description: "{{ doc('updated_at') }}"
