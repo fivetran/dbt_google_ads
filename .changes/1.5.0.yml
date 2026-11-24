@@ -6,7 +6,9 @@ new_features:
 - description: Adds `dbt_utils.unique_combination_of_columns` tests to staging and
     end models. If a test fails, please [open an issue](https://github.com/fivetran/dbt_google_ads/issues/new/choose).
 bug_fixes:
-- description: Casts the rolling 30-day filter in `google_ads__campaign_bid_modifiers_report` to a date. This fixes a date and timestamp comparison that failed under dbt v2 strict static analysis.
+- description: Casts the rolling 30-day filter in `google_ads__campaign_bid_modifiers_report`
+    to a date. This fixes a date and timestamp comparison that failed under dbt v2
+    strict static analysis.
 under_the_hood:
 - description: Updates yml column documentation to match model output.
 date: '2026-11-18'
