@@ -56,6 +56,7 @@ fields as (
     left join criterions
         on stats.criterion_id = criterions.criterion_id
         and stats.source_relation = criterions.source_relation
+        and stats.ad_group_id = criterions.ad_group_id
     left join ad_groups
         on stats.ad_group_id = ad_groups.ad_group_id
         and stats.source_relation = ad_groups.source_relation
