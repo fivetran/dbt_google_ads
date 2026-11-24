@@ -3,6 +3,17 @@ version: 2
 models:
   - name: google_ads__url_report
     description: Each record in this table represents the daily performance of URLs at the ad level.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - ad_group_id
+              - ad_id
+          config:
+            # Don't run this test if you allow URLs to have null entries
+            enabled: "{{ var('ad_reporting__url_report__using_null_filter', true) }}"
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -26,7 +37,7 @@ models:
         description: The unique identifier of the ad.
       - name: base_url
         description: "{{ doc('base_url') }}"
-        tests:
+        data_tests:
           - not_null:
               config:
                 # Below is so we don't run this test if the user has allowed urls to have null entries
@@ -60,6 +71,13 @@ models:
 
   - name: google_ads__account_report
     description: Each record in this table represents the daily performance at the account level.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - account_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -69,7 +87,7 @@ models:
         description: "{{ doc('account_descriptive_name') }}"
       - name: account_id
         description: "{{ doc('external_customer_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: time_zone
         description: The time zone which the account is located.
@@ -92,6 +110,13 @@ models:
 
   - name: google_ads__ad_group_report
     description: Each record in this table represents the daily performance at the ad group level.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - ad_group_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -111,7 +136,7 @@ models:
         description: "{{ doc('ad_group_name') }}"
       - name: ad_group_id
         description: "{{ doc('ad_group_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: ad_group_status
         description: The status of the ad group.
@@ -132,6 +157,14 @@ models:
 
   - name: google_ads__ad_report
     description: Each record in this table represents the daily performance at the ad level.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - ad_group_id
+              - ad_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -151,9 +184,11 @@ models:
         description: "{{ doc('ad_group_name') }}"
       - name: ad_group_id
         description: "{{ doc('ad_group_id') }}"
+      - name: ad_name
+        description: "{{ doc('ad_name') }}"
       - name: ad_id
         description: The unique identifier of the ad.
-        tests:
+        data_tests:
           - not_null
       - name: display_url
         description: The url which is displayed with the ad.
@@ -178,6 +213,13 @@ models:
 
   - name: google_ads__campaign_report
     description: Each record in this table represents the daily performance of a campaign at the campaign/advertising_channel/advertising_channel_subtype level.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - campaign_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -193,7 +235,7 @@ models:
         description: "{{ doc('campaign_name') }}"
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: advertising_channel_type
         description: The channel type of the ads being served within the campaign.
@@ -220,6 +262,14 @@ models:
 
   - name: google_ads__keyword_report
     description: Each record in this table represents the daily performance at the ad group level for keywords.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - ad_group_id
+              - criterion_id
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -241,7 +291,7 @@ models:
         description: "{{ doc('ad_group_id') }}"
       - name: criterion_id
         description: The unique identifier of the criterion being served.
-        tests:
+        data_tests:
           - not_null
       - name: type
         description: The type of keyword ad being served.
@@ -266,6 +316,16 @@ models:
 
   - name: google_ads__search_term_report
     description: Each record in this table represents the daily performance at the ad group level for search terms matching tracked keywords.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - source_relation
+              - date_day
+              - ad_group_id
+              - criterion_id
+              - search_term
+              - search_term_match_type
     columns:
       - name: source_relation
         description: "{{ doc('source_relation') }}"
@@ -313,7 +373,7 @@ models:
     columns:
       - name: bid_modifier_report_key
         description: Surrogate key for the campaign bid modifiers report, combining source_relation, account_id, campaign_id, and criterion_id.
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: source_relation
@@ -324,7 +384,7 @@ models:
         description: "{{ doc('external_customer_id') }}"
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: campaign_name
         description: "{{ doc('campaign_name') }}"
@@ -386,14 +446,14 @@ models:
     columns:
       - name: budget_diagnostics_report_key
         description: Surrogate key for the campaign budget diagnostics report, combining source_relation, account_id, campaign_id, and date_day.
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: source_relation
         description: "{{ doc('source_relation') }}"
       - name: campaign_id
         description: "{{ doc('campaign_id') }}"
-        tests:
+        data_tests:
           - not_null
       - name: date_day
         description: "{{ doc('date') }}"
