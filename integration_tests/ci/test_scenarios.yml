@@ -35,6 +35,7 @@ test_scenarios:
     vars:
       google_ads__using_campaign_bidding_strategy_history: false
       google_ads__using_campaign_criterion_history: false
+      google_auto_tagging_enabled: true
     include_incremental: false
 
   - name: "MDLS"
